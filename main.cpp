@@ -9,13 +9,15 @@
 // include
 //-----------------------------------------
 #include "main.h"
+#include "polygon.h"
+#include "camera.h"
 #include <stdio.h>
 
 //-----------------------------------------
 // マクロ定義
 //-----------------------------------------
 #define CLASS_NAME	"windowclass"			// ウインドウクラスの名前
-#define WINDOW_NAME	"Flat Blocks"		// ウインドウクラスの名前（キャプションに表示）
+#define WINDOW_NAME	"3Dアクション"		// ウインドウクラスの名前（キャプションに表示）
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
 //-----------------------------------------
@@ -35,7 +37,6 @@ LPDIRECT3D9	g_pD3D = NULL;
 LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;
 LPD3DXFONT g_pFont = NULL;	// フォントへのポインタ
 int g_nCountFPS = 0;		// FPSカウンタ
-static MODE s_mode = MODE_TITLE;
 
 //=========================================
 // メイン関数
@@ -275,6 +276,11 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// デバッグ表示用フォントの生成
 	D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);
 
+	InitPolygon();
+
+	InitCamera();
+	SetCamera();
+
 	return S_OK;
 }
 
@@ -302,6 +308,10 @@ void Uninit(void)
 		g_pD3D->Release();
 		g_pD3D = NULL;
 	}
+
+	UninitPolygon();
+
+	UninitCamera();
 }
 
 //=========================================
@@ -309,6 +319,7 @@ void Uninit(void)
 //=========================================
 void Update(void)
 {	
+	UpdatePolygon();
 }
 
 //=========================================
@@ -324,6 +335,8 @@ void Draw(void)
 	// 描画開始
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{// 	描画開始が成功した場合
+
+		DrawPolygon();
 
 #ifdef _DEBUG
 		// FPSの表示
@@ -361,5 +374,5 @@ void DrawFPS(void)
 
 
 	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 255));
+	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }

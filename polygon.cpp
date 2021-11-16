@@ -22,6 +22,7 @@ typedef struct
 // static変数
 //------------------------------------
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	// 頂点バッファーへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTexture = NULL;		// テクスチャへのポインタ
 static POLYGON polygon;								// ポリゴンの構造体
 
 //=========================================
@@ -30,6 +31,15 @@ static POLYGON polygon;								// ポリゴンの構造体
 void InitPolygon(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// 初期化処理
+	polygon.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 頂点座標
+	polygon.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 回転座標
+	
+	// テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice,
+		"date/TEX/08.彼方からの君に捧ぐ.png",
+		&s_pTexture);
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
@@ -48,19 +58,19 @@ void InitPolygon(void)
 	pVtx[0].pos = D3DXVECTOR3(-10.0f, 0.0f, 10.0f);
 	pVtx[1].pos = D3DXVECTOR3(10.0f, 0.0f, 10.0f);
 	pVtx[2].pos = D3DXVECTOR3(-10.0f, 0.0f, -10.0f);
-	pVtx[3].pos = D3DXVECTOR3(-10.0f, 0.0f, -10.0f);
+	pVtx[3].pos = D3DXVECTOR3(10.0f, 0.0f, -10.0f);
 
 	// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
-	pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[2].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[3].nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 	// 頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	pVtx[1].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	pVtx[2].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	pVtx[3].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -121,6 +131,9 @@ void DrawPolygon(void)
 
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
+
+	// テクスチャの設定
+	pDevice->SetTexture(0, s_pTexture);
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);

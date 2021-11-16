@@ -6,11 +6,13 @@
 //=========================================
 #include "main.h"
 #include "camera.h"
+#include "input.h"
 
 //------------------------------------
 // static変数
 //------------------------------------
-Camera s_camera;	// カメラ情報
+static Camera s_camera;	// カメラ情報
+static float rotY;
 
 //=========================================
 // 初期化処理
@@ -18,7 +20,7 @@ Camera s_camera;	// カメラ情報
 void InitCamera(void)
 {
 	// 視点・注視点・上方向を設定する
-	s_camera.posV = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	s_camera.posV = D3DXVECTOR3(0.0f,10.0f,-30.0f);
 	s_camera.posR = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	s_camera.vecU = D3DXVECTOR3(0.0f,1.0f,0.0f);
 }
@@ -35,6 +37,43 @@ void UninitCamera(void)
 //=========================================
 void UpdateCamera(void)
 {
+	if (GetKeyboardTrigger(DIK_W))
+	{
+		s_camera.posV.z += 5.0f;
+	}
+
+	if (GetKeyboardPress(DIK_A))
+	{
+		rotY -= 0.5f;
+		float radY = rotY / (D3DX_PI * 2.0f);
+		float c = cosf(radY);
+		float s = sinf(radY);
+		s_camera.posV = D3DXVECTOR3(30.0f * c, s_camera.posV.y, 30.0f * s);
+	}
+
+	if (GetKeyboardTrigger(DIK_S))
+	{
+		s_camera.posV.z -= 5.0f;
+	}
+
+	if (GetKeyboardPress(DIK_D))
+	{
+		rotY += 0.5f;
+		float radY = rotY / (D3DX_PI * 2.0f);
+		float c = cosf(radY);
+		float s = sinf(radY);
+		s_camera.posV = D3DXVECTOR3(30.0f * c, s_camera.posV.y, 30.0f * s);
+	}
+
+	if (GetKeyboardTrigger(DIK_Q))
+	{
+		s_camera.posV.y += 5.0f;
+	}
+
+	if (GetKeyboardTrigger(DIK_Z))
+	{
+		s_camera.posV.y -= 5.0f;
+	}
 }
 
 //=========================================

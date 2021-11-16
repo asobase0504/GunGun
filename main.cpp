@@ -11,6 +11,8 @@
 #include "main.h"
 #include "polygon.h"
 #include "camera.h"
+#include "light.h"
+#include "input.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -276,10 +278,20 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// デバッグ表示用フォントの生成
 	D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);
 
+	// キーボードの初期化処理
+	if (FAILED(InitKeyboard(hInstance, hWnd)))
+	{
+		return E_FAIL;
+	}
+
+	// ポリゴンの初期化処理
 	InitPolygon();
 
+	// カメラの初期化処理
 	InitCamera();
-	SetCamera();
+
+	// ライトの初期化処理
+	InitLight();
 
 	return S_OK;
 }
@@ -309,9 +321,17 @@ void Uninit(void)
 		g_pD3D = NULL;
 	}
 
+	// キーボードの終了処理
+	UninitKeyboard();
+
+	// ポリゴンの終了処理
 	UninitPolygon();
 
+	// カメラの終了処理
 	UninitCamera();
+
+	// ライトの終了処理
+	UninitLight();
 }
 
 //=========================================
@@ -319,6 +339,16 @@ void Uninit(void)
 //=========================================
 void Update(void)
 {	
+	// キーボードの更新処理
+	UpdateKeyboard();
+
+	// カメラの更新
+	UpdateCamera();
+
+	// ライトの更新
+	UpdateLight();
+
+	// ポリゴンの更新
 	UpdatePolygon();
 }
 
@@ -336,6 +366,10 @@ void Draw(void)
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{// 	描画開始が成功した場合
 
+		// カメラの設定処理
+		SetCamera();
+
+		// ポリゴンの描画処理
 		DrawPolygon();
 
 #ifdef _DEBUG

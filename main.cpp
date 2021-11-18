@@ -195,7 +195,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //=========================================
-// 初期化処理
+// 初期化
 //=========================================
 HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
@@ -301,7 +301,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 }
 
 //=========================================
-// 終了処理
+// 終了
 //=========================================
 void Uninit(void)
 {
@@ -342,7 +342,7 @@ void Uninit(void)
 }
 
 //=========================================
-// 更新処理
+// 更新
 //=========================================
 void Update(void)
 {	
@@ -363,7 +363,7 @@ void Update(void)
 }
 
 //=========================================
-// 描画処理
+// 描画
 //=========================================
 void Draw(void)
 {
@@ -418,7 +418,6 @@ void DrawFPS(void)
 
 	// 文字列に代入
 	//sprintf(&aStr[1][0], "rot: %f\n", pPlayer->rot.z);
-
 
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));

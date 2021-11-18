@@ -21,7 +21,7 @@ void InitLight(void)
 	D3DXVECTOR3 vecDir;	// ライトの方向ベクトル
 
 	// ライトをクリアする
-	ZeroMemory(&s_light, sizeof(D3DLIGHT9));	// 構造体変数をゼロクリアできる関数
+	ZeroMemory(&s_light, sizeof(D3DLIGHT9));				// 構造体変数をゼロクリアできる関数
 
 	// ライトの種類を設定
 	s_light.Type = D3DLIGHT_DIRECTIONAL;					// 平行光源
@@ -31,8 +31,7 @@ void InitLight(void)
 
 	// ライトの方向を設定
 	vecDir = D3DXVECTOR3(0.2f, -0.8f, -0.4f);
-	// 正規化する(大きさ１のベクトルにする)
-	D3DXVec3Normalize(&vecDir, &vecDir);
+	D3DXVec3Normalize(&vecDir, &vecDir);	// 正規化する(大きさ１のベクトルにする)
 	s_light.Direction = vecDir;
 
 	// ライトを設定する

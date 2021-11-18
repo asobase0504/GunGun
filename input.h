@@ -48,22 +48,22 @@ typedef struct
 // プロトタイプ宣言
 //------------------------------------
 // キーボード関数
-HRESULT InitKeyboard(HINSTANCE hInstance, HWND hWnd);
-void UninitKeyboard(void);
-void UpdateKeyboard(void);
-bool GetKeyboardPress(int nKey);
-bool GetKeyboardTrigger(int nKey);
-bool GetKeyboardRelese(int nKey);
+HRESULT InitKeyboard(HINSTANCE hInstance, HWND hWnd);	// キーボードの初期化処理
+void UninitKeyboard(void);								// キーボードの終了処理
+void UpdateKeyboard(void);								// キーボードの更新処理
+bool GetKeyboardPress(int nKey);						// キーボードのPress情報取得
+bool GetKeyboardTrigger(int nKey);						// キーボードのTrigger情報取得
+bool GetKeyboardRelease(int nKey);						// キーボードのRelease情報取得
 
 // パッド関数
-HRESULT InitJoypad(void);
-void UninitJoypad(void);
-void UpdateJoypad(void);
-bool GetJoypadPress(JOYKEY key);
-bool GetJoypadTrigger(JOYKEY key);
-bool GetJoypadRelese(JOYKEY key);
-D3DXVECTOR3 GetJoypadStick(JOYKEY nKey);
-float GetJoyStickAngle(void);
-bool GetUseJoyPad(void);
+HRESULT InitJoypad(void);								// ジョイパッドの初期化処理
+void UninitJoypad(void);								// ジョイパッドの終了処理
+void UpdateJoypad(void);								// ジョイパッドの更新処理
+bool GetJoypadPress(JOYKEY key);						// ジョイパッドのPress情報取得
+bool GetJoypadTrigger(JOYKEY key);						// ジョイパッドのTrigger情報取得
+bool GetJoypadRelease(JOYKEY key);						// ジョイパッドのRelease情報取得
+D3DXVECTOR3 GetJoypadStick(JOYKEY nKey);				// ジョイパッドのスティック情報取得
+float GetJoyStickAngle(void);							// ジョイパッドの角度情報取得
+bool IsUseJoyPad(void);									// ジョイパッドを使用しているかどうか
 
 #endif //  _INPUT_H_

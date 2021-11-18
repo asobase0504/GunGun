@@ -18,7 +18,7 @@ typedef struct
 } POLYGON;
 
 //------------------------------------
-// static変数
+// 静的変数
 //------------------------------------
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture = NULL;		// テクスチャへのポインタ
@@ -87,7 +87,7 @@ void InitPolygon(void)
 //=========================================
 void UninitPolygon(void)
 {
-	// 頂点バッファーの解放
+	// 頂点バッファーの破棄
 	if (s_pVtxBuff != NULL)
 	{
 		s_pVtxBuff->Release();
@@ -136,4 +136,7 @@ void DrawPolygon(void)
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
+	// テクスチャの解除
+	pDevice->SetTexture(0, NULL);
 }

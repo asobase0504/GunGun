@@ -10,7 +10,7 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define NUM_KEY_MAX	(256)	// キーの最大数
+#define NUM_KEY_MAX		(256)	// キーの最大数
 
 //------------------------------------
 // 静的変数
@@ -126,7 +126,7 @@ bool GetKeyboardTrigger(int nKey)
 //====================================
 // キーボードのリリース情報取得
 //====================================
-bool GetKeyboardRelese(int nKey)
+bool GetKeyboardRelease(int nKey)
 {
 	return (s_akeyStateRelese[nKey] & 0x80) ? true : false;
 }
@@ -206,6 +206,14 @@ bool GetJoypadTrigger(JOYKEY key)
 }
 
 //====================================
+// ジョイパッドのRelease情報取得
+//====================================
+bool GetJoypadRelease(JOYKEY key)
+{
+	return false;
+}
+
+//====================================
 // ジョイパットのスティック処理
 //====================================
 D3DXVECTOR3 GetJoypadStick(JOYKEY nKey)
@@ -241,7 +249,7 @@ float GetJoyStickAngle(void)
 //====================================
 // ジョイパットの使用情報取得
 //====================================
-bool GetUseJoyPad(void)
+bool IsUseJoyPad(void)
 {
 	return s_bUseJoyPad;
 }

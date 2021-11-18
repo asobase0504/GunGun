@@ -18,12 +18,15 @@ static D3DXVECTOR3 s_rot;				// 向き
 static D3DXMATRIX s_mtxWorld;			// ワールドマトリックス
 
 
+//=========================================
+// 初期化処理
+//=========================================
 void InitModel(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// Xファイルの読み込み
-	D3DXLoadMeshFromX("date/MODEL/bee_head.x",
+	D3DXLoadMeshFromX("data/MODEL/bee_head.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
@@ -37,6 +40,9 @@ void InitModel(void)
 
 }
 
+//=========================================
+// 終了処理
+//=========================================
 void UninitModel(void)
 {
 	// メッシュの解放
@@ -53,10 +59,16 @@ void UninitModel(void)
 	}
 }
 
+//=========================================
+// 更新処理
+//=========================================
 void UpdateModel(void)
 {
 }
 
+//=========================================
+// 描画処理
+//=========================================
 void DrawModel(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();

@@ -11,7 +11,7 @@
 // プロトタイプ宣言
 //------------------------------------
 void InitLight(void);		// ポリゴンの初期化処理
-void UninitLight(void);	// ポリゴンの終了処理
-void UpdateLight(void);	// ポリゴンの更新処理
+void UninitLight(void);		// ポリゴンの終了処理
+void UpdateLight(void);		// ポリゴンの更新処理
 
 #endif // !_LIGHT_H_

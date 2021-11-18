@@ -31,8 +31,8 @@
 #define SCREEN_WIDTH	(80 * 16)			// ウィンドウの幅
 #define SCREEN_HEIGHT	(80 * 9)			// ウインドウの高さ
 
-#define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
-#define FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 座標・法線・カラー
+#define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)				// 座標・カラー・テクスチャ座標
+#define FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 座標・法線・カラー・テクスチャ座標
 
 //------------------------------------
 // 頂点情報[2D]の構造体を定義
@@ -60,6 +60,6 @@ typedef struct
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-LPDIRECT3DDEVICE9 GetDevice(void);
+LPDIRECT3DDEVICE9 GetDevice(void);	// デバイスの取得
 
 #endif	// !_MAIN_H_

@@ -17,7 +17,6 @@ typedef struct
 	D3DXMATRIX mtxWorld;// ワールドマトリックス
 } POLYGON;
 
-
 //------------------------------------
 // static変数
 //------------------------------------
@@ -38,7 +37,7 @@ void InitPolygon(void)
 	
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"date/TEXTURE/07.彼方への君に捧ぐ.png",
+		"data/TEXTURE/07.彼方への君に捧ぐ.png",
 		&s_pTexture);
 
 	// 頂点バッファの生成

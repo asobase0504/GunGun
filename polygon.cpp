@@ -38,7 +38,7 @@ void InitPolygon(void)
 	
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"date/TEX/08.彼方からの君に捧ぐ.png",
+		"date/TEXTURE/07.彼方への君に捧ぐ.png",
 		&s_pTexture);
 
 	// 頂点バッファの生成

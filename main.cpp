@@ -12,6 +12,7 @@
 #include "polygon.h"
 #include "camera.h"
 #include "light.h"
+#include "model.h"
 #include "input.h"
 #include <stdio.h>
 
@@ -287,6 +288,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// ポリゴンの初期化処理
 	InitPolygon();
 
+	// モデルの初期化処理
+	InitModel();
+
 	// カメラの初期化処理
 	InitCamera();
 
@@ -327,6 +331,9 @@ void Uninit(void)
 	// ポリゴンの終了処理
 	UninitPolygon();
 
+	// モデルの終了処理
+	UninitModel();
+
 	// カメラの終了処理
 	UninitCamera();
 
@@ -341,6 +348,9 @@ void Update(void)
 {	
 	// キーボードの更新処理
 	UpdateKeyboard();
+
+	// モデルの更新処理
+	UpdateModel();
 
 	// カメラの更新
 	UpdateCamera();
@@ -371,6 +381,9 @@ void Draw(void)
 
 		// ポリゴンの描画処理
 		DrawPolygon();
+
+		// モデルの描画処理
+		DrawModel();
 
 #ifdef _DEBUG
 		// FPSの表示

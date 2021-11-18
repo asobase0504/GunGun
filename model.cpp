@@ -23,7 +23,7 @@ void InitModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// Xファイルの読み込み
-	D3DXLoadMeshFromX(ファイル名,
+	D3DXLoadMeshFromX("date/MODEL/bee_head.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
@@ -87,6 +87,8 @@ void DrawModel(void)
 	{
 		// マテリアルの設定
 		pDevice->SetMaterial(&pMat[i].MatD3D);
+
+		pDevice->SetTexture(0, NULL);
 
 		// モデルパーツの描写
 		s_pMesh->DrawSubset(i);

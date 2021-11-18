@@ -7,10 +7,14 @@
 #include "main.h"
 #include "input.h"
 
+//------------------------------------
 // マクロ定義
+//------------------------------------
 #define NUM_KEY_MAX	(256)	// キーの最大数
 
-// グローバル変数
+//------------------------------------
+// 静的変数
+//------------------------------------
 static LPDIRECTINPUT8 s_pInput = NULL;					// DirectInputオブジェクトへのポインタ
 static LPDIRECTINPUTDEVICE8 s_pDevKeyboard = NULL;		// 入力デバイス(キーボード)へのポインタ
 static BYTE s_aKeyState[NUM_KEY_MAX];					// キーボードのプレス情報
@@ -25,7 +29,7 @@ static float s_JoypadLStickAngle;						// Lスティックの角度
 static bool s_bUseJoyPad;								// ジョイパッドを使用してるか
 
 //====================================
-// キーボードの初期化処理
+// キーボードの初期化
 //====================================
 HRESULT InitKeyboard(HINSTANCE hInstance, HWND hWnd)
 {
@@ -60,7 +64,7 @@ HRESULT InitKeyboard(HINSTANCE hInstance, HWND hWnd)
 }
 
 //====================================
-// キーボードの終了処理
+// キーボードの終了
 //====================================
 void UninitKeyboard(void)
 {
@@ -80,7 +84,7 @@ void UninitKeyboard(void)
 }
 
 //====================================
-// キーボードの更新処理
+// キーボードの更新
 //====================================
 void UpdateKeyboard(void)
 {
@@ -104,7 +108,7 @@ void UpdateKeyboard(void)
 }
 
 //====================================
-// キーボードのプレス情報を取得
+// キーボードのプレス情報取得
 //====================================
 bool GetKeyboardPress(int nKey)
 {
@@ -112,7 +116,7 @@ bool GetKeyboardPress(int nKey)
 }
 
 //====================================
-// キーボードのトリガー情報を取得
+// キーボードのトリガー情報取得
 //====================================
 bool GetKeyboardTrigger(int nKey)
 {
@@ -120,7 +124,7 @@ bool GetKeyboardTrigger(int nKey)
 }
 
 //====================================
-// キーボードのリリース情報を取得
+// キーボードのリリース情報取得
 //====================================
 bool GetKeyboardRelese(int nKey)
 {
@@ -128,7 +132,7 @@ bool GetKeyboardRelese(int nKey)
 }
 
 //====================================
-// ジョイパットの初期化処理
+// ジョイパットの初期化
 //====================================
 HRESULT InitJoypad(void)
 {
@@ -153,7 +157,7 @@ HRESULT InitJoypad(void)
 }
 
 //====================================
-// ジョイパットの終了処理
+// ジョイパットの終了
 //====================================
 void UninitJoypad(void)
 {
@@ -162,7 +166,7 @@ void UninitJoypad(void)
 }
 
 //====================================
-// ジョイパットの更新処理
+// ジョイパットの更新
 //====================================
 void UpdateJoypad(void)
 {
@@ -194,7 +198,7 @@ bool GetJoypadPress(JOYKEY key)
 }
 
 //====================================
-// ジョイパットのトリガー情報を取得
+// ジョイパットのトリガー情報取得
 //====================================
 bool GetJoypadTrigger(JOYKEY key)
 {
@@ -235,7 +239,7 @@ float GetJoyStickAngle(void)
 }
 
 //====================================
-// ジョイパットの使用情報の取得
+// ジョイパットの使用情報取得
 //====================================
 bool GetUseJoyPad(void)
 {

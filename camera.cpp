@@ -15,7 +15,7 @@ static Camera s_camera;	// カメラ情報
 static float rotY;
 
 //=========================================
-// 初期化処理
+// 初期化
 //=========================================
 void InitCamera(void)
 {
@@ -26,14 +26,14 @@ void InitCamera(void)
 }
 
 //=========================================
-// 終了処理
+// 終了
 //=========================================
 void UninitCamera(void)
 {
 }
 
 //=========================================
-// 更新処理
+// 更新
 //=========================================
 void UpdateCamera(void)
 {
@@ -77,7 +77,7 @@ void UpdateCamera(void)
 }
 
 //=========================================
-// 設定処理
+// 設定
 //=========================================
 void SetCamera(void)
 {
@@ -97,9 +97,9 @@ void SetCamera(void)
 
 	// プロジェクションマトリックスの作成
 	D3DXMatrixPerspectiveFovLH(&s_camera.mtxProjection,
-		D3DXToRadian(45.0f),	// 視野角
+		D3DXToRadian(45.0f),						// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
-		10.0f,100.0f);	// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
+		10.0f,100.0f);								// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &s_camera.mtxProjection);

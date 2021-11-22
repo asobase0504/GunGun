@@ -4,6 +4,9 @@
 // Author YudaKaito
 // 
 //=========================================
+//------------------------------------
+// include
+//------------------------------------
 #include "main.h"
 #include "polygon.h"
 
@@ -54,10 +57,10 @@ void InitPolygon(void)
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(-10.0f, 0.0f, 10.0f);
-	pVtx[1].pos = D3DXVECTOR3(10.0f, 0.0f, 10.0f);
-	pVtx[2].pos = D3DXVECTOR3(-10.0f, 0.0f, -10.0f);
-	pVtx[3].pos = D3DXVECTOR3(10.0f, 0.0f, -10.0f);
+	pVtx[0].pos = D3DXVECTOR3(-50.0f, 0.0f, 50.0f);
+	pVtx[1].pos = D3DXVECTOR3(50.0f, 0.0f, 50.0f);
+	pVtx[2].pos = D3DXVECTOR3(-50.0f, 0.0f, -100.0f);
+	pVtx[3].pos = D3DXVECTOR3(50.0f, 0.0f, -100.0f);
 
 	// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);

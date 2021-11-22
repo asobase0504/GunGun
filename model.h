@@ -14,5 +14,6 @@ void InitModel(void);		// モデルの初期化処理
 void UninitModel(void);		// モデルの終了処理
 void UpdateModel(void);		// モデルの更新処理
 void DrawModel(void);		// モデルの更新処理
+void MoveModel();			// モデルの移動
 
 #endif // !_MODEL_H_

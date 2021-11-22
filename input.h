@@ -56,14 +56,14 @@ bool GetKeyboardTrigger(int nKey);						// キーボードのTrigger情報取得
 bool GetKeyboardRelease(int nKey);						// キーボードのRelease情報取得
 
 // パッド関数
-HRESULT InitJoypad(void);								// ジョイパッドの初期化処理
-void UninitJoypad(void);								// ジョイパッドの終了処理
-void UpdateJoypad(void);								// ジョイパッドの更新処理
-bool GetJoypadPress(JOYKEY key);						// ジョイパッドのPress情報取得
-bool GetJoypadTrigger(JOYKEY key);						// ジョイパッドのTrigger情報取得
-bool GetJoypadRelease(JOYKEY key);						// ジョイパッドのRelease情報取得
-D3DXVECTOR3 GetJoypadStick(JOYKEY nKey);				// ジョイパッドのスティック情報取得
-float GetJoyStickAngle(void);							// ジョイパッドの角度情報取得
-bool IsUseJoyPad(void);									// ジョイパッドを使用しているかどうか
+HRESULT InitJoypad(void);					// ジョイパッドの初期化処理
+void UninitJoypad(void);					// ジョイパッドの終了処理
+void UpdateJoypad(void);					// ジョイパッドの更新処理
+bool GetJoypadPress(JOYKEY key);			// ジョイパッドのPress情報取得
+bool GetJoypadTrigger(JOYKEY key);			// ジョイパッドのTrigger情報取得
+bool GetJoypadRelease(JOYKEY key);			// ジョイパッドのRelease情報取得
+D3DXVECTOR3 GetJoypadStick(JOYKEY nKey);	// ジョイパッドのスティック情報取得
+float GetJoyStickAngle(void);				// ジョイパッドの角度情報取得
+bool IsUseJoyPad(void);						// ジョイパッドを使用しているかどうか
 
 #endif //  _INPUT_H_

@@ -149,95 +149,102 @@ void MoveModel()
 	float fAngleK = 0.0f;
 	int KeyCnt = 0;
 
+	//// ƒ‚ƒfƒ‹‚ÌˆÚ“®
+	//if (GetKeyboardPress(DIK_UP))
+	//{
+	//	KeyCnt++;
+	//}
+	//if (GetKeyboardPress(DIK_LEFT))
+	//{
+	//	KeyCnt++;
+	//	fAngleK += -0.5f;
+	//}
+	//if (GetKeyboardPress(DIK_DOWN))
+	//{
+	//	KeyCnt++;
+	//	if (KeyCnt > 1)
+	//	{
+	//		fAngleK -= 1.0f;
+	//	}
+	//	else
+	//	{
+	//		fAngleK += 1.0f;
+	//	}
+	//}
+	//if (GetKeyboardPress(DIK_RIGHT))
+	//{
+	//	KeyCnt++;
+	//	fAngleK += 0.5f;
+	//}
+
+	//if (KeyCnt > 0)
+	//{
+	//	s_state = MODELSTATEL_MOVE;
+	//	fAngle = D3DX_PI * fAngleK / KeyCnt + CameraRot.y;
+	//	pModel->pos.x += sinf(fAngle) * MODEL_MOVE;
+	//	pModel->pos.z += cosf(fAngle) * MODEL_MOVE;
+	//	pModel->rot.y = fAngle;
+	//}
+	//else
+	//{
+	//	s_state = MODELSTATEL_NONE;
+	//}
+
 	// ƒ‚ƒfƒ‹‚ÌˆÚ“®
-	if (GetKeyboardPress(DIK_UP))
+	if (GetKeyboardPress(DIK_UP) && !(GetKeyboardPress(DIK_DOWN)))
 	{
-		KeyCnt++;
-	}
-	if (GetKeyboardPress(DIK_LEFT))
-	{
-		KeyCnt++;
-		fAngleK += -0.5f;
-	}
-	if (GetKeyboardPress(DIK_DOWN))
-	{
-		KeyCnt++;
-		if (KeyCnt > 1)
+		s_state = MODELSTATEL_MOVE;
+		if (GetKeyboardPress(DIK_LEFT))
 		{
-			fAngleK -= 1.0f;
+			fAngle = D3DX_PI * -0.25f + CameraRot.y;
+		}
+		else if (GetKeyboardPress(DIK_RIGHT))
+		{
+			fAngle = D3DX_PI * 0.25f + CameraRot.y;
 		}
 		else
 		{
-			fAngleK += 1.0f;
+			fAngle = CameraRot.y;
 		}
 	}
-	if (GetKeyboardPress(DIK_RIGHT))
-	{
-		KeyCnt++;
-		fAngleK += 0.5f;
-	}
-
-	if (KeyCnt > 0)
+	else if (GetKeyboardPress(DIK_LEFT) && !(GetKeyboardPress(DIK_RIGHT)))
 	{
 		s_state = MODELSTATEL_MOVE;
-		fAngle = D3DX_PI * fAngleK / KeyCnt + CameraRot.y;
-		pModel->pos.x += sinf(fAngle) * MODEL_MOVE;
-		pModel->pos.z += cosf(fAngle) * MODEL_MOVE;
-		pModel->rot.y = fAngle;
+		if (GetKeyboardPress(DIK_DOWN))
+		{
+			fAngle = D3DX_PI * -0.75f + CameraRot.y;
+		}
+		else
+		{
+			fAngle = D3DX_PI * -0.5f + CameraRot.y;
+		}
+	}
+	else if (GetKeyboardPress(DIK_DOWN) && !(GetKeyboardPress(DIK_UP)))
+	{
+		s_state = MODELSTATEL_MOVE;
+		if (GetKeyboardPress(DIK_RIGHT))
+		{
+			fAngle = D3DX_PI * 0.75f + CameraRot.y;
+		}
+		else
+		{
+			fAngle = D3DX_PI + CameraRot.y;
+		}
+	}
+	else if (GetKeyboardPress(DIK_RIGHT) && !(GetKeyboardPress(DIK_LEFT)))
+	{
+		s_state = MODELSTATEL_MOVE;
+		fAngle = D3DX_PI * 0.5f + CameraRot.y;
 	}
 	else
 	{
 		s_state = MODELSTATEL_NONE;
 	}
 
-	//// ƒ‚ƒfƒ‹‚ÌˆÚ“®
-	//if (GetKeyboardPress(DIK_UP) && !(GetKeyboardPress(DIK_DOWN)))
-	//{
-	//	s_state = MODELSTATEL_MOVE;
-	//	if (GetKeyboardPress(DIK_LEFT))
-	//	{
-	//		fAngle = D3DX_PI * -0.25f + CameraRot.y;
-	//	}
-	//	else if (GetKeyboardPress(DIK_RIGHT))
-	//	{
-	//		fAngle = D3DX_PI * 0.25f + CameraRot.y;
-	//	}
-	//	else
-	//	{
-	//		fAngle = CameraRot.y;
-	//	}
-	//}
-	//else if (GetKeyboardPress(DIK_LEFT) && !(GetKeyboardPress(DIK_RIGHT)))
-	//{
-	//	s_state = MODELSTATEL_MOVE;
-	//	if (GetKeyboardPress(DIK_DOWN))
-	//	{
-	//		fAngle = D3DX_PI * -0.75f + CameraRot.y;
-	//	}
-	//	else
-	//	{
-	//		fAngle = D3DX_PI * -0.5f + CameraRot.y;
-	//	}
-	//}
-	//else if (GetKeyboardPress(DIK_DOWN) && !(GetKeyboardPress(DIK_UP)))
-	//{
-	//	s_state = MODELSTATEL_MOVE;
-	//	if (GetKeyboardPress(DIK_RIGHT))
-	//	{
-	//		fAngle = D3DX_PI * 0.75f + CameraRot.y;
-	//	}
-	//	else
-	//	{
-	//		fAngle = D3DX_PI + CameraRot.y;
-	//	}
-	//}
-	//else if (GetKeyboardPress(DIK_RIGHT) && !(GetKeyboardPress(DIK_LEFT)))
-	//{
-	//	s_state = MODELSTATEL_MOVE;
-	//	fAngle = D3DX_PI * 0.5f + CameraRot.y;
-	//}
-	//else
-	//{
-	//	s_state = MODELSTATEL_NONE;
-	//}
+	if (s_state == MODELSTATEL_MOVE)
+	{
+		pModel->pos.x += sinf(fAngle) * MODEL_MOVE;
+		pModel->pos.z += cosf(fAngle) * MODEL_MOVE;
+		pModel->rot.y = fAngle;
+	}
 }

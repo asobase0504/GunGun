@@ -56,7 +56,7 @@ void InitModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// XÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›
-	D3DXLoadMeshFromX("data/MODEL/bee_head.x",
+	D3DXLoadMeshFromX("data/MODEL/bee_butt.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,

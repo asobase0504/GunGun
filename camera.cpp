@@ -207,6 +207,11 @@ void InputCamera(void)
 		pCamara->posR.x = pCamara->posV.x + sinf(pCamara->rot.y) * pCamara->fDistance;
 		pCamara->posR.z = pCamara->posV.z + cosf(pCamara->rot.y) * pCamara->fDistance;
 	}
+
+
+	// z = r sinƒÆ cos?
+	// x = r sinƒÆ sin(?)
+	// y = r cosƒÆ
 }
 
 //=========================================

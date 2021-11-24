@@ -183,13 +183,13 @@ void InputCamera(void)
 	// ’Ž‹“_Šp“x‚Ì‰ñ“]
 	if (GetKeyboardPress(DIK_Z))
 	{
-		pCamara->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
+		pCamara->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
 		pCamara->posV.x = pCamara->posR.x - sinf(pCamara->rot.y) * pCamara->fDistance;
 		pCamara->posV.z = pCamara->posR.z - cosf(pCamara->rot.y) * pCamara->fDistance;
 	}
 	if (GetKeyboardPress(DIK_C))
 	{
-		pCamara->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
+		pCamara->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
 		pCamara->posV.x = pCamara->posR.x - sinf(pCamara->rot.y) * pCamara->fDistance;
 		pCamara->posV.z = pCamara->posR.z - cosf(pCamara->rot.y) * pCamara->fDistance;
 	}

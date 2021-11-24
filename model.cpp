@@ -33,8 +33,9 @@ typedef enum
 //------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 pos;				// 位置
-	D3DXVECTOR3 rot;				// 向き
+	D3DXVECTOR3 pos;	// 位置
+	D3DXVECTOR3 rot;	// 向き
+	D3DXVECTOR3 move;	//移動量
 }Model;
 
 //------------------------------------
@@ -56,7 +57,7 @@ void InitModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// Xファイルの読み込み
-	D3DXLoadMeshFromX("data/MODEL/bee_butt.x",
+	D3DXLoadMeshFromX("data/MODEL/bee_head.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
@@ -67,6 +68,7 @@ void InitModel(void)
 
 	s_model.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	s_model.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	s_model.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 }
 
@@ -143,108 +145,36 @@ void DrawModel(void)
 //=========================================
 void MoveModel()
 {
+	Model* pModel = &(s_model);
 	D3DXVECTOR3 CameraRot = GetRotCamera();		//カメラの角度情報取得
 	float fAngle = CameraRot.y;	// 最終角度
-	Model* pModel = &(s_model);
-	float fAngleK = 0.0f;
-	int KeyCnt = 0;
 
-	//// モデルの移動
-	//if (GetKeyboardPress(DIK_UP))
-	//{
-	//	KeyCnt++;
-	//}
-	//if (GetKeyboardPress(DIK_LEFT))
-	//{
-	//	KeyCnt++;
-	//	fAngleK += -0.5f;
-	//}
-	//if (GetKeyboardPress(DIK_DOWN))
-	//{
-	//	KeyCnt++;
-	//	if (KeyCnt > 1)
-	//	{
-	//		fAngleK -= 1.0f;
-	//	}
-	//	else
-	//	{
-	//		fAngleK += 1.0f;
-	//	}
-	//}
-	//if (GetKeyboardPress(DIK_RIGHT))
-	//{
-	//	KeyCnt++;
-	//	fAngleK += 0.5f;
-	//}
-
-	//if (KeyCnt > 0)
-	//{
-	//	s_state = MODELSTATEL_MOVE;
-	//	fAngle = D3DX_PI * fAngleK / KeyCnt + CameraRot.y;
-	//	pModel->pos.x += sinf(fAngle) * MODEL_MOVE;
-	//	pModel->pos.z += cosf(fAngle) * MODEL_MOVE;
-	//	pModel->rot.y = fAngle;
-	//}
-	//else
-	//{
-	//	s_state = MODELSTATEL_NONE;
-	//}
+	pModel->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	// モデルの移動
-	if (GetKeyboardPress(DIK_UP) && !(GetKeyboardPress(DIK_DOWN)))
+	if (GetKeyboardPress(DIK_UP))
 	{
-		s_state = MODELSTATEL_MOVE;
-		if (GetKeyboardPress(DIK_LEFT))
-		{
-			fAngle = D3DX_PI * -0.25f + CameraRot.y;
-		}
-		else if (GetKeyboardPress(DIK_RIGHT))
-		{
-			fAngle = D3DX_PI * 0.25f + CameraRot.y;
-		}
-		else
-		{
-			fAngle = CameraRot.y;
-		}
+		pModel->move.x += sinf(CameraRot.y);
+		pModel->move.z += cosf(CameraRot.y);
 	}
-	else if (GetKeyboardPress(DIK_LEFT) && !(GetKeyboardPress(DIK_RIGHT)))
+	if (GetKeyboardPress(DIK_LEFT))
 	{
-		s_state = MODELSTATEL_MOVE;
-		if (GetKeyboardPress(DIK_DOWN))
-		{
-			fAngle = D3DX_PI * -0.75f + CameraRot.y;
-		}
-		else
-		{
-			fAngle = D3DX_PI * -0.5f + CameraRot.y;
-		}
+		pModel->move.x += sinf(D3DX_PI * -0.5f + CameraRot.y);
+		pModel->move.z += cosf(D3DX_PI * -0.5f + CameraRot.y);
 	}
-	else if (GetKeyboardPress(DIK_DOWN) && !(GetKeyboardPress(DIK_UP)))
+	if (GetKeyboardPress(DIK_DOWN))
 	{
-		s_state = MODELSTATEL_MOVE;
-		if (GetKeyboardPress(DIK_RIGHT))
-		{
-			fAngle = D3DX_PI * 0.75f + CameraRot.y;
-		}
-		else
-		{
-			fAngle = D3DX_PI + CameraRot.y;
-		}
+		pModel->move.x += sinf(D3DX_PI + CameraRot.y);
+		pModel->move.z += cosf(D3DX_PI + CameraRot.y);
 	}
-	else if (GetKeyboardPress(DIK_RIGHT) && !(GetKeyboardPress(DIK_LEFT)))
+	if (GetKeyboardPress(DIK_RIGHT))
 	{
-		s_state = MODELSTATEL_MOVE;
-		fAngle = D3DX_PI * 0.5f + CameraRot.y;
-	}
-	else
-	{
-		s_state = MODELSTATEL_NONE;
+		pModel->move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
+		pModel->move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 	}
 
-	if (s_state == MODELSTATEL_MOVE)
-	{
-		pModel->pos.x += sinf(fAngle) * MODEL_MOVE;
-		pModel->pos.z += cosf(fAngle) * MODEL_MOVE;
-		pModel->rot.y = fAngle;
-	}
+	D3DXVec3Normalize(&pModel->move, &pModel->move);	// 正規化する(大きさ１のベクトルにする)
+	pModel->move *= MODEL_MOVE;
+	pModel->pos += pModel->move;
+	pModel->rot.y = CameraRot.y;
 }

@@ -55,22 +55,22 @@ void UninitCamera(void)
 //=========================================
 void UpdateCamera(void)
 {
-	Camera* pCamara = &(s_camera);
+	Camera* pCamera = &(s_camera);
 
 	InputCamera();
 
 	// Šp“x‚Ì³‹K‰»
-	if (pCamara->rot.y > D3DX_PI)
+	if (pCamera->rot.y > D3DX_PI)
 	{
-		pCamara->rot.y -= D3DX_PI * 2;
+		pCamera->rot.y -= D3DX_PI * 2;
 	}
-	if (pCamara->rot.y < -D3DX_PI)
+	if (pCamera->rot.y < -D3DX_PI)
 	{
-		pCamara->rot.y += D3DX_PI * 2;
+		pCamera->rot.y += D3DX_PI * 2;
 	}
 
-	pCamara->posV.x = pCamara->posR.x - sinf(pCamara->rot.y) * pCamara->fDistance;
-	pCamara->posV.z = pCamara->posR.z - cosf(pCamara->rot.y) * pCamara->fDistance;
+	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 
 }
 
@@ -109,105 +109,66 @@ void SetCamera(void)
 //=========================================
 void InputCamera(void)
 {
-	Camera* pCamara = &(s_camera);
+	Camera* pCamera = &(s_camera);
 	float fAngle;
 
-	// ƒJƒƒ‰‚ÌˆÚ“®
+	pCamera->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	// ƒ‚ƒfƒ‹‚ÌˆÚ“®
 	if (GetKeyboardPress(DIK_W))
 	{
-		if (GetKeyboardPress(DIK_A))
-		{
-			fAngle = D3DX_PI * -0.25f + pCamara->rot.y;
-			pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-			pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
-		}
-		else if (GetKeyboardPress(DIK_S))
-		{
-		}
-		else if (GetKeyboardPress(DIK_D))
-		{
-			fAngle = D3DX_PI * 0.25f + pCamara->rot.y;
-			pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-			pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
-		}
-		else
-		{
-			fAngle = pCamara->rot.y;
-			pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-			pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
-		}
+		pCamera->move.x += sinf(pCamera->rot.y);
+		pCamera->move.z += cosf(pCamera->rot.y);
 	}
-	else if (GetKeyboardPress(DIK_A))
+	if (GetKeyboardPress(DIK_A))
 	{
-		if (GetKeyboardPress(DIK_S))
-		{
-			fAngle = D3DX_PI * -0.75f + pCamara->rot.y;
-			pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-			pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
-		}
-		else if (GetKeyboardPress(DIK_D))
-		{
-
-		}
-		else
-		{
-			fAngle = D3DX_PI * -0.5f + pCamara->rot.y;
-			pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-			pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
-		}
+		pCamera->move.x += sinf(D3DX_PI * -0.5f + pCamera->rot.y);
+		pCamera->move.z += cosf(D3DX_PI * -0.5f + pCamera->rot.y);
 	}
-	else if (GetKeyboardPress(DIK_S))
+	if (GetKeyboardPress(DIK_S))
 	{
-		if (GetKeyboardPress(DIK_D))
-		{
-			fAngle = D3DX_PI * 0.75f + pCamara->rot.y;
-			pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-			pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
-		}
-		else
-		{
-			fAngle = D3DX_PI + pCamara->rot.y;
-			pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-			pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
-		}
+		pCamera->move.x += sinf(D3DX_PI + pCamera->rot.y);
+		pCamera->move.z += cosf(D3DX_PI + pCamera->rot.y);
 	}
-	else if (GetKeyboardPress(DIK_D))
+	if (GetKeyboardPress(DIK_D))
 	{
-		fAngle = D3DX_PI * 0.5f + pCamara->rot.y;
-		pCamara->posV.x += sinf(fAngle) * CAMERA_MOVE;
-		pCamara->posV.z += cosf(fAngle) * CAMERA_MOVE;
+		pCamera->move.x += sinf(D3DX_PI * 0.5f + pCamera->rot.y);
+		pCamera->move.z += cosf(D3DX_PI * 0.5f + pCamera->rot.y);
 	}
-	pCamara->posR.x = pCamara->posV.x + sinf(pCamara->rot.y) * pCamara->fDistance;
-	pCamara->posR.z = pCamara->posV.z + cosf(pCamara->rot.y) * pCamara->fDistance;
 
 	// ’‹“_Šp“x‚Ì‰ñ“]
 	if (GetKeyboardPress(DIK_Z))
 	{
-		pCamara->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
-		pCamara->posV.x = pCamara->posR.x - sinf(pCamara->rot.y) * pCamara->fDistance;
-		pCamara->posV.z = pCamara->posR.z - cosf(pCamara->rot.y) * pCamara->fDistance;
+		pCamera->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
+		pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 	}
 	if (GetKeyboardPress(DIK_C))
 	{
-		pCamara->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
-		pCamara->posV.x = pCamara->posR.x - sinf(pCamara->rot.y) * pCamara->fDistance;
-		pCamara->posV.z = pCamara->posR.z - cosf(pCamara->rot.y) * pCamara->fDistance;
+		pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
+		pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 	}
 
 	// ‹“_Šp“x‚Ì‰ñ“]
 	if (GetKeyboardPress(DIK_Q))
 	{
-		pCamara->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
-		pCamara->posR.x = pCamara->posV.x + sinf(pCamara->rot.y) * pCamara->fDistance;
-		pCamara->posR.z = pCamara->posV.z + cosf(pCamara->rot.y) * pCamara->fDistance;
+		pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
+		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 	}
 	if (GetKeyboardPress(DIK_E))
 	{
-		pCamara->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
-		pCamara->posR.x = pCamara->posV.x + sinf(pCamara->rot.y) * pCamara->fDistance;
-		pCamara->posR.z = pCamara->posV.z + cosf(pCamara->rot.y) * pCamara->fDistance;
+		pCamera->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
+		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 	}
 
+	D3DXVec3Normalize(&pCamera->move, &pCamera->move);	// ³‹K‰»‚·‚é(‘å‚«‚³‚P‚ÌƒxƒNƒgƒ‹‚É‚·‚é)
+	pCamera->move *= CAMERA_MOVE;
+	pCamera->posV += pCamera->move;
+	pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
+	pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 
 	// z = r sinƒÆ cos?
 	// x = r sinƒÆ sin(?)

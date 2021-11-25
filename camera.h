@@ -14,7 +14,7 @@ typedef struct
 {
 	D3DXVECTOR3 posV;			// 視点
 	D3DXVECTOR3 posR;			// 注視点
-	D3DXVECTOR3 move;			// 移動量
+	D3DXVECTOR3 vec;			// 移動量
 	D3DXVECTOR3 rot;			// 向き
 	D3DXVECTOR3 vecU;			// 上方向ベクトル
 	D3DXMATRIX mtxProjection;	// プロジェクトマトリックス

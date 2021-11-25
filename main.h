@@ -34,6 +34,8 @@
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)				// 座標・カラー・テクスチャ座標
 #define FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 座標・法線・カラー・テクスチャ座標
 
+#define ZERO_VECTOR		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+
 //------------------------------------
 // 頂点情報[2D]の構造体を定義
 //------------------------------------

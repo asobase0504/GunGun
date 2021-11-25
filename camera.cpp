@@ -112,28 +112,28 @@ void InputCamera(void)
 	Camera* pCamera = &(s_camera);
 	float fAngle;
 
-	pCamera->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pCamera->vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	// ƒ‚ƒfƒ‹‚ÌˆÚ“®
 	if (GetKeyboardPress(DIK_W))
 	{
-		pCamera->move.x += sinf(pCamera->rot.y);
-		pCamera->move.z += cosf(pCamera->rot.y);
+		pCamera->vec.x += sinf(pCamera->rot.y);
+		pCamera->vec.z += cosf(pCamera->rot.y);
 	}
 	if (GetKeyboardPress(DIK_A))
 	{
-		pCamera->move.x += sinf(D3DX_PI * -0.5f + pCamera->rot.y);
-		pCamera->move.z += cosf(D3DX_PI * -0.5f + pCamera->rot.y);
+		pCamera->vec.x += sinf(D3DX_PI * -0.5f + pCamera->rot.y);
+		pCamera->vec.z += cosf(D3DX_PI * -0.5f + pCamera->rot.y);
 	}
 	if (GetKeyboardPress(DIK_S))
 	{
-		pCamera->move.x += sinf(D3DX_PI + pCamera->rot.y);
-		pCamera->move.z += cosf(D3DX_PI + pCamera->rot.y);
+		pCamera->vec.x += sinf(D3DX_PI + pCamera->rot.y);
+		pCamera->vec.z += cosf(D3DX_PI + pCamera->rot.y);
 	}
 	if (GetKeyboardPress(DIK_D))
 	{
-		pCamera->move.x += sinf(D3DX_PI * 0.5f + pCamera->rot.y);
-		pCamera->move.z += cosf(D3DX_PI * 0.5f + pCamera->rot.y);
+		pCamera->vec.x += sinf(D3DX_PI * 0.5f + pCamera->rot.y);
+		pCamera->vec.z += cosf(D3DX_PI * 0.5f + pCamera->rot.y);
 	}
 
 	// ’Ž‹“_Šp“x‚Ì‰ñ“]
@@ -164,9 +164,23 @@ void InputCamera(void)
 		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 	}
 
-	D3DXVec3Normalize(&pCamera->move, &pCamera->move);	// ³‹K‰»‚·‚é(‘å‚«‚³‚P‚ÌƒxƒNƒgƒ‹‚É‚·‚é)
-	pCamera->move *= CAMERA_MOVE;
-	pCamera->posV += pCamera->move;
+	// Ž‹“_Šp“x‚Ì‰ñ“]
+	if (GetKeyboardPress(DIK_R))
+	{
+		pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
+		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
+	}
+	if (GetKeyboardPress(DIK_V))
+	{
+		pCamera->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
+		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
+	}
+
+	D3DXVec3Normalize(&pCamera->vec, &pCamera->vec);	// ³‹K‰»‚·‚é(‘å‚«‚³‚P‚ÌƒxƒNƒgƒ‹‚É‚·‚é)
+	pCamera->vec *= CAMERA_MOVE;
+	pCamera->posV += pCamera->vec;
 	pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 

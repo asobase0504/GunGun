@@ -35,18 +35,20 @@ typedef struct
 {
 	D3DXVECTOR3 pos;	// 位置
 	D3DXVECTOR3 rot;	// 向き
-	D3DXVECTOR3 move;	//移動量
+	D3DXVECTOR3 vec;	// ベクトル
+	D3DXVECTOR3 move;	// 移動量
 }Model;
 
 //------------------------------------
 // 静的変数
 //------------------------------------
-static LPD3DXMESH s_pMesh = NULL;		// メッシュ情報へのポインタ		// 頂点の集まりのこと
-static LPD3DXBUFFER s_pBuffMat = NULL;	// マテリアル情報へのポインタ	// 1つのXファイルに複数のマテリアルが入っている
-static DWORD s_nNumMat = 0;				// マテリアル情報の数
-static D3DXMATRIX s_mtxWorld;			// ワールドマトリックス
-static Model s_model;					// モデルの構造体
-static MODEL_STATE s_state;				// モデルのステータス
+static LPD3DXMESH s_pMesh = NULL;				// メッシュ情報へのポインタ		// 頂点の集まりのこと
+static LPD3DXBUFFER s_pBuffMat = NULL;			// マテリアル情報へのポインタ	// 1つのXファイルに複数のマテリアルが入っている
+static LPDIRECT3DTEXTURE9 *s_pTexture = NULL;	// テクスチャへのポインタ
+static DWORD s_nNumMat = 0;						// マテリアル情報の数
+static D3DXMATRIX s_mtxWorld;					// ワールドマトリックス
+static Model s_model;							// モデルの構造体
+static MODEL_STATE s_state;						// モデルのステータス
 
 
 //=========================================
@@ -57,7 +59,7 @@ void InitModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// Xファイルの読み込み
-	D3DXLoadMeshFromX("data/MODEL/bee_head.x",
+	D3DXLoadMeshFromX("data/MODEL/bee_butt.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
@@ -66,9 +68,32 @@ void InitModel(void)
 		&s_nNumMat,
 		&s_pMesh);
 
+	// メッシュに使用されているテクスチャ用の配列を用意する
+	s_pTexture = new LPDIRECT3DTEXTURE9[s_nNumMat];
+
+	// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+	D3DXMATERIAL *pMat = (D3DXMATERIAL*)s_pBuffMat->GetBufferPointer();
+
+	// 各メッシュのマテリアル情報を取得する
+	for (int i = 0; i < (int)s_nNumMat; i++)
+	{
+		s_pTexture[i] = NULL;
+
+		if (pMat[i].pTextureFilename != NULL)
+		{// マテリアルで設定されているテクスチャ読み込み
+			D3DXCreateTextureFromFileA(pDevice,
+				pMat[i].pTextureFilename,
+				&s_pTexture[i]);
+		}
+		else
+		{
+			s_pTexture[i] = NULL;
+		}
+	}
+
 	s_model.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	s_model.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	s_model.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	s_model.vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 }
 
@@ -77,6 +102,21 @@ void InitModel(void)
 //=========================================
 void UninitModel(void)
 {
+	if (s_pTexture != NULL)
+	{
+		for (int i = 0; i < (int)s_nNumMat; i++)
+		{
+			if (s_pTexture[i] != NULL)
+			{// テクスチャの解放
+				s_pTexture[i]->Release();
+				s_pTexture[i] = NULL;
+			}
+		}
+
+		delete[](s_pTexture);
+		s_pTexture = NULL;
+	}
+
 	// メッシュの解放
 	if(s_pMesh != NULL)
 	{
@@ -133,6 +173,9 @@ void DrawModel(void)
 		// マテリアルの設定
 		pDevice->SetMaterial(&pMat[i].MatD3D);
 
+		// テクスチャの設定
+		pDevice->SetTexture(0, s_pTexture[i]);
+
 		// モデルパーツの描写
 		s_pMesh->DrawSubset(i);
 	}
@@ -146,35 +189,41 @@ void DrawModel(void)
 void MoveModel()
 {
 	Model* pModel = &(s_model);
-	D3DXVECTOR3 CameraRot = GetRotCamera();		//カメラの角度情報取得
-	float fAngle = CameraRot.y;	// 最終角度
-
-	pModel->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 CameraRot = GetRotCamera();	// カメラの角度情報取得
+	D3DXVECTOR3 move = ZERO_VECTOR;			// 移動量の初期化
 
 	// モデルの移動
 	if (GetKeyboardPress(DIK_UP))
 	{
-		pModel->move.x += sinf(CameraRot.y);
-		pModel->move.z += cosf(CameraRot.y);
+		move.x += sinf(CameraRot.y);
+		move.z += cosf(CameraRot.y);
 	}
 	if (GetKeyboardPress(DIK_LEFT))
 	{
-		pModel->move.x += sinf(D3DX_PI * -0.5f + CameraRot.y);
-		pModel->move.z += cosf(D3DX_PI * -0.5f + CameraRot.y);
+		move.x += sinf(D3DX_PI * -0.5f + CameraRot.y);
+		move.z += cosf(D3DX_PI * -0.5f + CameraRot.y);
 	}
 	if (GetKeyboardPress(DIK_DOWN))
 	{
-		pModel->move.x += sinf(D3DX_PI + CameraRot.y);
-		pModel->move.z += cosf(D3DX_PI + CameraRot.y);
+		move.x += sinf(D3DX_PI + CameraRot.y);
+		move.z += cosf(D3DX_PI + CameraRot.y);
 	}
 	if (GetKeyboardPress(DIK_RIGHT))
 	{
-		pModel->move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
-		pModel->move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
+		move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
+		move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 	}
 
-	D3DXVec3Normalize(&pModel->move, &pModel->move);	// 正規化する(大きさ１のベクトルにする)
-	pModel->move *= MODEL_MOVE;
-	pModel->pos += pModel->move;
+	if (D3DXVec3Length(&move) == 0.0f)
+	{
+		pModel->vec *= 0.95f;
+	}
+	else
+	{
+		D3DXVec3Normalize(&move, &move);	// 正規化する(大きさ１のベクトルにする)
+		pModel->vec = pModel->vec * 0.95f + move * MODEL_MOVE * 0.05f;
+	}
+
+	pModel->pos += pModel->vec;
 	pModel->rot.y = CameraRot.y;
 }

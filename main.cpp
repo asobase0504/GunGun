@@ -413,12 +413,18 @@ void DrawFPS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
 	char aStr[4][256];	// 表示文字
+	D3DXVECTOR3 camera = GetRotCamera();
+	Model* model = GetModel();
 	// 文字列に代入
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
 
 	// 文字列に代入
-	//sprintf(&aStr[1][0], "rot: %f\n", pPlayer->rot.z);
+	sprintf(&aStr[1][0], "rot: %f\n", model->rot.y);
 
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	 rect = { 0,30,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[1][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }

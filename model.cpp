@@ -15,7 +15,8 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MODEL_MOVE	(1.0f)
+#define MODEL_MOVE				(1.0f)
+#define MODEL_ROT_ATTENUATION	(0.05f)
 
 //------------------------------------
 // モデルステータス列挙型
@@ -26,18 +27,6 @@ typedef enum
 	MODELSTATEL_MOVE,
 	MODELSTATEL_MAX
 }MODEL_STATE;
-
-
-//------------------------------------
-// モデルの構造体定義
-//------------------------------------
-typedef struct
-{
-	D3DXVECTOR3 pos;	// 位置
-	D3DXVECTOR3 rot;	// 向き
-	D3DXVECTOR3 vec;	// ベクトル
-	D3DXVECTOR3 move;	// 移動量
-}Model;
 
 //------------------------------------
 // 静的変数
@@ -50,7 +39,6 @@ static D3DXMATRIX s_mtxWorld;					// ワールドマトリックス
 static Model s_model;							// モデルの構造体
 static MODEL_STATE s_state;						// モデルのステータス
 
-
 //=========================================
 // 初期化
 //=========================================
@@ -59,7 +47,7 @@ void InitModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// Xファイルの読み込み
-	D3DXLoadMeshFromX("data/MODEL/bee_butt.x",
+	D3DXLoadMeshFromX("data/MODEL/bee_head.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
@@ -137,6 +125,16 @@ void UninitModel(void)
 void UpdateModel(void)
 {
 	MoveModel();
+
+	// 角度の正規化
+	if (s_model.rot.y > D3DX_PI)
+	{
+		s_model.rot.y -= D3DX_PI * 2;
+	}
+	if (s_model.rot.y < -D3DX_PI)
+	{
+		s_model.rot.y += D3DX_PI * 2;
+	}
 }
 
 //=========================================
@@ -214,6 +212,15 @@ void MoveModel()
 		move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 	}
 
+	if (GetKeyboardPress(DIK_T))
+	{
+		pModel->pos.y += MODEL_MOVE;
+	}
+	if (GetKeyboardPress(DIK_B))
+	{
+		pModel->pos.y += -(MODEL_MOVE);
+	}
+
 	if (D3DXVec3Length(&move) == 0.0f)
 	{
 		pModel->vec *= 0.95f;
@@ -221,9 +228,29 @@ void MoveModel()
 	else
 	{
 		D3DXVec3Normalize(&move, &move);	// 正規化する(大きさ１のベクトルにする)
-		pModel->vec = pModel->vec * 0.95f + move * MODEL_MOVE * 0.05f;
+		pModel->rotDest.y = atan2f(move.x, move.z);
 	}
 
 	pModel->pos += pModel->vec;
-	pModel->rot.y = CameraRot.y;
+	pModel->vec = pModel->vec * 0.95f + move * MODEL_MOVE * 0.05f;
+
+	float Angle = pModel->rotDest.y - pModel->rot.y;
+	// 角度の正規化
+	if (Angle > D3DX_PI)
+	{
+		Angle -= D3DX_PI * 2;
+	}
+	if (Angle < -D3DX_PI)
+	{
+		Angle += D3DX_PI * 2;
+	}
+	pModel->rot.y += Angle * MODEL_ROT_ATTENUATION;
+}
+
+//--------------------------------------------------
+// 取得
+//--------------------------------------------------
+Model *GetModel(void)
+{
+	return &s_model;
 }

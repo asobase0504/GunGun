@@ -21,7 +21,6 @@
 // 静的変数
 //-----------------------------------------
 static Camera s_camera;	// カメラ情報
-static float rotY;
 
 //-----------------------------------------
 // プロトタイプ宣言
@@ -37,10 +36,13 @@ void InitCamera(void)
 	s_camera.posV = D3DXVECTOR3(0.0f,50.0f,-40.0f);	// 視点
 	s_camera.posR = D3DXVECTOR3(0.0f,0.0f,0.0f);	// 注視点
 	s_camera.vecU = D3DXVECTOR3(0.0f,1.0f,0.0f);	// 上方向ベクトル
-	s_camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	//s_camera.rot.y = atan2f((s_camera.posV.x - s_camera.posR.x), (s_camera.posV.z - s_camera.posR.z));
+	s_camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
 
-	s_camera.fDistance = sqrtf((s_camera.posV.x - s_camera.posR.x) * (s_camera.posV.x - s_camera.posR.x) + (s_camera.posV.z - s_camera.posR.z) * (s_camera.posV.z - s_camera.posR.z));
+	s_camera.rot.y = atan2f((s_camera.posR.x - s_camera.posV.x),(s_camera.posR.z - s_camera.posV.z));
+	s_camera.rot.x = atan2f((s_camera.posR.z - s_camera.posV.z),(s_camera.posR.y - s_camera.posV.y));
+
+	D3DXVECTOR3 vec = s_camera.posV - s_camera.posR;
+	s_camera.fDistance = D3DXVec3Length(&vec);
 }
 
 //=========================================
@@ -71,6 +73,7 @@ void UpdateCamera(void)
 
 	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+	//pCamera->posV.y = pCamera->posR.y - tanf(-pCamera->rot.x) * pCamera->fDistance;
 
 }
 
@@ -98,7 +101,7 @@ void SetCamera(void)
 	D3DXMatrixPerspectiveFovLH(&camara->mtxProjection,
 		D3DXToRadian(45.0f),						// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
-		10.0f,100.0f);								// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
+		10.0f,150.0f);								// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &camara->mtxProjection);
@@ -114,7 +117,7 @@ void InputCamera(void)
 
 	pCamera->vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	// モデルの移動
+	// カメラの移動
 	if (GetKeyboardPress(DIK_W))
 	{
 		pCamera->vec.x += sinf(pCamera->rot.y);
@@ -154,39 +157,29 @@ void InputCamera(void)
 	if (GetKeyboardPress(DIK_Q))
 	{
 		pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
-		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
-		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 	}
 	if (GetKeyboardPress(DIK_E))
 	{
 		pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
-		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
-		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 	}
-
-	// 視点角度の回転
 	if (GetKeyboardPress(DIK_R))
 	{
-		pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
-		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
-		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->rot.x += -(CAMERA_ROT_VOLUME);	// 回転量
 	}
 	if (GetKeyboardPress(DIK_V))
 	{
-		pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
-		pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
-		pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
+		pCamera->rot.x += CAMERA_ROT_VOLUME;	// 回転量
 	}
 
 	D3DXVec3Normalize(&pCamera->vec, &pCamera->vec);	// 正規化する(大きさ１のベクトルにする)
 	pCamera->vec *= CAMERA_MOVE;
 	pCamera->posV += pCamera->vec;
+	//pCamera->posV.x = sinf(pCamera->rot.x) * cosf(pCamera->rot.y);
+	//pCamera->posV.y = tanf(-pCamera->rot.x);
+	//pCamera->posV.z = sinf(pCamera->rot.x) * sinf(pCamera->rot.y);
 	pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
-
-	// z = r sinθ cos?
-	// x = r sinθ sin(?)
-	// y = r cosθ
+	pCamera->posR.y = pCamera->posV.y + tanf(-pCamera->rot.x + (D3DX_PI * 0.5f)) * pCamera->fDistance;
 }
 
 //=========================================

@@ -10,6 +10,7 @@
 #include "model.h"
 #include "main.h"
 #include "input.h"
+#include "setup.h"
 #include "camera.h"
 
 //------------------------------------
@@ -79,9 +80,9 @@ void InitModel(void)
 		}
 	}
 
-	s_model.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	s_model.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	s_model.vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	s_model.pos = ZERO_VECTOR;
+	s_model.rot = ZERO_VECTOR;
+	s_model.vec = ZERO_VECTOR;
 
 }
 
@@ -124,17 +125,13 @@ void UninitModel(void)
 //=========================================
 void UpdateModel(void)
 {
+	Model* pModel = &(s_model);
 	MoveModel();
 
+	pModel->pos += pModel->vec;
+	pModel->rot.y += NormalizeRot(pModel->rotDest.y - pModel->rot.y) * MODEL_ROT_ATTENUATION;
 	// Šp“x‚Ì³‹K‰»
-	if (s_model.rot.y > D3DX_PI)
-	{
-		s_model.rot.y -= D3DX_PI * 2;
-	}
-	if (s_model.rot.y < -D3DX_PI)
-	{
-		s_model.rot.y += D3DX_PI * 2;
-	}
+	NormalizeRot(pModel->rot.y);
 }
 
 //=========================================
@@ -212,6 +209,7 @@ void MoveModel()
 		move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 	}
 
+	// ƒ‚ƒfƒ‹‚Ìã‰º‚ÌˆÚ“®
 	if (GetKeyboardPress(DIK_T))
 	{
 		pModel->pos.y += MODEL_MOVE;
@@ -231,20 +229,7 @@ void MoveModel()
 		pModel->rotDest.y = atan2f(move.x, move.z);
 	}
 
-	pModel->pos += pModel->vec;
 	pModel->vec = pModel->vec * 0.95f + move * MODEL_MOVE * 0.05f;
-
-	float Angle = pModel->rotDest.y - pModel->rot.y;
-	// Šp“x‚Ì³‹K‰»
-	if (Angle > D3DX_PI)
-	{
-		Angle -= D3DX_PI * 2;
-	}
-	if (Angle < -D3DX_PI)
-	{
-		Angle += D3DX_PI * 2;
-	}
-	pModel->rot.y += Angle * MODEL_ROT_ATTENUATION;
 }
 
 //--------------------------------------------------

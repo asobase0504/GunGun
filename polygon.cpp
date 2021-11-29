@@ -9,6 +9,17 @@
 //------------------------------------
 #include "main.h"
 #include "polygon.h"
+#include "setup.h"
+
+//------------------------------------
+// ポリゴンの種類の列挙型
+//------------------------------------
+typedef enum
+{
+	POLYGON_FLOOR = 0,
+	POLYGON_SHADOW,
+	POLYGON_MAX
+}POLYGON_TYPE;
 
 //------------------------------------
 // ポリゴンの構造体を定義
@@ -23,8 +34,8 @@ typedef struct
 //------------------------------------
 // 静的変数
 //------------------------------------
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	// 頂点バッファーへのポインタ
-static LPDIRECT3DTEXTURE9 s_pTexture = NULL;		// テクスチャへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};	// 頂点バッファーへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTexture[POLYGON_MAX] = {};		// テクスチャへのポインタ
 static POLYGON polygon;								// ポリゴンの構造体
 
 //=========================================
@@ -35,16 +46,21 @@ void InitPolygon(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 初期化処理
-	polygon.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 頂点座標
-	polygon.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 回転座標
-	
+	polygon.pos = ZERO_VECTOR;	// 頂点座標
+	polygon.rot = ZERO_VECTOR;	// 回転座標
+
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		"data/TEXTURE/07.彼方への君に捧ぐ.png",
-		&s_pTexture);
+		&s_pTexture[0]);
+
+	// テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice,
+		"data/TEXTURE/shadow000.jpg",
+		&s_pTexture[1]);
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * POLYGON_MAX,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
@@ -79,6 +95,8 @@ void InitPolygon(void)
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+	pVtx += 4;
 
 	// 頂点座標をアンロック
 	s_pVtxBuff->Unlock();
@@ -134,12 +152,28 @@ void DrawPolygon(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-	// テクスチャの設定
-	pDevice->SetTexture(0, s_pTexture);
+	for (int i = 0; i < POLYGON_MAX; i++)
+	{
+		switch (i)
+		{
+		case POLYGON_FLOOR:
+			RectDraw(pDevice, s_pTexture[i], i * 4);
+			break;
+		case POLYGON_SHADOW:
+			RectDraw(pDevice, s_pTexture[i], i * 4);
+			break;
+		default:
+			break;
+		}
+		// テクスチャの設定
+		pDevice->SetTexture(0, s_pTexture[i]);
 
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+		// ポリゴンの描画
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, i * 4, 2);
+
+	}
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);
+
 }

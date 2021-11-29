@@ -15,16 +15,19 @@
 //------------------------------------
 static D3DLIGHT9 s_light;	//ライト情報
 
+//=========================================
+// 初期化
+//=========================================
 void InitLight(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXVECTOR3 vecDir;	// ライトの方向ベクトル
 
 	// ライトをクリアする
-	ZeroMemory(&s_light, sizeof(D3DLIGHT9));				// 構造体変数をゼロクリアできる関数
+	ZeroMemory(&s_light, sizeof(D3DLIGHT9));	// 構造体変数をゼロクリアできる関数
 
 	// ライトの種類を設定
-	s_light.Type = D3DLIGHT_DIRECTIONAL;					// 平行光源
+	s_light.Type = D3DLIGHT_DIRECTIONAL;		// 平行光源
 	
 	// ライトの拡散光を設定
 	s_light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// ライトの色
@@ -41,10 +44,16 @@ void InitLight(void)
 	pDevice->LightEnable(0, true);
 }
 
+//=========================================
+// 終了
+//=========================================
 void UninitLight(void)
 {
 }
 
+//=========================================
+// 更新
+//=========================================
 void UpdateLight(void)
 {
 }

@@ -17,7 +17,6 @@
 typedef enum
 {
 	POLYGON_FLOOR = 0,
-	POLYGON_SHADOW,
 	POLYGON_MAX
 }POLYGON_TYPE;
 
@@ -53,11 +52,6 @@ void InitPolygon(void)
 	D3DXCreateTextureFromFile(pDevice,
 		"data/TEXTURE/07.彼方への君に捧ぐ.png",
 		&s_pTexture[0]);
-
-	// テクスチャの読込
-	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/shadow000.jpg",
-		&s_pTexture[1]);
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * POLYGON_MAX,
@@ -108,13 +102,22 @@ void InitPolygon(void)
 //=========================================
 void UninitPolygon(void)
 {
+	// テクスチャの破棄
+	for (int i = 0; i < POLYGON_MAX; i++)
+	{
+		if (s_pTexture[i] != NULL)
+		{
+			s_pTexture[i]->Release();
+			s_pTexture[i] = NULL;
+		}
+	}
+
 	// 頂点バッファーの破棄
 	if (s_pVtxBuff != NULL)
 	{
 		s_pVtxBuff->Release();
 		s_pVtxBuff = NULL;
 	}
-
 }
 
 //=========================================
@@ -159,9 +162,6 @@ void DrawPolygon(void)
 		case POLYGON_FLOOR:
 			RectDraw(pDevice, s_pTexture[i], i * 4);
 			break;
-		case POLYGON_SHADOW:
-			RectDraw(pDevice, s_pTexture[i], i * 4);
-			break;
 		default:
 			break;
 		}
@@ -176,4 +176,9 @@ void DrawPolygon(void)
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);
 
+}
+
+D3DXVECTOR3 GetPolygonPos(void)
+{
+	return polygon.pos;
 }

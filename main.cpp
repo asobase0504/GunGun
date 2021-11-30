@@ -9,11 +9,12 @@
 // include
 //-----------------------------------------
 #include "main.h"
+#include "input.h"
 #include "polygon.h"
 #include "camera.h"
 #include "light.h"
 #include "model.h"
-#include "input.h"
+#include "shadow.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -288,6 +289,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// ポリゴンの初期化処理
 	InitPolygon();
 
+	// 影の初期化処理
+	InitShadow();
+
 	// モデルの初期化処理
 	InitModel();
 
@@ -296,7 +300,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// ライトの初期化処理
 	InitLight();
-
 	return S_OK;
 }
 
@@ -339,6 +342,9 @@ void Uninit(void)
 
 	// ライトの終了処理
 	UninitLight();
+
+	// 影の終了処理
+	UninitShadow();
 }
 
 //=========================================
@@ -360,6 +366,9 @@ void Update(void)
 
 	// ポリゴンの更新
 	UpdatePolygon();
+
+	// 影の更新
+	UpdateShadow();
 }
 
 //=========================================
@@ -382,9 +391,11 @@ void Draw(void)
 		// ポリゴンの描画処理
 		DrawPolygon();
 
+		// 影の描画処理
+		DrawShadow();
+
 		// モデルの描画処理
 		DrawModel();
-
 #ifdef _DEBUG
 		// FPSの表示
 		DrawFPS();
@@ -415,11 +426,16 @@ void DrawFPS(void)
 	char aStr[4][256];	// 表示文字
 	D3DXVECTOR3 camera = GetRotCamera();
 	Model* model = GetModel();
+	Shadow* shadow = GetShadow();
 	// 文字列に代入
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
 
 	// 文字列に代入
 	sprintf(&aStr[1][0], "rot: %f\n", model->rot.y);
+	// 文字列に代入
+	sprintf(&aStr[2][0], "Model.pos : %.3f|%.3f|%.3f\n", model->pos.x, model->pos.y,model->pos.z);
+	// 文字列に代入
+	sprintf(&aStr[3][0], "Shadow.pos: %.3f|%.3f|%.3f\n", shadow->pos.x, shadow->pos.y, shadow->pos.z);
 
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
@@ -427,4 +443,12 @@ void DrawFPS(void)
 	 rect = { 0,30,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[1][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	rect = { 0,60,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[2][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	rect = { 0,90,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[3][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }

@@ -7,11 +7,12 @@
 //------------------------------------
 // include
 //------------------------------------
-#include "model.h"
 #include "main.h"
+#include "model.h"
 #include "input.h"
 #include "setup.h"
 #include "camera.h"
+#include "shadow.h"
 
 //------------------------------------
 // マクロ定義
@@ -39,6 +40,7 @@ static DWORD s_nNumMat = 0;						// マテリアル情報の数
 static D3DXMATRIX s_mtxWorld;					// ワールドマトリックス
 static Model s_model;							// モデルの構造体
 static MODEL_STATE s_state;						// モデルのステータス
+static int s_nShadowCnt;						// 影の割り当て
 
 //=========================================
 // 初期化
@@ -84,6 +86,11 @@ void InitModel(void)
 	s_model.rot = ZERO_VECTOR;
 	s_model.vec = ZERO_VECTOR;
 
+	D3DXVECTOR3 ShadowPos;
+	ShadowPos.x = s_model.pos.x;
+	ShadowPos.y = 0.01f;
+	ShadowPos.z = s_model.pos.z;
+	s_nShadowCnt = SetShadow(ShadowPos, s_model.rot);
 }
 
 //=========================================
@@ -130,8 +137,15 @@ void UpdateModel(void)
 
 	pModel->pos += pModel->vec;
 	pModel->rot.y += NormalizeRot(pModel->rotDest.y - pModel->rot.y) * MODEL_ROT_ATTENUATION;
+
 	// 角度の正規化
 	NormalizeRot(pModel->rot.y);
+
+	D3DXVECTOR3 ShadowPos;
+	ShadowPos.x = pModel->pos.x;
+	ShadowPos.y = 0.01f;
+	ShadowPos.z = pModel->pos.z;
+	SetPositionShadow(s_nShadowCnt,ShadowPos);
 }
 
 //=========================================

@@ -1,6 +1,6 @@
 //=========================================
 // 
-// 壁の作成
+// ポリゴンの作成
 // Author YudaKaito
 // 
 //=========================================
@@ -33,18 +33,18 @@ typedef struct
 //------------------------------------
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};		// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture = {};			// テクスチャへのポインタ
-static Billboard s_abillboard[BIILBOARD_MAX];							// 壁の構造体
+static Billboard s_abillboard[BIILBOARD_MAX];			// ビルボードの構造体
 
 //=========================================
 // 初期化
 //=========================================
-void InitWall(void)
+void InitBillboard(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	for (int i = 0; i < BIILBOARD_MAX; i++)
 	{
-	//	ZeroMemory(&(wall[0]), sizeof(Wall));
+		//	ZeroMemory(&(wall[0]), sizeof(Billboard));
 		// 初期化処理
 		s_abillboard[i].pos = ZERO_VECTOR;	// 頂点座標
 		s_abillboard[i].rot = ZERO_VECTOR;	// 回転座標
@@ -53,7 +53,7 @@ void InitWall(void)
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/08.彼方からの君に捧ぐ.png",
+		"data/TEXTURE/player.png",
 		&s_pTexture);
 
 	// 頂点バッファの生成
@@ -105,7 +105,7 @@ void InitWall(void)
 //=========================================
 // 終了
 //=========================================
-void UninitWall(void)
+void UninitBillboard(void)
 {
 	if (s_pTexture != NULL)
 	{
@@ -124,14 +124,14 @@ void UninitWall(void)
 //=========================================
 // 更新
 //=========================================
-void UpdateWall(void)
+void UpdateBillboard(void)
 {
 }
 
 //=========================================
 // 描画
 //=========================================
-void DrawWall(void)
+void DrawBillboard(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
@@ -144,10 +144,19 @@ void DrawWall(void)
 		}
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&s_abillboard[i].mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
+		D3DXMATRIX mtxView;
+		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, s_abillboard[i].rot.y, s_abillboard[i].rot.x, s_abillboard[i].rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-		D3DXMatrixMultiply(&s_abillboard[i].mtxWorld, &s_abillboard[i].mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		// カメラの逆行列を設定
+		s_abillboard->mtxWorld._11 = mtxView._11;
+		s_abillboard->mtxWorld._12 = mtxView._21;
+		s_abillboard->mtxWorld._13 = mtxView._31;
+		s_abillboard->mtxWorld._21 = mtxView._12;
+		s_abillboard->mtxWorld._22 = mtxView._22;
+		s_abillboard->mtxWorld._23 = mtxView._32;
+		s_abillboard->mtxWorld._31 = mtxView._13;
+		s_abillboard->mtxWorld._32 = mtxView._23;
+		s_abillboard->mtxWorld._33 = mtxView._33;
 
 		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, s_abillboard[i].pos.x, s_abillboard[i].pos.y, s_abillboard[i].pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
@@ -170,7 +179,7 @@ void DrawWall(void)
 	}
 }
 
-void SetWall(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void SetBillboard(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	for (int i = 0; i < BIILBOARD_MAX; i++)
 	{
@@ -188,7 +197,7 @@ void SetWall(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 }
 
-D3DXVECTOR3* GetWallPos(void)
+D3DXVECTOR3* GetBillboardPos(void)
 {
 	return &(s_abillboard[0].pos);
 }

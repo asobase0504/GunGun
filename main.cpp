@@ -16,6 +16,7 @@
 #include "model.h"
 #include "shadow.h"
 #include "wall.h"
+#include "billboard.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -302,6 +303,11 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// ライトの初期化処理
 	InitLight();
 
+	// ビルボードの初期化処理
+	InitBillboard();
+
+	SetBillboard(D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 	// 壁の初期化処理
 	InitWall();
 
@@ -310,6 +316,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, -50.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
 	SetWall(D3DXVECTOR3(50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));
 	SetWall(D3DXVECTOR3(-50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f));
+
 
 	return S_OK;
 }
@@ -357,6 +364,9 @@ void Uninit(void)
 	// 影の終了処理
 	UninitShadow();
 
+	// ビルボードの終了処理
+	UninitBillboard();
+
 	// 壁の終了処理
 	UninitWall();
 }
@@ -383,6 +393,9 @@ void Update(void)
 
 	// 影の更新
 	UpdateShadow();
+
+	// ビルボードの更新
+	UpdateBillboard();
 
 	// 壁の更新
 	UpdateWall();
@@ -413,6 +426,9 @@ void Draw(void)
 
 		// モデルの描画処理
 		DrawModel();
+
+		// ビルボードの描画処理
+		DrawBillboard();
 
 		// 壁の描画処理
 		DrawWall();

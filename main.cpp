@@ -15,6 +15,7 @@
 #include "light.h"
 #include "model.h"
 #include "shadow.h"
+#include "wall.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -300,6 +301,16 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// ライトの初期化処理
 	InitLight();
+
+	// 壁の初期化処理
+	InitWall();
+
+	// 壁の設定処理
+	SetWall(D3DXVECTOR3(0.0f, 0.0f, 50.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetWall(D3DXVECTOR3(0.0f, 0.0f, -50.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+	SetWall(D3DXVECTOR3(50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));
+	SetWall(D3DXVECTOR3(-50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f));
+
 	return S_OK;
 }
 
@@ -345,6 +356,9 @@ void Uninit(void)
 
 	// 影の終了処理
 	UninitShadow();
+
+	// 壁の終了処理
+	UninitWall();
 }
 
 //=========================================
@@ -352,10 +366,10 @@ void Uninit(void)
 //=========================================
 void Update(void)
 {	
-	// キーボードの更新処理
+	// キーボードの更新
 	UpdateKeyboard();
 
-	// モデルの更新処理
+	// モデルの更新
 	UpdateModel();
 
 	// カメラの更新
@@ -369,6 +383,9 @@ void Update(void)
 
 	// 影の更新
 	UpdateShadow();
+
+	// 壁の更新
+	UpdateWall();
 }
 
 //=========================================
@@ -396,6 +413,10 @@ void Draw(void)
 
 		// モデルの描画処理
 		DrawModel();
+
+		// 壁の描画処理
+		DrawWall();
+
 #ifdef _DEBUG
 		// FPSの表示
 		DrawFPS();

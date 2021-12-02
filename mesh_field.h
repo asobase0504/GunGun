@@ -4,8 +4,8 @@
 // Author YudaKaito
 // 
 //=========================================
-#ifndef _MESH_BUILD_H_
-#define _MESH_BUILD_H_
+#ifndef _MESH_FIELD_H_
+#define _MESH_FIELD_H_
 
 //------------------------------------
 // include
@@ -21,4 +21,4 @@ void UpdateMeshBuild(void);				// ポリゴンの更新処理
 void DrawMeshBuild(void);				// ポリゴンの描画処理
 D3DXVECTOR3 GetMeshBuildPos(void);		// ポリゴンの取得処理
 
-#endif // !_MESH_BUILD_H_
+#endif // !_MESH_FIELD_H_

@@ -8,10 +8,13 @@
 // include
 //------------------------------------
 #include "main.h"
-#include "mesh_build.h"
+#include "mesh_field.h"
 #include "polygon.h"
 #include "setup.h"
 
+//------------------------------------
+// マクロ定義
+//------------------------------------
 #define SIZE	(50)
 
 //------------------------------------
@@ -36,9 +39,10 @@ typedef struct
 //------------------------------------
 // 静的変数
 //------------------------------------
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};	// 頂点バッファーへのポインタ
-static LPDIRECT3DTEXTURE9 s_pTexture = {};		// テクスチャへのポインタ
-static Mesh s_abillboard;					// ポリゴンの構造体
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};		// 頂点バッファーへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTexture = {};			// テクスチャへのポインタ
+static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;	// インデックスバッファへのポインタ
+static Mesh s_abillboard;							// ポリゴンの構造体
 
 //=========================================
 // 初期化
@@ -51,13 +55,21 @@ void InitMeshBuild(void)
 	s_abillboard.pos = ZERO_VECTOR;	// 頂点座標
 	s_abillboard.rot = ZERO_VECTOR;	// 回転座標
 
-									// テクスチャの読込
+	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		"data/TEXTURE/07.彼方への君に捧ぐ.png",
 		&s_pTexture);
 
+	// インデックスバッファの生成
+	pDevice->CreateIndexBuffer(sizeof(WORD) * 14,
+		D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16,
+		D3DPOOL_MANAGED,
+		&s_pIdxBuff,
+		NULL);
+
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 14,
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 9,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
@@ -70,20 +82,15 @@ void InitMeshBuild(void)
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(-SIZE, 0.0f, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(-SIZE, 0.0f, SIZE);
-	pVtx[2].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(0.0f, 0.0f, SIZE);
-	pVtx[4].pos = D3DXVECTOR3(SIZE, 0.0f, 0.0f);
-	pVtx[5].pos = D3DXVECTOR3(SIZE, 0.0f, SIZE);
-	pVtx[6].pos = D3DXVECTOR3(SIZE, 0.0f, SIZE);
-	pVtx[7].pos = D3DXVECTOR3(-SIZE, 0.0f, -SIZE);
-	pVtx[8].pos = D3DXVECTOR3(-SIZE, 0.0f, -SIZE);
-	pVtx[9].pos = D3DXVECTOR3(-SIZE, 0.0f, 0.0f);
-	pVtx[10].pos = D3DXVECTOR3(0.0f, 0.0f, -SIZE);
-	pVtx[11].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[12].pos = D3DXVECTOR3(SIZE, 0.0f, -SIZE);
-	pVtx[13].pos = D3DXVECTOR3(SIZE, 0.0f, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(-SIZE, 0.0f, SIZE);
+	pVtx[1].pos = D3DXVECTOR3(0.0f, 0.0f, SIZE);
+	pVtx[2].pos = D3DXVECTOR3(SIZE, 0.0f, SIZE);
+	pVtx[3].pos = D3DXVECTOR3(-SIZE, 0.0f, 0.0f);
+	pVtx[4].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pVtx[5].pos = D3DXVECTOR3(SIZE, 0.0f, 0.0f);
+	pVtx[6].pos = D3DXVECTOR3(-SIZE, 0.0f, -SIZE);
+	pVtx[7].pos = D3DXVECTOR3(0.0f, 0.0f, -SIZE);
+	pVtx[8].pos = D3DXVECTOR3(SIZE, 0.0f, -SIZE);
 
 	// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -95,11 +102,6 @@ void InitMeshBuild(void)
 	pVtx[6].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	pVtx[7].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	pVtx[8].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[9].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[10].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[11].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[12].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[13].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 	// 頂点カラーの設定
 	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -111,40 +113,50 @@ void InitMeshBuild(void)
 	pVtx[6].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	pVtx[7].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	pVtx[8].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[9].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[10].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[11].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[12].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[13].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.5f);
-	pVtx[1].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.5f, 0.5f);
-	pVtx[3].tex = D3DXVECTOR2(0.5f, 0.0f);
-	pVtx[4].tex = D3DXVECTOR2(0.0f, 0.5f);
-	pVtx[5].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[6].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[7].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[8].tex = D3DXVECTOR2(0.0f, 0.5f);
-	pVtx[9].tex = D3DXVECTOR2(0.0f, 0.5f);
-	pVtx[10].tex = D3DXVECTOR2(0.0f, 0.5f);
-	pVtx[11].tex = D3DXVECTOR2(0.0f, 0.5f);
-	pVtx[12].tex = D3DXVECTOR2(1.0f, 1.0f);
-	pVtx[13].tex = D3DXVECTOR2(1.0f, 0.5f);;
-
-	pVtx += 4;
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(0.5f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[3].tex = D3DXVECTOR2(0.0f, 0.5f);
+	pVtx[4].tex = D3DXVECTOR2(0.5f, 0.5f);
+	pVtx[5].tex = D3DXVECTOR2(1.0f, 0.5f);
+	pVtx[6].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[7].tex = D3DXVECTOR2(0.5f, 1.0f);
+	pVtx[8].tex = D3DXVECTOR2(1.0f, 1.0f);
 
 	// 頂点座標をアンロック
 	s_pVtxBuff->Unlock();
 
+	WORD* pIdx;
+	s_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+	pIdx[0] = 3;
+	pIdx[1] = 0;
+	pIdx[2] = 4;
+	pIdx[3] = 1;
+	pIdx[4] = 5;
+	pIdx[5] = 2;
+	pIdx[6] = 2;
+	pIdx[7] = 6;
+	pIdx[8] = 6;
+	pIdx[9] = 3;
+	pIdx[10] = 7;
+	pIdx[11] = 4;
+	pIdx[12] = 8;
+	pIdx[13] = 5;
+
+	s_pIdxBuff->Unlock();
 }
+
+// 3,0,4,1,5,2,2,6,6,3,7,4,8,5
 
 //=========================================
 // 終了
 //=========================================
 void UninitMeshBuild(void)
 {
+	// テクスチャの破棄
 	if (s_pTexture != NULL)
 	{
 		s_pTexture->Release();
@@ -156,6 +168,13 @@ void UninitMeshBuild(void)
 	{
 		s_pVtxBuff->Release();
 		s_pVtxBuff = NULL;
+	}
+
+	// インデックスバッファの破棄
+	if (s_pIdxBuff != NULL)
+	{
+		s_pIdxBuff->Release();
+		s_pIdxBuff = NULL;
 	}
 }
 
@@ -191,6 +210,9 @@ void DrawMeshBuild(void)
 	// 頂点バッファをデバイスのデータストリームに設定
 	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_3D));
 
+	// インデックスバッファをデータストリームに設定
+	pDevice->SetIndices(s_pIdxBuff);
+
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
@@ -198,7 +220,7 @@ void DrawMeshBuild(void)
 	pDevice->SetTexture(0, s_pTexture);
 
 	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 12);
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, 9, 0, 14);
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);

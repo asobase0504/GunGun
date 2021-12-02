@@ -17,7 +17,7 @@
 #include "shadow.h"
 #include "wall.h"
 #include "billboard.h"
-#include "mesh_build.h"
+#include "mesh_field.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -282,6 +282,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// ワイヤーフレームモードの設定
 	//g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+	// ワイヤーフレームモードの設定をもとに戻す
+	//g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
 	// デバッグ表示用フォントの生成
 	D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);

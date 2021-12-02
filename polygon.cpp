@@ -28,14 +28,14 @@ typedef struct
 	D3DXVECTOR3 pos;	// 頂点座標
 	D3DXVECTOR3 rot;	// 回転座標
 	D3DXMATRIX mtxWorld;// ワールドマトリックス
-} Billboard;
+} aPolygon;
 
 //------------------------------------
 // 静的変数
 //------------------------------------
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};	// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture[POLYGON_MAX] = {};		// テクスチャへのポインタ
-static Billboard s_abillboard;								// ポリゴンの構造体
+static aPolygon s_aPolygon;								// ポリゴンの構造体
 
 //=========================================
 // 初期化
@@ -45,8 +45,8 @@ void InitPolygon(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 初期化処理
-	s_abillboard.pos = ZERO_VECTOR;	// 頂点座標
-	s_abillboard.rot = ZERO_VECTOR;	// 回転座標
+	s_aPolygon.pos = ZERO_VECTOR;	// 頂点座標
+	s_aPolygon.rot = ZERO_VECTOR;	// 回転座標
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
@@ -136,18 +136,18 @@ void DrawPolygon(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 
 	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&s_abillboard.mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
+	D3DXMatrixIdentity(&s_aPolygon.mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
 
 	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_abillboard.rot.y, s_abillboard.rot.x, s_abillboard.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	D3DXMatrixMultiply(&s_abillboard.mtxWorld, &s_abillboard.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_aPolygon.rot.y, s_aPolygon.rot.x, s_aPolygon.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+	D3DXMatrixMultiply(&s_aPolygon.mtxWorld, &s_aPolygon.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, s_abillboard.pos.x, s_abillboard.pos.y, s_abillboard.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_abillboard.mtxWorld, &s_abillboard.mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixTranslation(&mtxTrans, s_aPolygon.pos.x, s_aPolygon.pos.y, s_aPolygon.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+	D3DXMatrixMultiply(&s_aPolygon.mtxWorld, &s_aPolygon.mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &s_abillboard.mtxWorld);	// ワールド座標行列の設定
+	pDevice->SetTransform(D3DTS_WORLD, &s_aPolygon.mtxWorld);	// ワールド座標行列の設定
 
 	// 頂点バッファをデバイスのデータストリームに設定
 	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -180,5 +180,5 @@ void DrawPolygon(void)
 
 D3DXVECTOR3 GetPolygonPos(void)
 {
-	return s_abillboard.pos;
+	return s_aPolygon.pos;
 }

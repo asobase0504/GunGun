@@ -42,14 +42,7 @@ void InitBillboard(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	for (int i = 0; i < BIILBOARD_MAX; i++)
-	{
-		//	ZeroMemory(&(wall[0]), sizeof(Billboard));
-		// 初期化処理
-		s_abillboard[i].pos = ZERO_VECTOR;	// 頂点座標
-		s_abillboard[i].rot = ZERO_VECTOR;	// 回転座標
-		s_abillboard[i].bUse = false;
-	}
+	ZeroMemory(s_abillboard, sizeof(s_abillboard));
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
@@ -78,10 +71,10 @@ void InitBillboard(void)
 		pVtx[3].pos = D3DXVECTOR3(50.0f, 0.0f, 0.0f);
 
 		// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
-		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		pVtx[2].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		pVtx[3].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 
 		// 頂点カラーの設定
 		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -171,7 +164,14 @@ void DrawBillboard(void)
 		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D);
 
+		// ライトを無効にする
+		pDevice->SetRenderState(D3DRS_LIGHTING, false);
+
+		// 描画
 		RectDraw(pDevice, s_pTexture, i * 4);
+
+		// ライトを無効にする
+		pDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 		// テクスチャの解除
 		pDevice->SetTexture(0, NULL);

@@ -116,14 +116,14 @@ void InitMeshBuild(void)
 
 	// テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(0.5f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[3].tex = D3DXVECTOR2(0.0f, 0.5f);
-	pVtx[4].tex = D3DXVECTOR2(0.5f, 0.5f);
-	pVtx[5].tex = D3DXVECTOR2(1.0f, 0.5f);
-	pVtx[6].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[7].tex = D3DXVECTOR2(0.5f, 1.0f);
-	pVtx[8].tex = D3DXVECTOR2(1.0f, 1.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(2.0f, 0.0f);
+	pVtx[3].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[4].tex = D3DXVECTOR2(1.0f, 1.0f);
+	pVtx[5].tex = D3DXVECTOR2(2.0f, 1.0f);
+	pVtx[6].tex = D3DXVECTOR2(0.0f, 2.0f);
+	pVtx[7].tex = D3DXVECTOR2(1.0f, 2.0f);
+	pVtx[8].tex = D3DXVECTOR2(2.0f, 2.0f);
 
 	// 頂点座標をアンロック
 	s_pVtxBuff->Unlock();
@@ -220,7 +220,7 @@ void DrawMeshBuild(void)
 	pDevice->SetTexture(0, s_pTexture);
 
 	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, 9, 0, 14);
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, 9, 0, 12);
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);

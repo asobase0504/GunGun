@@ -15,7 +15,7 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define SIZE	(50)
+#define SIZE	(50.0f)
 
 //------------------------------------
 // ポリゴンの種類の列挙型
@@ -27,12 +27,17 @@ typedef enum
 }POLYGON_TYPE;
 
 //------------------------------------
-// ポリゴンの構造体を定義
+// メッシュの構造体を定義
 //------------------------------------
 typedef struct
 {
 	D3DXVECTOR3 pos;	// 頂点座標
 	D3DXVECTOR3 rot;	// 回転座標
+	int SizeX;			// 幅
+	int SizeY;			// 高さ
+	int vertexCnt;		// 頂点数
+	int polygonCnt;		// ポリゴン数
+	int IdxCnt;			// インデックス数
 	D3DXMATRIX mtxWorld;// ワールドマトリックス
 } Mesh;
 
@@ -42,7 +47,7 @@ typedef struct
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};		// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture = {};			// テクスチャへのポインタ
 static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;	// インデックスバッファへのポインタ
-static Mesh s_abillboard;							// ポリゴンの構造体
+static Mesh s_aMesh;								// ポリゴンの構造体
 
 //=========================================
 // 初期化
@@ -51,9 +56,32 @@ void InitMeshBuild(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// 初期化処理
-	s_abillboard.pos = ZERO_VECTOR;	// 頂点座標
-	s_abillboard.rot = ZERO_VECTOR;	// 回転座標
+	// SizeX × SizeY
+	s_aMesh.SizeX = 3;
+	s_aMesh.SizeY = 3;
+	s_aMesh.vertexCnt = (s_aMesh.SizeX + 1) * (s_aMesh.SizeY + 1);						// 頂点数
+
+	// ポリゴン数を求める計算
+	s_aMesh.polygonCnt
+		= 2 * s_aMesh.SizeX * s_aMesh.SizeY		// 一行分のポリゴン数
+		+ 4 * (s_aMesh.SizeY - 1);				// 縮退ポリゴン数
+
+	s_aMesh.IdxCnt = s_aMesh.polygonCnt + 2;	// インデックス数
+	int nLineVtx = (s_aMesh.SizeX + 1);
+
+//別解
+/*
+	// インデックス数を求める計算
+	s_aMesh.IdxCnt
+	= 2 * (s_aMesh.SizeX + 1) * s_aMesh.SizeY	// 一行分のインデックス数
+	+ 2 * (s_aMesh.SizeY - 1);					// 改行時に発生する重複しているインデックス数
+
+	s_aMesh.polygonCnt = s_aMesh.IdxCnt - 2;	// ポリゴン数
+*/
+
+// 初期化処理
+	s_aMesh.pos = ZERO_VECTOR;	// 頂点座標
+	s_aMesh.rot = ZERO_VECTOR;	// 回転座標
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
@@ -61,7 +89,7 @@ void InitMeshBuild(void)
 		&s_pTexture);
 
 	// インデックスバッファの生成
-	pDevice->CreateIndexBuffer(sizeof(WORD) * 14,
+	pDevice->CreateIndexBuffer(sizeof(WORD) * s_aMesh.IdxCnt,
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -69,7 +97,7 @@ void InitMeshBuild(void)
 		NULL);
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 9,
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * s_aMesh.polygonCnt,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
@@ -82,48 +110,16 @@ void InitMeshBuild(void)
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(-SIZE, 0.0f, SIZE);
-	pVtx[1].pos = D3DXVECTOR3(0.0f, 0.0f, SIZE);
-	pVtx[2].pos = D3DXVECTOR3(SIZE, 0.0f, SIZE);
-	pVtx[3].pos = D3DXVECTOR3(-SIZE, 0.0f, 0.0f);
-	pVtx[4].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[5].pos = D3DXVECTOR3(SIZE, 0.0f, 0.0f);
-	pVtx[6].pos = D3DXVECTOR3(-SIZE, 0.0f, -SIZE);
-	pVtx[7].pos = D3DXVECTOR3(0.0f, 0.0f, -SIZE);
-	pVtx[8].pos = D3DXVECTOR3(SIZE, 0.0f, -SIZE);
-
-	// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
-	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[4].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[5].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[6].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[7].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[8].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-
-	// 頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[4].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[5].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[6].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[7].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[8].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
-	// テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(2.0f, 0.0f);
-	pVtx[3].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[4].tex = D3DXVECTOR2(1.0f, 1.0f);
-	pVtx[5].tex = D3DXVECTOR2(2.0f, 1.0f);
-	pVtx[6].tex = D3DXVECTOR2(0.0f, 2.0f);
-	pVtx[7].tex = D3DXVECTOR2(1.0f, 2.0f);
-	pVtx[8].tex = D3DXVECTOR2(2.0f, 2.0f);
+	for (int Z = 0; Z <= s_aMesh.SizeY;Z++)
+	{
+		for (int X = 0; X <= s_aMesh.SizeX; X++)
+		{
+			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3(X * SIZE - SIZE,0.0f,Z * -SIZE + SIZE);
+			pVtx[X + Z * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			pVtx[X + Z * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[X + Z * nLineVtx].tex = D3DXVECTOR2(X, Z);
+		}
+	}
 
 	// 頂点座標をアンロック
 	s_pVtxBuff->Unlock();
@@ -131,25 +127,25 @@ void InitMeshBuild(void)
 	WORD* pIdx;
 	s_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
 
-	pIdx[0] = 3;
-	pIdx[1] = 0;
-	pIdx[2] = 4;
-	pIdx[3] = 1;
-	pIdx[4] = 5;
-	pIdx[5] = 2;
-	pIdx[6] = 2;
-	pIdx[7] = 6;
-	pIdx[8] = 6;
-	pIdx[9] = 3;
-	pIdx[10] = 7;
-	pIdx[11] = 4;
-	pIdx[12] = 8;
-	pIdx[13] = 5;
+	for (int Y = 0; Y <= s_aMesh.SizeY; Y++)
+	{
+		int nlineTop = Y * (nLineVtx * 2 + 2);
+		for (int X = 0; X <= s_aMesh.SizeX; X++)
+		{
+			int nIdxData = X * 2 + nlineTop;
+			pIdx[nIdxData + 1] = X + nLineVtx * Y;
+			pIdx[nIdxData] = pIdx[nIdxData + 1] + nLineVtx;
+		}
+
+		if (Y < s_aMesh.SizeY)
+		{
+			pIdx[nLineVtx * 2 + 0 + nlineTop] = s_aMesh.SizeX + nLineVtx * Y;
+			pIdx[nLineVtx * 2 + 1 + nlineTop] = nLineVtx * 2 + nLineVtx * Y;
+		}
+	}
 
 	s_pIdxBuff->Unlock();
 }
-
-// 3,0,4,1,5,2,2,6,6,3,7,4,8,5
 
 //=========================================
 // 終了
@@ -194,18 +190,18 @@ void DrawMeshBuild(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 
 	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&s_abillboard.mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
+	D3DXMatrixIdentity(&s_aMesh.mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
 
 	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_abillboard.rot.y, s_abillboard.rot.x, s_abillboard.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	D3DXMatrixMultiply(&s_abillboard.mtxWorld, &s_abillboard.mtxWorld, &mtxRot);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_aMesh.rot.y, s_aMesh.rot.x, s_aMesh.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+	D3DXMatrixMultiply(&s_aMesh.mtxWorld, &s_aMesh.mtxWorld, &mtxRot);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, s_abillboard.pos.x, s_abillboard.pos.y, s_abillboard.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_abillboard.mtxWorld, &s_abillboard.mtxWorld, &mtxTrans);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixTranslation(&mtxTrans, s_aMesh.pos.x, s_aMesh.pos.y, s_aMesh.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+	D3DXMatrixMultiply(&s_aMesh.mtxWorld, &s_aMesh.mtxWorld, &mtxTrans);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &s_abillboard.mtxWorld);	// ワールド座標行列の設定
+	pDevice->SetTransform(D3DTS_WORLD, &s_aMesh.mtxWorld);	// ワールド座標行列の設定
 
 	// 頂点バッファをデバイスのデータストリームに設定
 	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -220,7 +216,7 @@ void DrawMeshBuild(void)
 	pDevice->SetTexture(0, s_pTexture);
 
 	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, 9, 0, 12);
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, s_aMesh.vertexCnt, 0, s_aMesh.polygonCnt);
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);
@@ -229,5 +225,5 @@ void DrawMeshBuild(void)
 
 D3DXVECTOR3 GetMeshBuildPos(void)
 {
-	return s_abillboard.pos;
+	return s_aMesh.pos;
 }

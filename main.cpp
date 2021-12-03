@@ -280,12 +280,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// ポリゴンとテクスチャのアルファ値を混ぜる。テクスチャ指定
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ポリゴンとテクスチャのアルファ値を混ぜる。ポリゴン指定
 
-	// ワイヤーフレームモードの設定
-	//g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
-	// ワイヤーフレームモードの設定をもとに戻す
-	//g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-
 	// デバッグ表示用フォントの生成
 	D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);
 
@@ -415,6 +409,17 @@ void Update(void)
 
 	// 壁の更新
 	UpdateWall();
+
+	if (GetKeyboardTrigger(DIK_F1))
+	{
+		// ワイヤーフレームモードの設定
+		g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	}
+	else if (GetKeyboardTrigger(DIK_F2))
+	{
+		// ワイヤーフレームモードの設定をもとに戻す
+		g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	}
 }
 
 //=========================================

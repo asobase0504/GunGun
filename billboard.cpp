@@ -15,7 +15,7 @@
 //------------------------------------
 // ポリゴンの種類の列挙型
 //------------------------------------
-#define BIILBOARD_MAX	(4)	// 壁の最大数
+#define BIILBOARD_MAX	(4)	// ビルボードの最大数
 
 //------------------------------------
 // ポリゴンの構造体を定義
@@ -65,10 +65,10 @@ void InitBillboard(void)
 	for (int i = 0; i < BIILBOARD_MAX; i++)
 	{
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-50.0f, 50.0f, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(50.0f, 50.0f, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(-50.0f, 0.0f, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(50.0f, 0.0f, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-10.0f, 10.0f, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(10.0f, 10.0f, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(-10.0f, 0.0f, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(10.0f, 0.0f, 0.0f);
 
 		// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);

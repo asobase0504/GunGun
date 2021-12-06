@@ -18,6 +18,7 @@
 #include "wall.h"
 #include "billboard.h"
 #include "mesh_field.h"
+#include "mesh_cylinder.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -307,10 +308,13 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// ビルボードの初期化処理
 	InitBillboard();
 
+	SetBillboard(D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 	// メッシュの初期化処理
 	InitMeshBuild();
 
-	SetBillboard(D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	// メッシュ(円柱)の初期化処理
+	InitMeshCylinder();
 
 	// 壁の初期化処理
 	InitWall();
@@ -374,6 +378,9 @@ void Uninit(void)
 	// メッシュの終了処理
 	UninitMeshBuild();
 
+	// メッシュ(円柱)の終了処理
+	UninitMeshCylinder();
+
 	// 壁の終了処理
 	UninitWall();
 }
@@ -406,6 +413,9 @@ void Update(void)
 
 	// メッシュの更新処理
 	UpdateMeshBuild();
+
+	// メッシュ(円柱)の更新処理
+	UpdateMeshCylinder();
 
 	// 壁の更新
 	UpdateWall();
@@ -444,6 +454,9 @@ void Draw(void)
 
 		// メッシュの描画処理
 		DrawMeshBuild();
+
+		// メッシュ(円柱)の描画処理
+		DrawMeshCylinder();
 
 		// 影の描画処理
 		DrawShadow();

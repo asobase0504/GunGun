@@ -1,6 +1,6 @@
 //=========================================
 // 
-// メッシュ(円柱)の作成
+// メッシュ(球)の作成
 // Author YudaKaito
 // 
 //=========================================
@@ -8,7 +8,7 @@
 // include
 //------------------------------------
 #include "main.h"
-#include "mesh_cylinder.h"
+#include "mesh_sphere.h"
 #include "polygon.h"
 #include "setup.h"
 #include "input.h"
@@ -50,7 +50,7 @@ static Mesh s_aMesh[2] = {};						// ポリゴンの構造体
 //=========================================
 // 初期化
 //=========================================
-void InitMeshCylinder(void)
+void InitMeshSky(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -115,16 +115,21 @@ void InitMeshCylinder(void)
 	for (int nHeight = 0; nHeight <= s_aMesh[0].nSurfaceHeight; nHeight++)
 	{
 		float fRotHeight = D3DX_PI / s_aMesh[0].nSurfaceHeight;
+		float fWidth = cosf(fRotHeight * (nHeight + 1)) * s_aMesh[0].fLineHeight;
 		for (int nWidth = 0; nWidth <= s_aMesh[0].nSurfaceWidth; nWidth++)
 		{
 			D3DXVECTOR3 rot;
-			float fRotWidth = 2.0f * D3DX_PI / s_aMesh[0].nSurfaceWidth;
-			D3DXVec3Normalize(&rot, &rot);
+			float fRotWidth = 2.0f * D3DX_PI / s_aMesh[0].nSurfaceWidth * nWidth;
+			NormalizeRot(fRotWidth);
 
-			pVtx[nWidth + nHeight * nLineVtx].pos.x = sinf(fRotWidth * nWidth) * s_aMesh[0].fLineWidth;
-			pVtx[nWidth + nHeight * nLineVtx].pos.y = (nHeight - s_aMesh[0].nSurfaceHeight) * -s_aMesh[0].fLineHeight;
-			pVtx[nWidth + nHeight * nLineVtx].pos.z = -cosf(fRotWidth * nWidth) * s_aMesh[0].fLineWidth;
+			//D3DXVec3Normalize(&rot, &rot);
 
+			pVtx[nWidth + nHeight * nLineVtx].pos.x = cosf(fRotWidth) * sinf(fRotHeight * nHeight) * s_aMesh[0].fLineHeight;
+			pVtx[nWidth + nHeight * nLineVtx].pos.y = fWidth;
+			pVtx[nWidth + nHeight * nLineVtx].pos.z = sinf(fRotWidth) * sinf(fRotHeight * nHeight) * s_aMesh[0].fLineHeight;
+
+			pVtx[nWidth + nHeight * nLineVtx].pos.x += -25.0f;
+			pVtx[nWidth + nHeight * nLineVtx].pos.y += 25.0f;
 			pVtx[nWidth + nHeight * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			pVtx[nWidth + nHeight * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pVtx[nWidth + nHeight * nLineVtx].tex = D3DXVECTOR2((float)nWidth, (float)nHeight);
@@ -151,11 +156,7 @@ void InitMeshCylinder(void)
 		if (Y < s_aMesh[0].nSurfaceHeight - 1)
 		{
 			pIdx[nLineVtx * 2 + 0 + nlineTop] = s_aMesh[0].nSurfaceWidth + nLineVtx * Y;
-
-			//			pIdx[nWidth軸の頂点数 * 2 + 1 + 一行で使用するインデックス数] = nWidth軸の頂点数 * 2 + nWidth軸の頂点数 * nHeight軸の繰り返し;
-
 			pIdx[nLineVtx * 2 + 1 + nlineTop] = nLineVtx * 2 + nLineVtx * Y;
-
 		}
 	}
 
@@ -165,7 +166,7 @@ void InitMeshCylinder(void)
 //=========================================
 // 終了
 //=========================================
-void UninitMeshCylinder(void)
+void UninitMeshSky(void)
 {
 	// テクスチャの破棄
 	if (s_pTexture != NULL)
@@ -192,14 +193,14 @@ void UninitMeshCylinder(void)
 //=========================================
 // 更新
 //=========================================
-void UpdateMeshCylinder(void)
+void UpdateMeshSky(void)
 {
 }
 
 //=========================================
 // 描画
 //=========================================
-void DrawMeshCylinder(void)
+void DrawMeshSky(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
@@ -212,8 +213,8 @@ void DrawMeshCylinder(void)
 	D3DXMatrixMultiply(&s_aMesh[0].mtxWorld, &s_aMesh[0].mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, s_aMesh[0].pos.x, s_aMesh[0].pos.y, s_aMesh[0].pos.z);	// 行列移動関数(第１引数にnWidth,Y,nHeight方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_aMesh[0].mtxWorld, &s_aMesh[0].mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixTranslation(&mtxTrans, s_aMesh[0].pos.x, s_aMesh[0].pos.y, s_aMesh[0].pos.z);			// 行列移動関数(第１引数にnWidth,Y,nHeight方向の移動行列を作成)
+	D3DXMatrixMultiply(&s_aMesh[0].mtxWorld, &s_aMesh[0].mtxWorld, &mtxTrans);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_aMesh[0].mtxWorld);	// ワールド座標行列の設定

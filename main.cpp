@@ -19,6 +19,8 @@
 #include "billboard.h"
 #include "mesh_field.h"
 #include "mesh_cylinder.h"
+#include "mesh_sphere.h"
+#include "mesh_sky.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -316,6 +318,12 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メッシュ(円柱)の初期化処理
 	InitMeshCylinder();
 
+	// メッシュ(球)の初期化処理
+	InitMeshSphere();
+
+	// メッシュ(空)の初期化処理
+	InitMeshSky();
+
 	// 壁の初期化処理
 	InitWall();
 
@@ -381,6 +389,12 @@ void Uninit(void)
 	// メッシュ(円柱)の終了処理
 	UninitMeshCylinder();
 
+	// メッシュ(球)の終了処理
+	UninitMeshSphere();
+
+	// メッシュ(空)の終了処理
+	UninitMeshSky();
+
 	// 壁の終了処理
 	UninitWall();
 }
@@ -416,6 +430,12 @@ void Update(void)
 
 	// メッシュ(円柱)の更新処理
 	UpdateMeshCylinder();
+
+	// メッシュ(球)の更新処理
+	UpdateMeshSphere();
+
+	// メッシュ(空)の更新処理
+	UpdateMeshSky();
 
 	// 壁の更新
 	UpdateWall();
@@ -457,6 +477,12 @@ void Draw(void)
 
 		// メッシュ(円柱)の描画処理
 		DrawMeshCylinder();
+
+		// メッシュ(球)の描画処理
+		DrawMeshSphere();
+
+		// メッシュ(空)の描画処理
+		DrawMeshSky();
 
 		// 影の描画処理
 		DrawShadow();

@@ -8,9 +8,8 @@
 // include
 //------------------------------------
 #include "main.h"
-#include "polygon.h"
 #include "setup.h"
-#include "wall.h"
+#include "billboard.h"
 
 //------------------------------------
 // ƒ|ƒŠƒSƒ“‚ÌŽí—Þ‚Ì—ñ‹“Œ^

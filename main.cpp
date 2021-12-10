@@ -472,6 +472,9 @@ void Draw(void)
 		// ポリゴンの描画処理
 		//DrawPolygon();
 
+		// 壁の描画処理
+		DrawWall();
+
 		// メッシュの描画処理
 		DrawMeshBuild();
 
@@ -492,9 +495,6 @@ void Draw(void)
 
 		// ビルボードの描画処理
 		DrawBillboard();
-
-		// 壁の描画処理
-		DrawWall();
 
 #ifdef _DEBUG
 		// FPSの表示

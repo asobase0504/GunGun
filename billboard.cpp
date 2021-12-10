@@ -64,10 +64,10 @@ void InitBillboard(void)
 	for (int i = 0; i < BIILBOARD_MAX; i++)
 	{
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-10.0f, 10.0f, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(10.0f, 10.0f, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(-10.0f, 0.0f, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(10.0f, 0.0f, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-30.0f, 30.0f, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(30.0f, 30.0f, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(-30.0f, 0.0f, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(30.0f, 0.0f, 0.0f);
 
 		// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
@@ -143,9 +143,6 @@ void DrawBillboard(void)
 		s_abillboard->mtxWorld._11 = mtxView._11;
 		s_abillboard->mtxWorld._12 = mtxView._21;
 		s_abillboard->mtxWorld._13 = mtxView._31;
-		s_abillboard->mtxWorld._21 = mtxView._12;
-		s_abillboard->mtxWorld._22 = mtxView._22;
-		s_abillboard->mtxWorld._23 = mtxView._32;
 		s_abillboard->mtxWorld._31 = mtxView._13;
 		s_abillboard->mtxWorld._32 = mtxView._23;
 		s_abillboard->mtxWorld._33 = mtxView._33;
@@ -166,10 +163,16 @@ void DrawBillboard(void)
 		// ライトを無効にする
 		pDevice->SetRenderState(D3DRS_LIGHTING, false);
 
+		// Zバッファの上書きを無効にする
+		pDevice->SetRenderState(D3DRS_ZENABLE, false);
+
 		// 描画
 		RectDraw(pDevice, s_pTexture, i * 4);
 
-		// ライトを無効にする
+		// Zバッファの上書きを無効にする
+		pDevice->SetRenderState(D3DRS_ZENABLE, true);
+
+		// ライトを有効にする
 		pDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 		// テクスチャの解除

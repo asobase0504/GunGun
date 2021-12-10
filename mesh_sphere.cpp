@@ -115,17 +115,14 @@ void InitMeshSphere(void)
 	for (int nHeight = 0; nHeight <= s_aMesh[0].nSurfaceHeight; nHeight++)
 	{
 		float fRotHeight = D3DX_PI / s_aMesh[0].nSurfaceHeight;
-		float fWidth = cosf(fRotHeight * nHeight) * s_aMesh[0].fLineHeight;
+		float fHeight = cosf(fRotHeight * nHeight) * s_aMesh[0].fLineHeight;
 		for (int nWidth = 0; nWidth <= s_aMesh[0].nSurfaceWidth; nWidth++)
 		{
-			D3DXVECTOR3 rot;
 			float fRotWidth = 2.0f * D3DX_PI / s_aMesh[0].nSurfaceWidth * nWidth;
 			NormalizeRot(fRotWidth);
 
-			//D3DXVec3Normalize(&rot, &rot);
-
 			pVtx[nWidth + nHeight * nLineVtx].pos.x = cosf(fRotWidth) * sinf(fRotHeight * nHeight) * s_aMesh[0].fLineHeight;
-			pVtx[nWidth + nHeight * nLineVtx].pos.y = fWidth;
+			pVtx[nWidth + nHeight * nLineVtx].pos.y = fHeight;
 			pVtx[nWidth + nHeight * nLineVtx].pos.z = sinf(fRotWidth) * sinf(fRotHeight * nHeight) * s_aMesh[0].fLineHeight;
 
 			pVtx[nWidth + nHeight * nLineVtx].pos.x += 25.0f;

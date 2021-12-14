@@ -11,6 +11,7 @@
 #include "main.h"
 #include "input.h"
 #include "polygon.h"
+#include "player.h"
 #include "camera.h"
 #include "light.h"
 #include "model.h"
@@ -295,6 +296,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// ポリゴンの初期化処理
 	InitPolygon();
 
+	// プレイヤーの初期化処理
+	InitPlayer();
+
 	// 影の初期化処理
 	InitShadow();
 
@@ -368,6 +372,9 @@ void Uninit(void)
 	// ポリゴンの終了処理
 	UninitPolygon();
 
+	// プレイヤーの終了処理
+	UninitPlayer();
+
 	// モデルの終了処理
 	UninitModel();
 
@@ -409,6 +416,9 @@ void Update(void)
 
 	// モデルの更新
 	UpdateModel();
+
+	// プレイヤーの更新処理
+	UpdatePlayer();
 
 	// カメラの更新
 	UpdateCamera();
@@ -475,6 +485,9 @@ void Draw(void)
 		// 壁の描画処理
 		DrawWall();
 
+		// プレイヤーの更新処理
+		DrawPlayer();
+
 		// メッシュの描画処理
 		DrawMeshBuild();
 
@@ -491,7 +504,7 @@ void Draw(void)
 		DrawShadow();
 
 		// モデルの描画処理
-		DrawModel();
+//		DrawModel();
 
 		// ビルボードの描画処理
 		DrawBillboard();

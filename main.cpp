@@ -536,9 +536,10 @@ LPDIRECT3DDEVICE9 GetDevice(void)
 void DrawFPS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
-	char aStr[4][256];	// 表示文字
-	D3DXVECTOR3 camera = GetRotCamera();
+	char aStr[8][256];	// 表示文字
+	D3DXVECTOR3 camerarot = GetRotCamera();
 	Model* model = GetModel();
+	Camera* camera = GetCamera();
 	Shadow* shadow = GetShadow();
 	// 文字列に代入
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
@@ -549,6 +550,14 @@ void DrawFPS(void)
 	sprintf(&aStr[2][0], "Model.pos : %.3f|%.3f|%.3f\n", model->pos.x, model->pos.y,model->pos.z);
 	// 文字列に代入
 	sprintf(&aStr[3][0], "Shadow.pos: %.3f|%.3f|%.3f\n", shadow->pos.x, shadow->pos.y, shadow->pos.z);
+	// 文字列に代入
+	sprintf(&aStr[4][0], "posV: %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
+	// 文字列に代入
+	sprintf(&aStr[5][0], "posR: %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
+	// 文字列に代入
+	sprintf(&aStr[6][0], "posVDest: %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
+	// 文字列に代入
+	sprintf(&aStr[7][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
 
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
@@ -564,4 +573,16 @@ void DrawFPS(void)
 	rect = { 0,90,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[3][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	rect = { 0,120,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[4][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	rect = { 0,150,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[5][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	rect = { 0,180,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[6][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	rect = { 0,210,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[7][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }

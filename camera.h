@@ -31,6 +31,7 @@ void InitCamera(void);			// カメラの初期化処理
 void UninitCamera(void);		// カメラの終了処理
 void UpdateCamera(void);		// カメラの更新処理
 void SetCamera(void);			// カメラの設定処理
+Camera* GetCamera(void);			// カメラの角度情報取得
 D3DXVECTOR3 GetRotCamera(void);	// カメラの角度情報取得
 
 #endif // !_CAMERA_H_

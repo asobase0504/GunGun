@@ -80,20 +80,15 @@ void UpdateCamera(void)
 
 	}
 	
-	pCamera->posRDest.x = player->pos.x + sinf(player->movevec.x) * 20.0f;
+	pCamera->posRDest.x = player->pos.x + sinf(player->movevec.x) * 50.0f;
 	pCamera->posRDest.y = player->pos.y;
-	pCamera->posRDest.z = player->pos.z + sinf(player->movevec.z) * 20.0f;
+	pCamera->posRDest.z = player->pos.z + sinf(player->movevec.z) * 50.0f;
 
-	//pCamera->posVDest.x = player->pos.x - sinf(pCamera->rot.y) * pCamera->fDistance;
-	//pCamera->posVDest.y = player->pos.y;
-	//pCamera->posVDest.z = player->pos.z - cosf(pCamera->rot.y) * pCamera->fDistance;
-
-	pCamera->posR += (pCamera->posRDest - pCamera->posR) * 0.5f;
-	//pCamera->posV += (pCamera->posVDest - pCamera->posV) * 0.3f;
+	pCamera->posR += (pCamera->posRDest - pCamera->posR) * 0.05f;
+	pCamera->posR.y = player->pos.y;
 
 	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
-	//pCamera->posV.y = pCamera->posR.y - tanf(-pCamera->rot.x) * pCamera->fDistance;
 
 }
 
@@ -198,6 +193,14 @@ void InputCamera(void)
 	pCamera->posR.x = pCamera->posV.x + sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posR.z = pCamera->posV.z + cosf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posR.y = pCamera->posV.y + tanf(-pCamera->rot.x + (D3DX_PI * 0.5f)) * pCamera->fDistance;
+}
+
+//=========================================
+// ƒJƒƒ‰‚Ìî•ñæ“¾
+//=========================================
+Camera* GetCamera(void)
+{
+	return &(s_camera);
 }
 
 //=========================================

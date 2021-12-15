@@ -86,6 +86,7 @@ void InitPlayer(void)
 	s_player.pos.y = 10.0f;
 	s_player.rot = ZERO_VECTOR;
 	s_player.movevec = ZERO_VECTOR;
+	s_player.quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
 	D3DXVECTOR3 ShadowPos;
 	ShadowPos.x = s_player.pos.x;
@@ -134,6 +135,7 @@ void UninitPlayer(void)
 void UpdatePlayer(void)
 {
 	Player* pPlayer = &(s_player);
+	// 移動処理
 	MovePlayer();
 
 	pPlayer->pos += pPlayer->movevec;
@@ -158,32 +160,37 @@ void DrawPlayer(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 	D3DMATERIAL9 matDef;	// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat;		// マテリアルデータへのポインタ
-	D3DXQUATERNION quaternion(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 	D3DXVECTOR3 scale(1.0f, 1.0f, 1.0f);
-	//D3DXVECTOR3 axis(0.5f, 0.0f, 0.5f);
+
+	//s_player.quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_mtxWorld);
 
-	// クォータニオンの使用した姿勢の設定
-	D3DXMatrixTransformation(
-		&s_mtxWorld,		// 取得したいワールド変換行列
-		NULL,				// スケーリングの中心点
-		NULL,				// スケーリングの回転
-		&scale,				// 軸ごとのスケール値
-		NULL,				// 回転の中心を指定
-		D3DXQuaternionRotationAxis(&quaternion, &s_player.axis, s_player.moverot),	// 回転軸と回転角度を指定
-		&s_player.pos		// スケーリングと回転が終わった頂点をさらにオフセット（平行移動）
+	D3DXQuaternionRotationAxis(&s_player.quaternion, &s_player.axis, s_player.moverot);	// 回転軸と回転角度を指定
+
+	//// クォータニオンの使用した姿勢の設定
+	//D3DXMatrixTransformation(
+	//	&s_mtxWorld,		// 取得したいワールド変換行列
+	//	NULL,				// スケーリングの中心点
+	//	NULL,				// スケーリングの回転
+	//	&scale,				// 軸ごとのスケール値
+	//	NULL,				// 回転の中心を指定
+	//	&s_player.quaternion,	// 回転軸と回転角度を指定
+	//	&s_player.pos		// スケーリングと回転が終わった頂点をさらにオフセット（平行移動）
+	//);
+
+	D3DXMatrixRotationQuaternion(
+		&mtxRot,
+		&s_player.quaternion
 	);
 
-	//// 向きを反映
-	//D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);		// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxRot);								// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-	//// 位置を反映
-	//D3DXMatrixTranslation(&mtxTrans, s_player.pos.x, s_player.pos.y, s_player.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, s_player.pos.x, s_player.pos.y, s_player.pos.z);	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxTrans);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+																								
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_mtxWorld);
 
@@ -215,6 +222,7 @@ void MovePlayer()
 	Player* pPlayer = &(s_player);
 	D3DXVECTOR3 CameraRot = GetRotCamera();	// カメラの角度情報取得
 	D3DXVECTOR3 move = ZERO_VECTOR;			// 移動量の初期化
+	D3DXVECTOR3 oldaxis = s_player.axis;	// 変更前の情報を取得
 
 	// モデルの移動
 	if (GetKeyboardPress(DIK_UP))
@@ -255,12 +263,8 @@ void MovePlayer()
 	else
 	{
 		D3DXVec3Normalize(&move, &move);	// 正規化する(大きさ１のベクトルにする)
-		s_player.axis.x = move.z;
-		s_player.axis.y = move.y;
-		s_player.axis.z = -move.x;
-
-		//pPlayer->rotDest.y = atan2f(move.x, move.z);
-
+		//s_player.axis = 
+		D3DXVec3Cross(&s_player.axis, &-move, &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 		pPlayer->moverot += 0.05f;
 		pPlayer->moverot = NormalizeRot(pPlayer->moverot);
 	}

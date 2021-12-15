@@ -9,6 +9,7 @@
 //------------------------------------
 #include "main.h"
 #include "camera.h"
+#include "player.h"
 #include "input.h"
 
 //------------------------------------
@@ -70,6 +71,25 @@ void UpdateCamera(void)
 	{
 		pCamera->rot.y += D3DX_PI * 2;
 	}
+	
+	// ’Ç]ˆ—
+	Player *player = GetPlayer();
+
+	if(!(pCamera->posRDest == player->movevec))
+	{
+
+	}
+	
+	pCamera->posRDest.x = player->pos.x + sinf(player->movevec.x) * 20.0f;
+	pCamera->posRDest.y = player->pos.y;
+	pCamera->posRDest.z = player->pos.z + sinf(player->movevec.z) * 20.0f;
+
+	//pCamera->posVDest.x = player->pos.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+	//pCamera->posVDest.y = player->pos.y;
+	//pCamera->posVDest.z = player->pos.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+
+	pCamera->posR += (pCamera->posRDest - pCamera->posR) * 0.5f;
+	//pCamera->posV += (pCamera->posVDest - pCamera->posV) * 0.3f;
 
 	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;

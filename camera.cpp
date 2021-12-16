@@ -74,12 +74,8 @@ void UpdateCamera(void)
 	
 	// 追従処理
 	Player *player = GetPlayer();
-
-	if(!(pCamera->posRDest == player->movevec))
-	{
-
-	}
 	
+	// カメラの追従処理
 	pCamera->posRDest.x = player->pos.x + sinf(player->movevec.x) * 50.0f;
 	pCamera->posRDest.y = player->pos.y;
 	pCamera->posRDest.z = player->pos.z + sinf(player->movevec.z) * 50.0f;
@@ -89,6 +85,19 @@ void UpdateCamera(void)
 
 	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+
+	if (GetKeyboardPress(DIK_9))
+	{
+		pCamera->fDistance++;
+	}
+	if (GetKeyboardPress(DIK_0))
+	{
+		pCamera->fDistance--;
+	}
+	// 時間経過のカメラの回り込み
+	//pCamera->rot.x = sinf(player->movevec.x);
+	//pCamera->rot.y = 
+	//pCamera->rot.z = sinf(player->movevec.z);
 
 }
 
@@ -116,7 +125,7 @@ void SetCamera(void)
 	D3DXMatrixPerspectiveFovLH(&camara->mtxProjection,
 		D3DXToRadian(45.0f),						// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
-		10.0f,150.0f);								// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
+		10.0f,400.0f);								// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &camara->mtxProjection);

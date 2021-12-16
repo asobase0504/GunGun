@@ -18,6 +18,7 @@ typedef struct
 	D3DXVECTOR3 posVDest;		// 注視点の目的値
 	D3DXVECTOR3 vec;			// 移動量
 	D3DXVECTOR3 rot;			// 向き
+	D3DXVECTOR3 rotDest;		// 向きの目的地
 	D3DXVECTOR3 vecU;			// 上方向ベクトル
 	D3DXMATRIX mtxProjection;	// プロジェクトマトリックス
 	D3DXMATRIX mtxView;			// ビューマトリックス

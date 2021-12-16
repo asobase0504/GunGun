@@ -60,8 +60,8 @@ void InitMeshBuild(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// nSurfaceWidth ~ nSurfaceHeight
-	s_aMesh[0].nSurfaceWidth = 2;									// X²‚Ì–Ê‚Ì”
-	s_aMesh[0].nSurfaceHeight = 2;									// Y²‚Ì–Ê‚Ì”
+	s_aMesh[0].nSurfaceWidth = 10;									// X²‚Ì–Ê‚Ì”
+	s_aMesh[0].nSurfaceHeight = 10;									// Y²‚Ì–Ê‚Ì”
 	s_aMesh[0].fLineWidth = 50.0f;									// X²‚Ì–Ê‚Ì”
 	s_aMesh[0].fLineHeight = 50.0f;									// Y²‚Ì–Ê‚Ì”
 

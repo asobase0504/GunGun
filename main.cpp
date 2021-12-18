@@ -485,7 +485,10 @@ void Draw(void)
 		// 壁の描画処理
 		DrawWall();
 
-		// プレイヤーの更新処理
+		// モデルの描画処理
+		DrawModel();
+
+		// プレイヤーの描画処理
 		DrawPlayer();
 
 		// メッシュの描画処理

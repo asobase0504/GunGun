@@ -8,6 +8,7 @@
 // include
 //------------------------------------
 #include "main.h"
+#include "common.h"
 #include "player.h"
 #include "input.h"
 #include "setup.h"
@@ -72,51 +73,8 @@ void InitPlayer(void)
 		&s_nNumMat,
 		&s_pMesh);
 
-	nNumVtx = s_pMesh->GetNumVertices();	// 頂点数の取得
-
-	sizeFVF = D3DXGetFVFVertexSize(s_pMesh->GetFVF());	// 頂点フォーマットのサイズを取得
-
-	s_player.MinVtx = D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f);
-	s_player.MaxVtx = D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f);
-
-	// 頂点バッファーのロック
-	s_pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
-
-	for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
-	{
-		D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVtxBuff;
-
-		if (vtx.x < s_player.MinVtx.x)
-		{
-			s_player.MinVtx.x = vtx.x;
-		}
-		if (vtx.y < s_player.MinVtx.y)
-		{
-			s_player.MinVtx.y = vtx.y;
-		}
-		if (vtx.z < s_player.MinVtx.z)
-		{
-			s_player.MinVtx.z = vtx.z;
-		}
-		if (vtx.x > s_player.MaxVtx.x)
-		{
-			s_player.MaxVtx.x = vtx.x;
-		}
-		if (vtx.y > s_player.MaxVtx.y)
-		{
-			s_player.MaxVtx.y = vtx.y;
-		}
-		if (vtx.z > s_player.MaxVtx.z)
-		{
-			s_player.MaxVtx.z = vtx.z;
-		}
-
-		// 頂点フォーマットのサイズ分ポインタを進める
-		pVtxBuff += sizeFVF;
-	}
-
-	// 頂点バッファーのアンロック
-	s_pMesh->UnlockVertexBuffer();
+	// モデルのサイズ計測
+	ModelSize(&(s_player.MinVtx), &(s_player.MaxVtx), s_pMesh);
 
 	// メッシュに使用されているテクスチャ用の配列を用意する
 	s_pTexture = new LPDIRECT3DTEXTURE9[s_nNumMat];

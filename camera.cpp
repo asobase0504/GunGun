@@ -76,9 +76,9 @@ void UpdateCamera(void)
 	Player *player = GetPlayer();
 	
 	// ƒJƒƒ‰‚Ì’Ç]ˆ—
-	pCamera->posRDest.x = player->pos.x + sinf(player->movevec.x) * 50.0f;
+	pCamera->posRDest.x = player->pos.x + sinf(player->movevec.x) * 40.0f;
 	pCamera->posRDest.y = player->pos.y;
-	pCamera->posRDest.z = player->pos.z + sinf(player->movevec.z) * 50.0f;
+	pCamera->posRDest.z = player->pos.z + sinf(player->movevec.z) * 40.0f;
 
 	pCamera->posR += (pCamera->posRDest - pCamera->posR) * 0.05f;
 	pCamera->posR.y = player->pos.y;

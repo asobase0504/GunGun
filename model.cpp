@@ -9,6 +9,7 @@
 //------------------------------------
 #include "main.h"
 #include "model.h"
+#include "common.h"
 #include "input.h"
 #include "setup.h"
 #include "camera.h"
@@ -48,6 +49,9 @@ static int s_nShadowCnt;						// 影の割り当て
 void InitModel(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	int nNumVtx;		// 頂点数
+	DWORD sizeFVF;		// 頂点フォーマットのサイズ
+	BYTE *pVtxBuff;		// 頂点バッファーへのポイント
 
 	// Xファイルの読み込み
 	D3DXLoadMeshFromX("data/MODEL/bee_head.x",
@@ -81,6 +85,9 @@ void InitModel(void)
 			s_pTexture[i] = NULL;
 		}
 	}
+
+	// モデルのサイズ計測
+	ModelSize(&s_model.MinVtx, &s_model.MaxVtx, s_pMesh);
 
 	s_model.pos = ZERO_VECTOR;
 	s_model.rot = ZERO_VECTOR;
@@ -133,7 +140,7 @@ void UninitModel(void)
 void UpdateModel(void)
 {
 	Model* pModel = &(s_model);
-	MoveModel();
+	//MoveModel();
 
 	pModel->pos += pModel->vec;
 	pModel->rot.y += NormalizeRot(pModel->rotDest.y - pModel->rot.y) * MODEL_ROT_ATTENUATION;

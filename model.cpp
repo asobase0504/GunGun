@@ -63,6 +63,9 @@ void InitModel(void)
 		&s_nNumMat,
 		&s_pMesh);
 
+	// モデルのサイズ計測
+	ModelSize(&(s_model.MinVtx), &(s_model.MaxVtx), s_pMesh);
+
 	// メッシュに使用されているテクスチャ用の配列を用意する
 	s_pTexture = new LPDIRECT3DTEXTURE9[s_nNumMat];
 
@@ -90,6 +93,7 @@ void InitModel(void)
 	ModelSize(&s_model.MinVtx, &s_model.MaxVtx, s_pMesh);
 
 	s_model.pos = ZERO_VECTOR;
+	s_model.pos = D3DXVECTOR3(20.0f,s_model.MinVtx.y * -1.0f,0.0f);
 	s_model.rot = ZERO_VECTOR;
 	s_model.vec = ZERO_VECTOR;
 
@@ -162,19 +166,19 @@ void DrawModel(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DMATERIAL9 matDef;	// 現在のマテリアル保存用
-	D3DXMATERIAL *pMat;		// マテリアルデータへのポインタ
+	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
+	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_mtxWorld);
 
 	// 向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_model.rot.y, s_model.rot.x, s_model.rot.z);		// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxRot);										// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
 	D3DXMatrixTranslation(&mtxTrans, s_model.pos.x, s_model.pos.y, s_model.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxTrans);								// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_mtxWorld);;
@@ -253,9 +257,17 @@ void MoveModel()
 	pModel->vec = pModel->vec * 0.95f + move * MODEL_MOVE * 0.05f;
 }
 
-//--------------------------------------------------
+//=========================================
+// 当たり判定
+//=========================================
+void CollisionModel(D3DXVECTOR3 * pos, D3DXVECTOR3 * pos_old, D3DXVECTOR3 min, D3DXVECTOR3 max)
+{
+
+}
+
+//=========================================
 // 取得
-//--------------------------------------------------
+//=========================================
 Model *GetModel(void)
 {
 	return &s_model;

@@ -61,5 +61,4 @@ void ModelSize(D3DXVECTOR3* Min, D3DXVECTOR3* Max, LPD3DXMESH Mesh)
 
 	// 頂点バッファーのアンロック
 	Mesh->UnlockVertexBuffer();
-
 }

@@ -14,6 +14,7 @@
 #include "setup.h"
 #include "camera.h"
 #include "shadow.h"
+#include "mesh_field.h"
 #include <stdio.h>
 
 //------------------------------------
@@ -176,6 +177,11 @@ void UpdatePlayer(void)
 	pPlayer->pos += pPlayer->movevec;
 	pPlayer->rot.y += NormalizeRot(pPlayer->rotDest.y - pPlayer->rot.y) * MODEL_ROT_ATTENUATION;
 
+	// 床の当たり判定
+	CollisionMeshField(&pPlayer->pos);
+
+	pPlayer->pos.y += -s_player.MinVtx.y;
+
 	// 角度の正規化
 	NormalizeRot(pPlayer->rot.y);
 
@@ -272,9 +278,13 @@ void DrawPlayer(void)
 	//D3DXMatrixScaling(&mtxScale, 1.0f, 1.0f, 1.0f);
 	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxScale);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 	
-	// クォータニオンの使用した姿勢の設定
-	D3DXMatrixRotationQuaternion(&mtxRot,&s_player.quaternion);							// クオータニオンによる行列回転
-	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	
+	//// クォータニオンの使用した姿勢の設定
+	//D3DXMatrixRotationQuaternion(&mtxRot,&s_player.quaternion);							// クオータニオンによる行列回転
+	//D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
 	D3DXMatrixTranslation(&mtxTrans, s_player.pos.x, s_player.pos.y, s_player.pos.z);	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
@@ -290,9 +300,18 @@ void DrawPlayer(void)
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&model->mtxWorld);
 
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		if ( i == 0)
+		{
+			// クォータニオンの使用した姿勢の設定
+			D3DXMatrixRotationQuaternion(&mtxRot, &s_player.quaternion);							// クオータニオンによる行列回転
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		}
+		else
+		{
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		}
 
 		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)

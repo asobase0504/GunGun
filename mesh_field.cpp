@@ -44,13 +44,20 @@ typedef struct
 	D3DXMATRIX mtxWorld;// ワールドマトリックス
 } Mesh;
 
+
+//------------------------------------
+// プロトタイプ宣言
+//------------------------------------
+float D3DXVec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2);
+
 //------------------------------------
 // 静的変数
 //------------------------------------
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};		// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture = {};			// テクスチャへのポインタ
 static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;	// インデックスバッファへのポインタ
-static Mesh s_aMesh[2] = {};						// ポリゴンの構造体
+static Mesh s_aMesh = {};			// ポリゴンの構造体
+static int* s_aIdx = {};				// インデックスの配列
 
 //=========================================
 // 初期化
@@ -60,43 +67,43 @@ void InitMeshBuild(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh[0].nSurfaceWidth = 10;									// X軸の面の数
-	s_aMesh[0].nSurfaceHeight = 10;									// Y軸の面の数
-	s_aMesh[0].fLineWidth = 50.0f;									// X軸の面の数
-	s_aMesh[0].fLineHeight = 50.0f;									// Y軸の面の数
+	s_aMesh.nSurfaceWidth = 10;									// X軸の面の数
+	s_aMesh.nSurfaceHeight = 10;									// Y軸の面の数
+	s_aMesh.fLineWidth = 50.0f;									// X軸の面の数
+	s_aMesh.fLineHeight = 50.0f;									// Y軸の面の数
 
-	int nLineVtx = (s_aMesh[0].nSurfaceWidth + 1);					// X軸の頂点数
+	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);					// X軸の頂点数
 
-	s_aMesh[0].vertexCnt = nLineVtx * (s_aMesh[0].nSurfaceHeight + 1);	// 頂点数
+	s_aMesh.vertexCnt = nLineVtx * (s_aMesh.nSurfaceHeight + 1);	// 頂点数
 
 	// ポリゴン数を求める計算
-	s_aMesh[0].polygonCnt
-		= 2 * s_aMesh[0].nSurfaceWidth * s_aMesh[0].nSurfaceHeight		// 一行分のポリゴン数
-		+ 4 * (s_aMesh[0].nSurfaceHeight - 1);				// 縮退ポリゴン数
+	s_aMesh.polygonCnt
+		= 2 * s_aMesh.nSurfaceWidth * s_aMesh.nSurfaceHeight		// 一行分のポリゴン数
+		+ 4 * (s_aMesh.nSurfaceHeight - 1);				// 縮退ポリゴン数
 
-	s_aMesh[0].IdxCnt = s_aMesh[0].polygonCnt + 2;	// インデックス数
+	s_aMesh.IdxCnt = s_aMesh.polygonCnt + 2;	// インデックス数
 
 //別解
 /*
 	// インデックス数を求める計算
-	s_aMesh[0].IdxCnt
-	= 2 * (s_aMesh[0].nSurfaceWidth + 1) * s_aMesh[0].nSurfaceHeight	// 一行分のインデックス数
-	+ 2 * (s_aMesh[0].nSurfaceHeight - 1);					// 改行時に発生する重複しているインデックス数
+	s_aMesh.IdxCnt
+	= 2 * (s_aMesh.nSurfaceWidth + 1) * s_aMesh.nSurfaceHeight	// 一行分のインデックス数
+	+ 2 * (s_aMesh.nSurfaceHeight - 1);					// 改行時に発生する重複しているインデックス数
 
-	s_aMesh[0].polygonCnt = s_aMesh[0].IdxCnt - 2;	// ポリゴン数
+	s_aMesh.polygonCnt = s_aMesh.IdxCnt - 2;	// ポリゴン数
 */
 
 // 初期化処理
-	s_aMesh[0].pos = ZERO_VECTOR;	// 頂点座標
-	s_aMesh[0].rot = ZERO_VECTOR;	// 回転座標
+	s_aMesh.pos = ZERO_VECTOR;	// 頂点座標
+	s_aMesh.rot = ZERO_VECTOR;	// 回転座標
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/07.彼方への君に捧ぐ.png",
+		"data/TEXTURE/07.彼方への君に捧ぐ.pn",
 		&s_pTexture);
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * s_aMesh[0].polygonCnt,
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * s_aMesh.polygonCnt,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
@@ -104,7 +111,7 @@ void InitMeshBuild(void)
 		NULL);
 
 	// インデックスバッファの生成
-	pDevice->CreateIndexBuffer(sizeof(WORD) * s_aMesh[0].IdxCnt,
+	pDevice->CreateIndexBuffer(sizeof(WORD) * s_aMesh.IdxCnt,
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -117,11 +124,11 @@ void InitMeshBuild(void)
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	for (int Z = 0; Z <= s_aMesh[0].nSurfaceHeight;Z++)
+	for (int Z = 0; Z <= s_aMesh.nSurfaceHeight;Z++)
 	{
-		for (int X = 0; X <= s_aMesh[0].nSurfaceWidth; X++)
+		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
 		{
-			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh[0].nSurfaceWidth * 0.5f) *  s_aMesh[0].fLineWidth,0.0f,(Z - s_aMesh[0].nSurfaceHeight * 0.5f) * -s_aMesh[0].fLineHeight);
+			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh.nSurfaceWidth * 0.5f) *  s_aMesh.fLineWidth,sin(Z + X) * 20.0f,(Z - s_aMesh.nSurfaceHeight * 0.5f) * -s_aMesh.fLineHeight);
 
 			pVtx[X + Z * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			pVtx[X + Z * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -132,27 +139,31 @@ void InitMeshBuild(void)
 	// 頂点座標をアンロック
 	s_pVtxBuff->Unlock();
 
+	// メッシュに使用されているテクスチャ用の配列を用意する
+	s_aIdx = new int[s_aMesh.IdxCnt];
+
 	WORD* pIdx;
 	s_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
 
 	// インデックスを求める
-	for (int Y = 0; Y < s_aMesh[0].nSurfaceHeight; Y++)
+	for (int Y = 0; Y < s_aMesh.nSurfaceHeight; Y++)
 	{
 		int nlineTop = Y * (nLineVtx * 2 + 2);
-		for (int X = 0; X <= s_aMesh[0].nSurfaceWidth; X++)
+		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
 		{
 			int nIdxData = X * 2 + nlineTop;
 			pIdx[nIdxData + 1] = X + nLineVtx * Y;
 			pIdx[nIdxData] = pIdx[nIdxData + 1] + nLineVtx;
+			s_aIdx[nIdxData + 1] = pIdx[nIdxData + 1];
+			s_aIdx[nIdxData] = pIdx[nIdxData];
 		}
 
-		if (Y < s_aMesh[0].nSurfaceHeight - 1)
+		if (Y < s_aMesh.nSurfaceHeight - 1)
 		{
-			pIdx[nLineVtx * 2 + 0 + nlineTop] = s_aMesh[0].nSurfaceWidth + nLineVtx * Y;
-
-//			pIdx[X軸の頂点数 * 2 + 1 + 一行で使用するインデックス数] = X軸の頂点数 * 2 + X軸の頂点数 * Z軸の繰り返し;
-
+			pIdx[nLineVtx * 2 + 0 + nlineTop] = s_aMesh.nSurfaceWidth + nLineVtx * Y;
 			pIdx[nLineVtx * 2 + 1 + nlineTop] = nLineVtx * 2 + nLineVtx * Y;
+			s_aIdx[nLineVtx * 2 + nlineTop] = pIdx[nLineVtx * 2 + nlineTop];
+			s_aIdx[nLineVtx * 2 + 1 + nlineTop] = pIdx[nLineVtx * 2 + 1 + nlineTop];
 
 		}
 	}
@@ -165,6 +176,13 @@ void InitMeshBuild(void)
 //=========================================
 void UninitMeshBuild(void)
 {
+	// インデックス数の保存
+	if (s_aIdx != NULL)
+	{
+		delete[](s_aIdx);
+		s_aIdx = NULL;
+	}
+
 	// テクスチャの破棄
 	if (s_pTexture != NULL)
 	{
@@ -203,18 +221,18 @@ void DrawMeshBuild(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 
 	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&s_aMesh[0].mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
+	D3DXMatrixIdentity(&s_aMesh.mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
 
 	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_aMesh[0].rot.y, s_aMesh[0].rot.x, s_aMesh[0].rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	D3DXMatrixMultiply(&s_aMesh[0].mtxWorld, &s_aMesh[0].mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_aMesh.rot.y, s_aMesh.rot.x, s_aMesh.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+	D3DXMatrixMultiply(&s_aMesh.mtxWorld, &s_aMesh.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, s_aMesh[0].pos.x, s_aMesh[0].pos.y, s_aMesh[0].pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_aMesh[0].mtxWorld, &s_aMesh[0].mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixTranslation(&mtxTrans, s_aMesh.pos.x, s_aMesh.pos.y, s_aMesh.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+	D3DXMatrixMultiply(&s_aMesh.mtxWorld, &s_aMesh.mtxWorld, &mtxTrans);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &s_aMesh[0].mtxWorld);	// ワールド座標行列の設定
+	pDevice->SetTransform(D3DTS_WORLD, &s_aMesh.mtxWorld);	// ワールド座標行列の設定
 
 	// 頂点バッファをデバイスのデータストリームに設定
 	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -229,7 +247,7 @@ void DrawMeshBuild(void)
 	pDevice->SetTexture(0, s_pTexture);
 
 	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0,s_aMesh[0].vertexCnt,0,s_aMesh[0].polygonCnt);
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0,s_aMesh.vertexCnt,0,s_aMesh.polygonCnt);
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);
@@ -240,19 +258,96 @@ void DrawMeshBuild(void)
 //=========================================
 D3DXVECTOR3 GetMeshBuildPos(void)
 {
-	return s_aMesh[0].pos;
+	return s_aMesh.pos;
 }
 
 //=========================================
-// メッシュで長方形の作成設定
+// メッシュフィールドの当たり判定
 //=========================================
-void SetMeshRect(void)
+void CollisionMeshField(D3DXVECTOR3 * pos)
 {
+	VERTEX_3D* pVtx = NULL;
+	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);		// X軸の頂点数
+	Segment segField[3];	// ポリゴンの線分
+	Segment segModel[3];	// モデルからポリゴンの線分
+
+	// 頂点座標をロック
+	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 頂点座標の反映
+	for (int i = 0; i <= (s_aMesh.IdxCnt - 3); i++)
+	{
+		if (s_aIdx[i] == s_aIdx[i + 1] || s_aIdx[i + 1] == s_aIdx[i + 2] || s_aIdx[i] == s_aIdx[i + 2])
+		{
+			continue;
+		}
+
+		segField[0].s = pVtx[s_aIdx[i]].pos;
+		segField[0].v = pVtx[s_aIdx[i + 1]].pos - pVtx[s_aIdx[i]].pos;
+		segField[1].s = pVtx[s_aIdx[i + 1]].pos;
+		segField[1].v = pVtx[s_aIdx[i + 2]].pos - pVtx[s_aIdx[i + 1]].pos;
+		segField[2].s = pVtx[s_aIdx[i + 2]].pos;
+		segField[2].v = pVtx[s_aIdx[i]].pos - pVtx[s_aIdx[i + 2]].pos;
+
+		segModel[0].s = pVtx[s_aIdx[i]].pos;
+		segModel[0].v = *pos - pVtx[s_aIdx[i]].pos;
+		segModel[1].s = pVtx[s_aIdx[i + 1]].pos;
+		segModel[1].v = *pos - pVtx[s_aIdx[i + 1]].pos;
+		segModel[2].s = pVtx[s_aIdx[i + 2]].pos;
+		segModel[2].v = *pos - pVtx[s_aIdx[i + 2]].pos;
+
+		float crs_v1 = D3DXVec2Cross(&segModel[0].v, &segField[0].v);
+		float crs_v2 = D3DXVec2Cross(&segModel[1].v, &segField[1].v);
+		float crs_v3 = D3DXVec2Cross(&segModel[2].v, &segField[2].v);
+
+		// 乗ってるメッシュかチェック
+		if (i % 2 == 0)
+		{
+			if (crs_v1 >= 0.0f && crs_v2 >= 0.0f && crs_v3 >= 0.0f)
+			{
+				D3DXVECTOR3 N;
+				D3DXVec3Cross(&N, &segField[0].v, &segField[1].v);
+				if (N.y < 0.0f)
+				{
+					N *= -1.0f;
+				}
+				D3DXVec3Normalize(&N, &N);
+
+				pVtx[s_aIdx[i + 0]].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+				pVtx[s_aIdx[i + 1]].col = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
+				pVtx[s_aIdx[i + 2]].col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
+				pos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (pos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (pos->z - pVtx[s_aIdx[i]].pos.z));
+			}
+		}
+		else
+		{
+			if (crs_v1 <= 0.0f && crs_v2 <= 0.0f && crs_v3 <= 0.0f)
+			{
+				D3DXVECTOR3 N;
+				D3DXVec3Cross(&N, &segField[0].v, &segField[1].v);
+				if (N.y < 0.0f)
+				{
+					N *= -1.0f;
+				}
+				D3DXVec3Normalize(&N, &N);
+
+				pVtx[s_aIdx[i + 0]].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+				pVtx[s_aIdx[i + 1]].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[s_aIdx[i + 2]].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+				pos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (pos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (pos->z - pVtx[s_aIdx[i]].pos.z));
+			}
+		}
+	}
+
+	// 頂点座標をアンロック
+	s_pVtxBuff->Unlock();
+
 }
 
 //=========================================
-// メッシュで円柱の作成設定
+// 2Dベクトルの外積
 //=========================================
-void SetMeshCylinder(void)
+float D3DXVec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2)
 {
+	return v1->x * v2->z - v1->z * v2->x;
 }

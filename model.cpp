@@ -34,11 +34,7 @@ typedef enum
 //------------------------------------
 // 静的変数
 //------------------------------------
-static LPD3DXMESH s_pMesh = NULL;				// メッシュ情報へのポインタ		// 頂点の集まりのこと
-static LPD3DXBUFFER s_pBuffMat = NULL;			// マテリアル情報へのポインタ	// 1つのXファイルに複数のマテリアルが入っている
 static LPDIRECT3DTEXTURE9 *s_pTexture = NULL;	// テクスチャへのポインタ
-static DWORD s_nNumMat = 0;						// マテリアル情報の数
-static D3DXMATRIX s_mtxWorld;					// ワールドマトリックス
 static Model s_model;							// モデルの構造体
 static MODEL_STATE s_state;						// モデルのステータス
 static int s_nShadowCnt;						// 影の割り当て
@@ -58,22 +54,22 @@ void InitModel(void)
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
-		&s_pBuffMat,
+		&s_model.pBuffMat,
 		NULL,
-		&s_nNumMat,
-		&s_pMesh);
+		&s_model.nNumMat,
+		&s_model.pMesh);
 
 	// モデルのサイズ計測
-	ModelSize(&(s_model.MinVtx), &(s_model.MaxVtx), s_pMesh);
+	ModelSize(&(s_model.MinVtx), &(s_model.MaxVtx), s_model.pMesh);
 
 	// メッシュに使用されているテクスチャ用の配列を用意する
-	s_pTexture = new LPDIRECT3DTEXTURE9[s_nNumMat];
+	s_pTexture = new LPDIRECT3DTEXTURE9[s_model.nNumMat];
 
 	// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
-	D3DXMATERIAL *pMat = (D3DXMATERIAL*)s_pBuffMat->GetBufferPointer();
+	D3DXMATERIAL *pMat = (D3DXMATERIAL*)s_model.pBuffMat->GetBufferPointer();
 
 	// 各メッシュのマテリアル情報を取得する
-	for (int i = 0; i < (int)s_nNumMat; i++)
+	for (int i = 0; i < (int)s_model.nNumMat; i++)
 	{
 		s_pTexture[i] = NULL;
 
@@ -90,7 +86,7 @@ void InitModel(void)
 	}
 
 	// モデルのサイズ計測
-	ModelSize(&s_model.MinVtx, &s_model.MaxVtx, s_pMesh);
+	ModelSize(&s_model.MinVtx, &s_model.MaxVtx, s_model.pMesh);
 
 	s_model.pos = ZERO_VECTOR;
 	s_model.pos = D3DXVECTOR3(20.0f,s_model.MinVtx.y * -1.0f,0.0f);
@@ -111,7 +107,7 @@ void UninitModel(void)
 {
 	if (s_pTexture != NULL)
 	{
-		for (int i = 0; i < (int)s_nNumMat; i++)
+		for (int i = 0; i < (int)s_model.nNumMat; i++)
 		{
 			if (s_pTexture[i] != NULL)
 			{// テクスチャの解放
@@ -125,16 +121,16 @@ void UninitModel(void)
 	}
 
 	// メッシュの解放
-	if(s_pMesh != NULL)
+	if(s_model.pMesh != NULL)
 	{
-		s_pMesh->Release();
-		s_pMesh = NULL;
+		s_model.pMesh->Release();
+		s_model.pMesh = NULL;
 	}
 	// マテリアルの解放
-	if (s_pBuffMat != NULL)
+	if (s_model.pBuffMat != NULL)
 	{
-		s_pBuffMat->Release();
-		s_pBuffMat = NULL;
+		s_model.pBuffMat->Release();
+		s_model.pBuffMat = NULL;
 	}
 }
 
@@ -156,25 +152,25 @@ void DrawModel(void)
 	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
 
 	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&s_mtxWorld);
+	D3DXMatrixIdentity(&s_model.mtxWorld);
 
 	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_model.rot.y, s_model.rot.x, s_model.rot.z);		// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxRot);										// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_model.rot.y, s_model.rot.x, s_model.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+	D3DXMatrixMultiply(&s_model.mtxWorld, &s_model.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, s_model.pos.x, s_model.pos.y, s_model.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxTrans);								// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixTranslation(&mtxTrans, s_model.pos.x, s_model.pos.y, s_model.pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+	D3DXMatrixMultiply(&s_model.mtxWorld, &s_model.mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &s_mtxWorld);;
+	pDevice->SetTransform(D3DTS_WORLD, &s_model.mtxWorld);;
 
 	// 現在のマテリアルを保持
 	pDevice->GetMaterial(&matDef);
 
 	// マテリアルデータへのポインタを取得
-	pMat = (D3DXMATERIAL*)s_pBuffMat->GetBufferPointer();
-	for (int i = 0; i < (int)s_nNumMat; i++)
+	pMat = (D3DXMATERIAL*)s_model.pBuffMat->GetBufferPointer();
+	for (int i = 0; i < (int)s_model.nNumMat; i++)
 	{
 		// マテリアルの設定
 		pDevice->SetMaterial(&pMat[i].MatD3D);
@@ -183,7 +179,7 @@ void DrawModel(void)
 		pDevice->SetTexture(0, s_pTexture[i]);
 
 		// モデルパーツの描写
-		s_pMesh->DrawSubset(i);
+		s_model.pMesh->DrawSubset(i);
 	}
 	// 保持していたマテリアルを戻す
 	pDevice->SetMaterial(&matDef);
@@ -194,10 +190,6 @@ void DrawModel(void)
 //=========================================
 void CollisionModel(D3DXVECTOR3 * pos, D3DXVECTOR3 * pos_old, D3DXVECTOR3 min, D3DXVECTOR3 max)
 {
-	D3DXVECTOR3 size = max - min;
-	D3DXVECTOR3 sizeModel = s_model.MaxVtx - s_model.MinVtx;
-
-	// 手前・奥行の判定
 	if (pos->x + max.x > s_model.pos.x + s_model.MinVtx.x && pos->x + min.x < s_model.pos.x + s_model.MaxVtx.x)
 	{
 		// 奥
@@ -213,18 +205,17 @@ void CollisionModel(D3DXVECTOR3 * pos, D3DXVECTOR3 * pos_old, D3DXVECTOR3 min, D
 	}
 	if (pos->z + max.z > s_model.pos.z + s_model.MinVtx.z && pos->z + min.z < s_model.pos.z + s_model.MaxVtx.z)
 	{
-		// 手前
+		// 左
 		if (pos->x + max.x >= s_model.pos.x + s_model.MinVtx.x && pos_old->x + max.x <= s_model.pos.x + s_model.MinVtx.x)
 		{
 			pos->x = s_model.pos.x + s_model.MinVtx.x - max.x;
 		}
-		// 奥の判定
+		// 右
 		else if (pos->x + min.x <= s_model.pos.x + s_model.MaxVtx.x && pos_old->x + min.x >= s_model.pos.x + s_model.MaxVtx.x)
 		{
 			pos->x = s_model.pos.x + s_model.MaxVtx.x - min.x;
 		}
 	}
-	// 手前の判定
 }
 
 //=========================================

@@ -14,6 +14,10 @@
 //------------------------------------
 typedef struct
 {
+	LPD3DXMESH pMesh;		// メッシュ情報へのポインタ		// 頂点の集まりのこと
+	LPD3DXBUFFER pBuffMat;	// マテリアル情報へのポインタ	// 1つのXファイルに複数のマテリアルが入っている
+	DWORD nNumMat;			// マテリアル情報の数
+	D3DXMATRIX mtxWorld;	// ワールドマトリックス
 	D3DXVECTOR3 pos;		// 位置
 	D3DXVECTOR3 rot;		// 角度
 	D3DXVECTOR3 rotDest;	// 目的の角度
@@ -21,6 +25,7 @@ typedef struct
 	D3DXVECTOR3 move;		// 移動量
 	D3DXVECTOR3 MinVtx;		// 頂点の最小値
 	D3DXVECTOR3 MaxVtx;		// 頂点の最大値
+	int nIdxModelParent;	// 親モデルのインデックス
 }Model;
 
 //------------------------------------

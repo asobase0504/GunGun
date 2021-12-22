@@ -143,20 +143,6 @@ void UninitModel(void)
 //=========================================
 void UpdateModel(void)
 {
-	Model* pModel = &(s_model);
-	//MoveModel();
-
-	pModel->pos += pModel->vec;
-	pModel->rot.y += NormalizeRot(pModel->rotDest.y - pModel->rot.y) * MODEL_ROT_ATTENUATION;
-
-	// 角度の正規化
-	NormalizeRot(pModel->rot.y);
-
-	D3DXVECTOR3 ShadowPos;
-	ShadowPos.x = pModel->pos.x;
-	ShadowPos.y = 0.01f;
-	ShadowPos.z = pModel->pos.z;
-	SetPositionShadow(s_nShadowCnt,ShadowPos);
 }
 
 //=========================================
@@ -204,65 +190,41 @@ void DrawModel(void)
 }
 
 //=========================================
-// 移動
-//=========================================
-void MoveModel()
-{
-	Model* pModel = &(s_model);
-	D3DXVECTOR3 CameraRot = GetRotCamera();	// カメラの角度情報取得
-	D3DXVECTOR3 move = ZERO_VECTOR;			// 移動量の初期化
-
-	// モデルの移動
-	if (GetKeyboardPress(DIK_UP))
-	{
-		move.x += sinf(CameraRot.y);
-		move.z += cosf(CameraRot.y);
-	}
-	if (GetKeyboardPress(DIK_LEFT))
-	{
-		move.x += sinf(D3DX_PI * -0.5f + CameraRot.y);
-		move.z += cosf(D3DX_PI * -0.5f + CameraRot.y);
-	}
-	if (GetKeyboardPress(DIK_DOWN))
-	{
-		move.x += sinf(D3DX_PI + CameraRot.y);
-		move.z += cosf(D3DX_PI + CameraRot.y);
-	}
-	if (GetKeyboardPress(DIK_RIGHT))
-	{
-		move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
-		move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
-	}
-
-	// モデルの上下の移動
-	if (GetKeyboardPress(DIK_T))
-	{
-		pModel->pos.y += MODEL_MOVE;
-	}
-	if (GetKeyboardPress(DIK_B))
-	{
-		pModel->pos.y += -(MODEL_MOVE);
-	}
-
-	if (D3DXVec3Length(&move) == 0.0f)
-	{
-		pModel->vec *= 0.95f;
-	}
-	else
-	{
-		D3DXVec3Normalize(&move, &move);	// 正規化する(大きさ１のベクトルにする)
-		pModel->rotDest.y = atan2f(move.x, move.z);
-	}
-
-	pModel->vec = pModel->vec * 0.95f + move * MODEL_MOVE * 0.05f;
-}
-
-//=========================================
 // 当たり判定
 //=========================================
 void CollisionModel(D3DXVECTOR3 * pos, D3DXVECTOR3 * pos_old, D3DXVECTOR3 min, D3DXVECTOR3 max)
 {
+	D3DXVECTOR3 size = max - min;
+	D3DXVECTOR3 sizeModel = s_model.MaxVtx - s_model.MinVtx;
 
+	// 手前・奥行の判定
+	if (pos->x + max.x > s_model.pos.x + s_model.MinVtx.x && pos->x + min.x < s_model.pos.x + s_model.MaxVtx.x)
+	{
+		// 奥
+		if (pos->z + max.z >= s_model.pos.z + s_model.MinVtx.z && pos_old->z + max.z <= s_model.pos.z + s_model.MinVtx.z)
+		{
+			pos->z = s_model.pos.z + s_model.MinVtx.z - max.z;
+		}
+		// 手前
+		else if (pos->z + min.z <= s_model.pos.z + s_model.MaxVtx.z && pos_old->z + min.z >= s_model.pos.z + s_model.MaxVtx.z)
+		{
+			pos->z = s_model.pos.z + s_model.MaxVtx.z - min.z;
+		}
+	}
+	if (pos->z + max.z > s_model.pos.z + s_model.MinVtx.z && pos->z + min.z < s_model.pos.z + s_model.MaxVtx.z)
+	{
+		// 手前
+		if (pos->x + max.x >= s_model.pos.x + s_model.MinVtx.x && pos_old->x + max.x <= s_model.pos.x + s_model.MinVtx.x)
+		{
+			pos->x = s_model.pos.x + s_model.MinVtx.x - max.x;
+		}
+		// 奥の判定
+		else if (pos->x + min.x <= s_model.pos.x + s_model.MaxVtx.x && pos_old->x + min.x >= s_model.pos.x + s_model.MaxVtx.x)
+		{
+			pos->x = s_model.pos.x + s_model.MaxVtx.x - min.x;
+		}
+	}
+	// 手前の判定
 }
 
 //=========================================

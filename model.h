@@ -30,7 +30,6 @@ void InitModel(void);		// モデルの初期化処理
 void UninitModel(void);		// モデルの終了処理
 void UpdateModel(void);		// モデルの更新処理
 void DrawModel(void);		// モデルの更新処理
-void MoveModel(void);		// モデルの移動処理
 void CollisionModel(D3DXVECTOR3* pos, D3DXVECTOR3* pos_old,D3DXVECTOR3 min, D3DXVECTOR3 max);		// モデルの衝突処理
 Model* GetModel(void);		// モデルの取得処理
 

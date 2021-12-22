@@ -13,6 +13,7 @@
 #include "input.h"
 #include "setup.h"
 #include "camera.h"
+#include "model.h"
 #include "shadow.h"
 #include "mesh_field.h"
 #include <stdio.h>
@@ -179,6 +180,9 @@ void UpdatePlayer(void)
 
 	// °‚Ì“–‚½‚è”»’è
 	CollisionMeshField(&pPlayer->pos);
+
+	// ƒ‚ƒfƒ‹‚Ì“–‚½‚è”»’è
+	CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);
 
 	pPlayer->pos.y += -s_player.MinVtx.y;
 

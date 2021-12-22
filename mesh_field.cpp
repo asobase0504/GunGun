@@ -67,8 +67,8 @@ void InitMeshBuild(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh.nSurfaceWidth = 10;									// X軸の面の数
-	s_aMesh.nSurfaceHeight = 10;									// Y軸の面の数
+	s_aMesh.nSurfaceWidth = 30;									// X軸の面の数
+	s_aMesh.nSurfaceHeight = 30;									// Y軸の面の数
 	s_aMesh.fLineWidth = 50.0f;									// X軸の面の数
 	s_aMesh.fLineHeight = 50.0f;									// Y軸の面の数
 
@@ -268,8 +268,8 @@ void CollisionMeshField(D3DXVECTOR3 * pos)
 {
 	VERTEX_3D* pVtx = NULL;
 	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);		// X軸の頂点数
-	Segment segField[3];	// ポリゴンの線分
-	Segment segModel[3];	// モデルからポリゴンの線分
+	D3DXVECTOR3 vecField[3];	// ポリゴンの線分
+	D3DXVECTOR3 vecModel[3];	// モデルからポリゴンの線分
 
 	// 頂点座標をロック
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -282,23 +282,17 @@ void CollisionMeshField(D3DXVECTOR3 * pos)
 			continue;
 		}
 
-		segField[0].s = pVtx[s_aIdx[i]].pos;
-		segField[0].v = pVtx[s_aIdx[i + 1]].pos - pVtx[s_aIdx[i]].pos;
-		segField[1].s = pVtx[s_aIdx[i + 1]].pos;
-		segField[1].v = pVtx[s_aIdx[i + 2]].pos - pVtx[s_aIdx[i + 1]].pos;
-		segField[2].s = pVtx[s_aIdx[i + 2]].pos;
-		segField[2].v = pVtx[s_aIdx[i]].pos - pVtx[s_aIdx[i + 2]].pos;
+		vecField[0] = pVtx[s_aIdx[i + 1]].pos - pVtx[s_aIdx[i]].pos;
+		vecField[1] = pVtx[s_aIdx[i + 2]].pos - pVtx[s_aIdx[i + 1]].pos;
+		vecField[2] = pVtx[s_aIdx[i]].pos - pVtx[s_aIdx[i + 2]].pos;
 
-		segModel[0].s = pVtx[s_aIdx[i]].pos;
-		segModel[0].v = *pos - pVtx[s_aIdx[i]].pos;
-		segModel[1].s = pVtx[s_aIdx[i + 1]].pos;
-		segModel[1].v = *pos - pVtx[s_aIdx[i + 1]].pos;
-		segModel[2].s = pVtx[s_aIdx[i + 2]].pos;
-		segModel[2].v = *pos - pVtx[s_aIdx[i + 2]].pos;
+		vecModel[0] = *pos - pVtx[s_aIdx[i]].pos;
+		vecModel[1] = *pos - pVtx[s_aIdx[i + 1]].pos;
+		vecModel[2] = *pos - pVtx[s_aIdx[i + 2]].pos;
 
-		float crs_v1 = D3DXVec2Cross(&segModel[0].v, &segField[0].v);
-		float crs_v2 = D3DXVec2Cross(&segModel[1].v, &segField[1].v);
-		float crs_v3 = D3DXVec2Cross(&segModel[2].v, &segField[2].v);
+		float crs_v1 = D3DXVec2Cross(&vecModel[0], &vecField[0]);
+		float crs_v2 = D3DXVec2Cross(&vecModel[1], &vecField[1]);
+		float crs_v3 = D3DXVec2Cross(&vecModel[2], &vecField[2]);
 
 		// 乗ってるメッシュかチェック
 		if (i % 2 == 0)
@@ -306,7 +300,7 @@ void CollisionMeshField(D3DXVECTOR3 * pos)
 			if (crs_v1 >= 0.0f && crs_v2 >= 0.0f && crs_v3 >= 0.0f)
 			{
 				D3DXVECTOR3 N;
-				D3DXVec3Cross(&N, &segField[0].v, &segField[1].v);
+				D3DXVec3Cross(&N, &vecField[0], &vecField[1]);
 				if (N.y < 0.0f)
 				{
 					N *= -1.0f;
@@ -324,7 +318,7 @@ void CollisionMeshField(D3DXVECTOR3 * pos)
 			if (crs_v1 <= 0.0f && crs_v2 <= 0.0f && crs_v3 <= 0.0f)
 			{
 				D3DXVECTOR3 N;
-				D3DXVec3Cross(&N, &segField[0].v, &segField[1].v);
+				D3DXVec3Cross(&N, &vecField[0], &vecField[1]);
 				if (N.y < 0.0f)
 				{
 					N *= -1.0f;

@@ -56,8 +56,8 @@ float D3DXVec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2);
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};		// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture = {};			// テクスチャへのポインタ
 static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;	// インデックスバッファへのポインタ
-static Mesh s_aMesh = {};			// ポリゴンの構造体
-static int* s_aIdx = {};				// インデックスの配列
+static Mesh s_aMesh = {};							// ポリゴンの構造体
+static int* s_aIdx = {};							// インデックスの配列
 
 //=========================================
 // 初期化
@@ -68,9 +68,9 @@ void InitMeshBuild(void)
 
 	// nSurfaceWidth × nSurfaceHeight
 	s_aMesh.nSurfaceWidth = 30;									// X軸の面の数
-	s_aMesh.nSurfaceHeight = 30;									// Y軸の面の数
+	s_aMesh.nSurfaceHeight = 30;								// Y軸の面の数
 	s_aMesh.fLineWidth = 50.0f;									// X軸の面の数
-	s_aMesh.fLineHeight = 50.0f;									// Y軸の面の数
+	s_aMesh.fLineHeight = 50.0f;								// Y軸の面の数
 
 	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);					// X軸の頂点数
 

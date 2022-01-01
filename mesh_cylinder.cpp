@@ -87,7 +87,7 @@ void InitMeshCylinder(void)
 
 									// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/07.彼方への君に捧ぐ.png",
+		"data/TEXTURE/暗転.jpg",
 		&s_pTexture);
 
 	// 頂点バッファの生成

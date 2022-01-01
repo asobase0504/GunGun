@@ -152,7 +152,7 @@ void DrawModel(void)
 
 		// Œü‚«‚ğ”½‰f
 		D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// s—ñ‰ñ“]ŠÖ”(‘æ1ˆø”‚Éƒˆ[(y)ƒsƒbƒ`(x)ƒ[ƒ‹(z)•ûŒü‚Ì‰ñ“]s—ñ‚ğì¬)
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);						// s—ñŠ|‚¯ZŠÖ”(‘æ2ˆø”~‘æ3ˆø”‘æ‚ğ‚Pˆø”‚ÉŠi”[)
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// s—ñŠ|‚¯ZŠÖ”(‘æ2ˆø”~‘æ3ˆø”‘æ‚ğ‚Pˆø”‚ÉŠi”[)
 
 		// ˆÊ’u‚ğ”½‰f
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// s—ñˆÚ“®ŠÖ”(‘æ‚Pˆø”‚ÉX,Y,Z•ûŒü‚ÌˆÚ“®s—ñ‚ğì¬)
@@ -226,5 +226,21 @@ void CollisionModel(D3DXVECTOR3* pos, D3DXVECTOR3* pos_old, D3DXVECTOR3 min, D3D
 //=========================================
 Model *GetModel(void)
 {
-	return &s_model[0];
+	return s_model;
+}
+
+//=========================================
+// “Ç‚İ‚İˆ—
+//=========================================
+void LoadModel(void)
+{
+
+}
+
+//=========================================
+// “Ç‚İ‚İˆ—
+//=========================================
+void SaveModel(void)
+{
+
 }

@@ -45,7 +45,7 @@ void InitBillboard(void)
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/player.png",
+		"data/TEXTURE/暗転.jpg",
 		&s_pTexture);
 
 	// 頂点バッファの生成

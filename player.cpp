@@ -205,7 +205,7 @@ void MovePlayer()
 	D3DXVECTOR3 CameraRot = GetRotCamera();	// カメラの角度情報取得
 	D3DXVECTOR3 move = ZERO_VECTOR;			// 移動量の初期化
 
-											// モデルの移動
+	// モデルの移動
 	if (GetKeyboardPress(DIK_UP))
 	{
 		move.x += sinf(CameraRot.y);
@@ -284,10 +284,10 @@ void DrawPlayer(void)
 	
 	// 向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 	
 	//// クォータニオンの使用した姿勢の設定
-	//D3DXMatrixRotationQuaternion(&mtxRot,&s_player.quaternion);							// クオータニオンによる行列回転
+	//D3DXMatrixRotationQuaternion(&mtxRot,&s_player.quaternion);						// クオータニオンによる行列回転
 	//D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映

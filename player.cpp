@@ -23,6 +23,7 @@
 //------------------------------------
 #define MODEL_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)	// 減算
+#define MODEL_LOAD_FILE			("data/model.txt")
 
 //------------------------------------
 // モデルステータス列挙型
@@ -42,7 +43,6 @@ void LoadPlayer(void);		//プレイヤーの読み込み処理
 //------------------------------------
 // 静的変数
 //------------------------------------
-static LPDIRECT3DTEXTURE9 *s_pTexture = NULL;	// テクスチャへのポインタ
 static Player s_player;							// モデルの構造体
 static char s_tex[255];							// モデルファイル
 static MODEL_STATE s_state;						// モデルのステータス
@@ -60,7 +60,7 @@ void InitPlayer(void)
 
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
-		ModelParts* model = &(s_player.aModel[i]);
+		Model* model = &(s_player.aModel[i]);
 
 		// Xファイルの読み込み
 		D3DXLoadMeshFromX(s_tex,
@@ -76,7 +76,7 @@ void InitPlayer(void)
 		ModelSize(&(s_player.MinVtx), &(s_player.MaxVtx), model->pMesh);
 
 		// メッシュに使用されているテクスチャ用の配列を用意する
-		s_pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
+		model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
 
 		// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
 		D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
@@ -84,17 +84,13 @@ void InitPlayer(void)
 		// 各メッシュのマテリアル情報を取得する
 		for (int j = 0; j < (int)model->nNumMat; j++)
 		{
-			s_pTexture[j] = NULL;
+			model->pTexture[j] = NULL;
 
 			if (pMat[j].pTextureFilename != NULL)
 			{// マテリアルで設定されているテクスチャ読み込み
 				D3DXCreateTextureFromFileA(pDevice,
 					pMat[j].pTextureFilename,
-					&s_pTexture[j]);
-			}
-			else
-			{
-				s_pTexture[j] = NULL;
+					&model->pTexture[j]);
 			}
 		}
 	}
@@ -103,6 +99,8 @@ void InitPlayer(void)
 	//s_player.aModel[0].pos.y = -s_player.MinVtx.y;
 	s_player.aModel[0].rot = ZERO_VECTOR;
 	s_player.aModel[0].nIdxModelParent = -1;
+	s_player.aModel[0].bUse = true;
+	s_player.aModel[1].bUse = true;
 
 	s_player.aModel[1].pos = ZERO_VECTOR;
 	s_player.aModel[1].pos.x = -10.0f;
@@ -114,13 +112,16 @@ void InitPlayer(void)
 	s_player.pos.y = -s_player.MinVtx.y;
 	s_player.rot = ZERO_VECTOR;
 	s_player.movevec = ZERO_VECTOR;
-	s_player.quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
+	s_player.aModel[0].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
 	D3DXVECTOR3 ShadowPos;
 	ShadowPos.x = s_player.pos.x;
 	ShadowPos.y = 0.01f;
 	ShadowPos.z = s_player.pos.z;
 	s_nShadowCnt = SetShadow(ShadowPos, s_player.rot);
+
+	LoadPlayerModel();
+
 }
 
 //=========================================
@@ -128,37 +129,36 @@ void InitPlayer(void)
 //=========================================
 void UninitPlayer(void)
 {
-	if (s_pTexture != NULL)
-	{
-		for (int i = 0; i < PARTS_NUM; i++)
-		{
-			for (int j = 0; j < (int)s_player.aModel[i].nNumMat; j++)
-			{
-				if (s_pTexture[j] != NULL)
-				{// テクスチャの解放
-					s_pTexture[j]->Release();
-					s_pTexture[j] = NULL;
-				}
-			}
-		}
-
-		delete[](s_pTexture);
-		s_pTexture = NULL;
-	}
-
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
-		// メッシュの解放
-		if (s_player.aModel[i].pMesh != NULL)
+		Model* model = &(s_player.aModel[i]);
+
+		if (model->pTexture != NULL)
 		{
-			s_player.aModel[i].pMesh->Release();
-			s_player.aModel[i].pMesh = NULL;
+			for (int j = 0; j < (int)model->nNumMat; j++)
+			{
+				if (model->pTexture[j] != NULL)
+				{// テクスチャの解放
+					model->pTexture[j]->Release();
+					model->pTexture[j] = NULL;
+				}
+			}
+
+			delete[]model->pTexture;
+			model->pTexture = NULL;
+		}
+
+		// メッシュの解放
+		if (model->pMesh != NULL)
+		{
+			model->pMesh->Release();
+			model->pMesh = NULL;
 		}
 		// マテリアルの解放
-		if (s_player.aModel[i].pBuffMat != NULL)
+		if (model->pBuffMat != NULL)
 		{
-			s_player.aModel[i].pBuffMat->Release();
-			s_player.aModel[i].pBuffMat = NULL;
+			model->pBuffMat->Release();
+			model->pBuffMat = NULL;
 		}
 	}
 }
@@ -183,6 +183,9 @@ void UpdatePlayer(void)
 
 	// モデルの当たり判定
 	CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);
+
+	// モデルパーツごとの当たり判定
+	ColisionPartsModel();
 
 	pPlayer->pos.y += -s_player.MinVtx.y;
 
@@ -246,10 +249,10 @@ void MovePlayer()
 
 	D3DXQuaternionRotationAxis(&quaternion, &axis, 0.1f);	// 回転軸と回転角度を指定
 
-	s_player.quaternion *= quaternion;
+	s_player.aModel[0].quaternion *= quaternion;
 
 	// クオータニオンのノーマライズ
-	D3DXQuaternionNormalize(&s_player.quaternion, &s_player.quaternion);
+	D3DXQuaternionNormalize(&s_player.aModel[0].quaternion, &s_player.aModel[0].quaternion);
 
 	pPlayer->movevec = move * MODEL_MOVE;
 }
@@ -267,17 +270,6 @@ void DrawPlayer(void)
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_player.mtxWorld);
 
-	//// クォータニオンの使用した姿勢の設定
-	//D3DXMatrixTransformation(
-	//	&s_mtxWorld,		// 取得したいワールド変換行列
-	//	NULL,				// スケーリングの中心点
-	//	NULL,				// スケーリングの回転
-	//	&scale,				// 軸ごとのスケール値
-	//	NULL,				// 回転の中心を指定
-	//	&s_player.quaternion,	// 回転軸と回転角度を指定
-	//	&s_player.pos		// スケーリングと回転が終わった頂点をさらにオフセット（平行移動）
-	//);
-
 	// スケールの反映
 	//D3DXMatrixScaling(&mtxScale, 1.0f, 1.0f, 1.0f);
 	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxScale);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
@@ -285,10 +277,6 @@ void DrawPlayer(void)
 	// 向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
 	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-	
-	//// クォータニオンの使用した姿勢の設定
-	//D3DXMatrixRotationQuaternion(&mtxRot,&s_player.quaternion);						// クオータニオンによる行列回転
-	//D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// 位置を反映
 	D3DXMatrixTranslation(&mtxTrans, s_player.pos.x, s_player.pos.y, s_player.pos.z);	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
@@ -299,23 +287,28 @@ void DrawPlayer(void)
 
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
-		ModelParts* model = &(s_player.aModel[i]);
+		Model* model = &(s_player.aModel[i]);
+
+		if (!model->bUse)
+		{
+			continue;
+		}
 
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&model->mtxWorld);
 
-		if ( i == 0)
+		//if ( i == 0)
 		{
 			// クォータニオンの使用した姿勢の設定
-			D3DXMatrixRotationQuaternion(&mtxRot, &s_player.quaternion);							// クオータニオンによる行列回転
+			D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);							// クオータニオンによる行列回転
 			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 		}
-		else
-		{
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-		}
+		//else
+		//{
+		//	// 向きを反映
+		//	D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+		//	D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		//}
 
 		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
@@ -330,7 +323,12 @@ void DrawPlayer(void)
 		{
 			mtxParent = s_player.aModel[model->nIdxModelParent].mtxWorld;
 		}
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
+
+		if (model->nIdxModelParent != -2)
+		{
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
+
+		}
 
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
@@ -347,7 +345,7 @@ void DrawPlayer(void)
 			pDevice->SetMaterial(&pMat[j].MatD3D);
 
 			// テクスチャの設定
-			pDevice->SetTexture(0, s_pTexture[j]);
+			pDevice->SetTexture(0, model->pTexture[j]);
 
 			// モデルパーツの描写
 			model->pMesh->DrawSubset(j);
@@ -385,4 +383,194 @@ void LoadPlayer(void)
 	}
 
 	fclose(pFile);
+}
+
+//=========================================
+// 読み込み処理
+//=========================================
+void LoadPlayerModel(void)
+{
+	FILE* pFile;
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	bool isModel = false;
+	char modelFile[255][255] = {};
+	int nTexCnt;
+	int nModelFileCnt = 0;
+	int nModelCnt = 2;
+
+	pFile = fopen(MODEL_LOAD_FILE, "r");
+
+	char read[255] = {};
+	while (1)
+	{
+		fscanf(pFile, "%s", &read);
+
+		//# を検出すると一行読み込む
+		if (strncmp(&read[0], "#", 1) == 0)
+		{
+			fgets(read, sizeof(read), pFile);
+			continue;
+		}
+
+		if (strcmp(&read[0], "END_SCRIPT") == 0)
+		{
+			break;
+		}
+
+		if (strcmp(&read[0], "MODEL_FILENAME") == 0)
+		{
+			fscanf(pFile, "%s", &read);
+			fscanf(pFile, "%s", &modelFile[nModelFileCnt][0]);
+			nModelFileCnt++;
+
+		}
+		if (strcmp(&read[0], "MODELSET") == 0)
+		{
+			isModel = true;
+		}
+		else if (strcmp(&read[0], "END_MODELSET") == 0)
+		{
+			nModelCnt++;
+			isModel = false;
+		}
+
+		if (isModel)
+		{
+			if (strcmp(&read[0], "TYPE") == 0)
+			{
+				int nData;
+				Model* model = &(s_player.aModel[nModelCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%d", &nData);
+
+				// Xファイルの読み込み
+				D3DXLoadMeshFromX(&modelFile[nData][0],
+					D3DXMESH_SYSTEMMEM,
+					pDevice,
+					NULL,
+					&model->pBuffMat,
+					NULL,
+					&model->nNumMat,
+					&model->pMesh);
+
+				// メッシュに使用されているテクスチャ用の配列を用意する
+				model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
+
+				// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+				D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+
+				// 各メッシュのマテリアル情報を取得する
+				for (int i = 0; i < (int)model->nNumMat; i++)
+				{
+					model->pTexture[i] = NULL;
+
+					if (pMat[i].pTextureFilename != NULL)
+					{// マテリアルで設定されているテクスチャ読み込み
+						D3DXCreateTextureFromFileA(pDevice,
+							pMat[i].pTextureFilename,
+							&model->pTexture[i]);
+					}
+				}
+
+				// モデルのサイズ計測
+				ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
+
+				model->nIdxModelParent = -2;
+				model->bUse = true;
+			}
+			if (strcmp(&read[0], "POS") == 0)
+			{
+				D3DXVECTOR3 pos;
+				Model* model = &(s_player.aModel[nModelCnt]);
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+				model->pos = pos;
+
+			}
+			if (strcmp(&read[0], "ROT") == 0)
+			{
+				D3DXVECTOR3 rot;
+				Model* model = &(s_player.aModel[nModelCnt]);
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
+				model->rot = rot;
+
+			}
+		}
+	}
+}
+
+//=========================================
+// モデルパーツ同士の当たり判定
+//=========================================
+void ColisionPartsModel(void)
+{
+	for (int i = 0; i < PARTS_NUM; i++)
+	{
+		Model* model = &(s_player.aModel[i]);
+
+		if (!model->bUse || model->nIdxModelParent == -2)
+		{
+			continue;
+		}
+
+		for (int j = 0; j < PARTS_NUM; j++)
+		{
+			Model* hitModel = &(s_player.aModel[j]);
+
+			if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2 || i == j)
+			{
+				continue;
+			}
+			D3DXVECTOR3 hitMax = hitModel->pos + hitModel->MaxVtx;
+			D3DXVECTOR3 hitMin = hitModel->pos + hitModel->MinVtx;
+			D3DXVECTOR3 pos = s_player.pos + model->pos;
+			D3DXVECTOR3 pos_old = s_player.pos_old + model->pos_old;
+
+			if ((pos.y + model->MaxVtx.y > hitMin.y) && (pos.y + model->MinVtx.y < hitMax.y))
+			{
+				if ((pos.x + model->MaxVtx.x > hitMin.x) && (pos.x + model->MinVtx.x < hitMax.x))
+				{
+					// 奥
+					if ((pos.z + model->MaxVtx.z >= hitMin.z) && (pos_old.z + model->MaxVtx.z <= hitMin.z))
+					{
+						hitModel->pos -= s_player.pos;
+						//hitModel->quaternion = s_player.aModel[0].quaternion;
+						hitModel->nIdxModelParent = 0;
+						//s_player.pos.z = hitMin.z - model->MaxVtx.z;
+
+					}
+					// 手前
+					else if ((pos.z + model->MinVtx.z <= hitMax.z) && pos_old.z + model->MinVtx.z >= hitMax.z)
+					{
+						hitModel->pos -= s_player.pos;
+						//hitModel->quaternion = s_player.aModel[0].quaternion;
+						hitModel->nIdxModelParent = 0;
+						//	s_player.pos.z = hitMax.z - model->MinVtx.z;
+					}
+				}
+				if (pos.z + model->MaxVtx.z > hitMin.z && pos.z + model->MinVtx.z < hitMax.z)
+				{
+					// 左
+					if (pos.x + model->MaxVtx.x >= hitMin.x && pos_old.x + model->MaxVtx.x <= hitMin.x)
+					{
+						hitModel->pos -= s_player.pos;
+						//hitModel->quaternion = s_player.aModel[0].quaternion;
+						hitModel->nIdxModelParent = 0;
+						//s_player.pos.x = hitMin.x - model->MaxVtx.x;
+					}
+					// 右
+					else if (pos.x + model->MinVtx.x <= hitMax.x && pos_old.x + model->MinVtx.x >= hitMax.x)
+					{
+						hitModel->pos -= s_player.pos;
+						//hitModel->quaternion = s_player.aModel[0].quaternion;
+						hitModel->nIdxModelParent = 0;
+						//s_player.pos.x = hitMax.x - model->MinVtx.x;
+					}
+				}
+			}
+
+		}
+	}
 }

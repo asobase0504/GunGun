@@ -128,7 +128,7 @@ void InitMeshBuild(void)
 	{
 		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
 		{
-			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh.nSurfaceWidth * 0.5f) *  s_aMesh.fLineWidth,sin(Z + X) * 20.0f,(Z - s_aMesh.nSurfaceHeight * 0.5f) * -s_aMesh.fLineHeight);
+			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh.nSurfaceWidth * 0.5f) *  s_aMesh.fLineWidth,0.0f,(Z - s_aMesh.nSurfaceHeight * 0.5f) * -s_aMesh.fLineHeight);
 
 			pVtx[X + Z * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			pVtx[X + Z * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);

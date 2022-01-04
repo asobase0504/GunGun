@@ -309,7 +309,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    NULL;
+    "data\\TEXTURE\\–Ø–Ú.jpg";
    }
   }
   Material {

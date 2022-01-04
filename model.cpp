@@ -14,14 +14,16 @@
 #include "setup.h"
 #include "camera.h"
 #include "shadow.h"
+#include "player.h"
 
+#include <stdio.h>
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MODEL_MAX				(5)
+#define MODEL_MAX				(1)
 #define MODEL_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
-
+#define MODEL_LOAD_FILE			("data/model.txt")
 //------------------------------------
 // 静的変数
 //------------------------------------
@@ -33,58 +35,11 @@ static int s_nShadowCnt;			// 影の割り当て
 //=========================================
 void InitModel(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	int nNumVtx;		// 頂点数
 	DWORD sizeFVF;		// 頂点フォーマットのサイズ
 	BYTE *pVtxBuff;		// 頂点バッファーへのポイント
-	
-	for (int i = 0; i < MODEL_MAX; i++)
-	{
-		Model* model = &(s_model[i]);
 
-		// Xファイルの読み込み
-		D3DXLoadMeshFromX("data/MODEL/bee_head.x",
-			D3DXMESH_SYSTEMMEM,
-			pDevice,
-			NULL,
-			&model->pBuffMat,
-			NULL,
-			&model->nNumMat,
-			&model->pMesh);
-
-		// モデルのサイズ計測
-		ModelSize(&(model->MinVtx), &(model->MaxVtx), model->pMesh);
-
-		// メッシュに使用されているテクスチャ用の配列を用意する
-		model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
-
-		// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
-		D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
-
-		// 各メッシュのマテリアル情報を取得する
-		for (int i = 0; i < (int)model->nNumMat; i++)
-		{
-			model->pTexture[i] = NULL;
-
-			if (pMat[i].pTextureFilename != NULL)
-			{// マテリアルで設定されているテクスチャ読み込み
-				D3DXCreateTextureFromFileA(pDevice,
-					pMat[i].pTextureFilename,
-					&model->pTexture[i]);
-			}
-			else
-			{
-				model->pTexture[i] = NULL;
-			}
-		}
-
-		// モデルのサイズ計測
-		ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
-
-		model->pos = D3DXVECTOR3(i * 20.0f, model->MinVtx.y * -1.0f, 0.0f);
-		model->rot = ZERO_VECTOR;
-		model->vec = ZERO_VECTOR;
-	}
+	//LoadModel();		// ロード処理
 }
 
 //=========================================
@@ -138,49 +93,49 @@ void UpdateModel(void)
 //=========================================
 void DrawModel(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
-	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
+	//LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	//D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	//D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
+	//D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
 
-	for (int i = 0; i < MODEL_MAX; i++)
-	{
-		Model* model = &(s_model[i]);
+	//for (int i = 0; i < MODEL_MAX; i++)
+	//{
+	//	Model* model = &(s_model[i]);
 
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&model->mtxWorld);
+	//	// ワールドマトリックスの初期化
+	//	D3DXMatrixIdentity(&model->mtxWorld);
 
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	//	// 向きを反映
+	//	D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+	//	D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	//	// 位置を反映
+	//	D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+	//	D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);;
+	//	// ワールドマトリックスの設定
+	//	pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);;
 
-		// 現在のマテリアルを保持
-		pDevice->GetMaterial(&matDef);
+	//	// 現在のマテリアルを保持
+	//	pDevice->GetMaterial(&matDef);
 
-		// マテリアルデータへのポインタを取得
-		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+	//	// マテリアルデータへのポインタを取得
+	//	pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
 
-		for (int j = 0; j < (int)model->nNumMat; j++)
-		{
-			// マテリアルの設定
-			pDevice->SetMaterial(&pMat[j].MatD3D);
+	//	for (int j = 0; j < (int)model->nNumMat; j++)
+	//	{
+	//		// マテリアルの設定
+	//		pDevice->SetMaterial(&pMat[j].MatD3D);
 
-			// テクスチャの設定
-			pDevice->SetTexture(0, model->pTexture[j]);
+	//		// テクスチャの設定
+	//		pDevice->SetTexture(0, model->pTexture[j]);
 
-			// モデルパーツの描写
-			model->pMesh->DrawSubset(j);
-		}
-		// 保持していたマテリアルを戻す
-		pDevice->SetMaterial(&matDef);
-	}
+	//		// モデルパーツの描写
+	//		model->pMesh->DrawSubset(j);
+	//	}
+	//	// 保持していたマテリアルを戻す
+	//	pDevice->SetMaterial(&matDef);
+	//}
 }
 
 //=========================================
@@ -234,7 +189,113 @@ Model *GetModel(void)
 //=========================================
 void LoadModel(void)
 {
+	FILE* pFile;
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	bool isModel = false;
+	char modelFile[255][255] = {};
+	int nTexCnt;
+	int nModelFileCnt = 0;
+	int nModelCnt = 0;
 
+	pFile = fopen(MODEL_LOAD_FILE, "r");
+
+	char read[255] = {};
+	while (1)
+	{
+		fscanf(pFile, "%s", &read);
+
+		//# を検出すると一行読み込む
+		if (strncmp(&read[0], "#", 1) == 0)
+		{
+			fgets(read, 255, pFile);
+			continue;
+		}
+
+		if (strcmp(&read[0], "END_SCRIPT") == 0)
+		{
+			break;
+		}
+
+		if (strcmp(&read[0], "MODEL_FILENAME") == 0)
+		{
+			fscanf(pFile, "%s", &read);
+			fscanf(pFile, "%s", &modelFile[nModelFileCnt][0]);
+			nModelFileCnt++;
+
+		}
+		if (strcmp(&read[0], "MODELSET") == 0)
+		{
+			isModel = true;
+		}
+		else if (strcmp(&read[0], "END_MODELSET") == 0)
+		{
+			nModelCnt++;
+			isModel = false;
+		}
+
+		if (isModel)
+		{
+			if (strcmp(&read[0], "TYPE") == 0)
+			{
+				int nData;
+				Model* model = &(s_model[nModelCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%d", &nData);
+
+				// Xファイルの読み込み
+				D3DXLoadMeshFromX(&modelFile[nData][0],
+					D3DXMESH_SYSTEMMEM,
+					pDevice,
+					NULL,
+					&model->pBuffMat,
+					NULL,
+					&model->nNumMat,
+					&model->pMesh);
+
+				// メッシュに使用されているテクスチャ用の配列を用意する
+				model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
+
+				// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+				D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+
+				// 各メッシュのマテリアル情報を取得する
+				for (int i = 0; i < (int)model->nNumMat; i++)
+				{
+					model->pTexture[i] = NULL;
+
+					if (pMat[i].pTextureFilename != NULL)
+					{// マテリアルで設定されているテクスチャ読み込み
+						D3DXCreateTextureFromFileA(pDevice,
+							pMat[i].pTextureFilename,
+							&model->pTexture[i]);
+					}
+				}
+
+				// モデルのサイズ計測
+				ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
+
+			}
+			if (strcmp(&read[0], "POS") == 0)
+			{
+				D3DXVECTOR3 pos;
+				Model* model = &(s_model[nModelCnt]);
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+				model->pos = pos;
+
+			}
+			if (strcmp(&read[0], "ROT") == 0)
+			{
+				D3DXVECTOR3 rot;
+				Model* model = &(s_model[nModelCnt]);
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
+				model->rot = rot;
+
+			}
+		}
+	}
 }
 
 //=========================================

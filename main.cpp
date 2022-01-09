@@ -397,8 +397,9 @@ LPDIRECT3DDEVICE9 GetDevice(void)
 void DrawFPS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
-	char aStr[8][256];	// 表示文字
+	char aStr[11][256];	// 表示文字
 	D3DXVECTOR3 camerarot = GetRotCamera();
+	Player* player = GetPlayer();
 	Model* model = GetModel();
 	Camera* camera = GetCamera();
 	Shadow* shadow = GetShadow();
@@ -406,19 +407,25 @@ void DrawFPS(void)
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
 
 	// 文字列に代入
-	sprintf(&aStr[1][0], "rot: %f\n", model->rot.y);
+	sprintf(&aStr[1][0], "rot: %f\n", player->rot.y);
 	// 文字列に代入
-	sprintf(&aStr[2][0], "Model.pos : %.3f|%.3f|%.3f\n", model->pos.x, model->pos.y,model->pos.z);
+	sprintf(&aStr[2][0], "Player.pos     : %.3f|%.3f|%.3f\n", player->pos.x, player->pos.y, player->pos.z);
 	// 文字列に代入
-	sprintf(&aStr[3][0], "Shadow.pos: %.3f|%.3f|%.3f\n", shadow->pos.x, shadow->pos.y, shadow->pos.z);
+	sprintf(&aStr[3][0], "Player.fLength : %.3f\n", player->fLength);
 	// 文字列に代入
-	sprintf(&aStr[4][0], "posV: %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
+	sprintf(&aStr[4][0], "Player.MinVtx  : %.3f|%.3f|%.3f\n", player->MinVtx.x, player->MinVtx.y, player->MinVtx.z);
 	// 文字列に代入
-	sprintf(&aStr[5][0], "posR: %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
+	sprintf(&aStr[5][0], "Player.MaxVtx  : %.3f|%.3f|%.3f\n", player->MaxVtx.x, player->MaxVtx.y, player->MaxVtx.z);
 	// 文字列に代入
-	sprintf(&aStr[6][0], "posVDest: %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
+	sprintf(&aStr[6][0], "quaternion     : %.3f|%.3f|%.3f|%.3f\n", player->aModel[0].quaternion.x, player->aModel[0].quaternion.y, player->aModel[0].quaternion.z, player->aModel[0].quaternion.w);
 	// 文字列に代入
-	sprintf(&aStr[7][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
+	sprintf(&aStr[7][0], "posV: %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
+	// 文字列に代入
+	sprintf(&aStr[8][0], "posR: %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
+	// 文字列に代入
+	sprintf(&aStr[9][0], "posVDest: %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
+	// 文字列に代入
+	sprintf(&aStr[10][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
 
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
@@ -434,16 +441,32 @@ void DrawFPS(void)
 	rect = { 0,90,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[3][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
 	rect = { 0,120,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[4][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
 	rect = { 0,150,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[5][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
 	rect = { 0,180,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[6][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
 	rect = { 0,210,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[7][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	rect = { 0,240,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[8][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	rect = { 0,270,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[9][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	rect = { 0,300,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[10][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }

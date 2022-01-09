@@ -288,8 +288,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// デバッグ表示用フォントの生成
 	D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);
 
-	// キーボードの初期化処理
-	if (FAILED(InitKeyboard(hInstance, hWnd)))
+	// 入力処理の初期化
+	if (FAILED(InitInput(hInstance, hWnd)))
 	{
 		return E_FAIL;
 	}
@@ -324,8 +324,8 @@ void Uninit(void)
 		g_pD3D = NULL;
 	}
 
-	// キーボードの終了処理
-	UninitKeyboard();
+	// 入力処理の終了
+	UninitInput();
 
 	// ゲームの終了処理
 	UnInitGame();
@@ -336,8 +336,8 @@ void Uninit(void)
 //=========================================
 void Update(void)
 {	
-	// キーボードの更新
-	UpdateKeyboard();
+	// 入力処理の更新
+	UpdateInput();
 
 	// ゲームの更新
 	UpdateGame();

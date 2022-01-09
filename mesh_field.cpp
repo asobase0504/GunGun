@@ -32,16 +32,16 @@ typedef enum
 //------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 pos;	// 頂点座標
-	D3DXVECTOR3 rot;	// 回転座標
-	int nSurfaceWidth;	// 面の幅
-	int nSurfaceHeight;	// 面の高さ
-	float fLineWidth;	// 辺の幅
-	float fLineHeight;	// 辺の高さ
-	int vertexCnt;		// 頂点数
-	int polygonCnt;		// ポリゴン数
-	int IdxCnt;			// インデックス数
-	D3DXMATRIX mtxWorld;// ワールドマトリックス
+	D3DXVECTOR3 pos;		// 頂点座標
+	D3DXVECTOR3 rot;		// 回転座標
+	int nSurfaceWidth;		// 面の幅
+	int nSurfaceHeight;		// 面の高さ
+	float fLineWidth;		// 辺の幅
+	float fLineHeight;		// 辺の高さ
+	int vertexCnt;			// 頂点数
+	int polygonCnt;			// ポリゴン数
+	int IdxCnt;				// インデックス数
+	D3DXMATRIX mtxWorld;	// ワールドマトリックス
 } Mesh;
 
 
@@ -229,7 +229,7 @@ void DrawMeshBuild(void)
 
 	// 位置を反映
 	D3DXMatrixTranslation(&mtxTrans, s_aMesh.pos.x, s_aMesh.pos.y, s_aMesh.pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_aMesh.mtxWorld, &s_aMesh.mtxWorld, &mtxTrans);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixMultiply(&s_aMesh.mtxWorld, &s_aMesh.mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_aMesh.mtxWorld);	// ワールド座標行列の設定
@@ -263,6 +263,7 @@ D3DXVECTOR3 GetMeshBuildPos(void)
 
 //=========================================
 // メッシュフィールドの当たり判定
+// 引数 当たり判定を行う位置
 //=========================================
 void CollisionMeshField(D3DXVECTOR3 * pos)
 {
@@ -329,6 +330,85 @@ void CollisionMeshField(D3DXVECTOR3 * pos)
 				pVtx[s_aIdx[i + 1]].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
 				pVtx[s_aIdx[i + 2]].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
 				pos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (pos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (pos->z - pVtx[s_aIdx[i]].pos.z));
+			}
+		}
+	}
+
+	// 頂点座標をアンロック
+	s_pVtxBuff->Unlock();
+
+}
+
+//=========================================
+// メッシュフィールドの当たり判定
+// 引数１ 実際に位置をずらす値
+// 引数２ 当たり判定を行う位置
+//=========================================
+void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
+{
+	VERTEX_3D* pVtx = NULL;
+	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);		// X軸の頂点数
+	D3DXVECTOR3 vecField[3];						// ポリゴンの線分
+	D3DXVECTOR3 vecModel[3];						// モデルからポリゴンの線分
+
+								// 頂点座標をロック
+	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 頂点座標の反映
+	for (int i = 0; i <= (s_aMesh.IdxCnt - 3); i++)
+	{
+		if (s_aIdx[i] == s_aIdx[i + 1] || s_aIdx[i + 1] == s_aIdx[i + 2] || s_aIdx[i] == s_aIdx[i + 2])
+		{
+			continue;
+		}
+
+		vecField[0] = pVtx[s_aIdx[i + 1]].pos - pVtx[s_aIdx[i]].pos;
+		vecField[1] = pVtx[s_aIdx[i + 2]].pos - pVtx[s_aIdx[i + 1]].pos;
+		vecField[2] = pVtx[s_aIdx[i]].pos - pVtx[s_aIdx[i + 2]].pos;
+
+		vecModel[0] = *HitPos - pVtx[s_aIdx[i]].pos;
+		vecModel[1] = *HitPos - pVtx[s_aIdx[i + 1]].pos;
+		vecModel[2] = *HitPos - pVtx[s_aIdx[i + 2]].pos;
+
+		float crs_v1 = D3DXVec2Cross(&vecModel[0], &vecField[0]);
+		float crs_v2 = D3DXVec2Cross(&vecModel[1], &vecField[1]);
+		float crs_v3 = D3DXVec2Cross(&vecModel[2], &vecField[2]);
+
+		// 乗ってるメッシュかチェック
+		if (i % 2 == 0)
+		{
+			if (crs_v1 >= 0.0f && crs_v2 >= 0.0f && crs_v3 >= 0.0f)
+			{
+				D3DXVECTOR3 N;
+				D3DXVec3Cross(&N, &vecField[0], &vecField[1]);
+				if (N.y < 0.0f)
+				{
+					N *= -1.0f;
+				}
+				D3DXVec3Normalize(&N, &N);
+
+				pVtx[s_aIdx[i + 0]].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+				pVtx[s_aIdx[i + 1]].col = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
+				pVtx[s_aIdx[i + 2]].col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
+				pos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
+			}
+		}
+		else
+		{
+			if (crs_v1 <= 0.0f && crs_v2 <= 0.0f && crs_v3 <= 0.0f)
+			{
+				D3DXVECTOR3 N;
+				D3DXVec3Cross(&N, &vecField[0], &vecField[1]);
+				if (N.y < 0.0f)
+				{
+					N *= -1.0f;
+				}
+				D3DXVec3Normalize(&N, &N);
+
+				pVtx[s_aIdx[i + 0]].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+				pVtx[s_aIdx[i + 1]].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[s_aIdx[i + 2]].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+				pos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
 			}
 		}
 	}

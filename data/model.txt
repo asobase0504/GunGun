@@ -15,6 +15,7 @@ NUM_MODEL = 15
 # モデルファイル名
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/MODEL/bee_head.x				# [0]蜂(小)
+MODEL_FILENAME = data/MODEL/desk.x				# [1]蜂(小)
 
 #------------------
 # test
@@ -53,14 +54,48 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 0
+	TYPE = 1
 	POS = 80 0 0
 	ROT = 0 0 0
 END_MODELSET
-
 MODELSET
 	TYPE = 0
-	POS = 100 0 0
+	POS = 100 10 0
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 100 0 -40
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 -30
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 -20
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 100 0 10
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 40
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 70
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 100
 	ROT = 0 0 0
 END_MODELSET
 

@@ -19,21 +19,6 @@
 #define PARTS_NUM	(20)		// パーツの数
 
 //------------------------------------
-// モデルパーツの構造体定義
-//------------------------------------
-typedef struct
-{
-	LPD3DXMESH pMesh;
-	LPD3DXBUFFER pBuffMat;
-	DWORD nNumMat;
-	D3DXMATRIX mtxWorld;
-	D3DXQUATERNION quaternion;		// クオータニオン
-	D3DXVECTOR3 pos;		// 位置
-	D3DXVECTOR3 rot;		// 角度
-	int nIdxModelParent;	// 親モデルのインデックス
-}ModelParts;
-
-//------------------------------------
 // モデルの構造体定義
 //------------------------------------
 typedef struct

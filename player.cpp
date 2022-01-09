@@ -44,7 +44,6 @@ void LoadPlayer(void);		//プレイヤーの読み込み処理
 // 静的変数
 //------------------------------------
 static Player s_player;							// モデルの構造体
-static char s_tex[255];							// モデルファイル
 static MODEL_STATE s_state;						// モデルのステータス
 static int s_nShadowCnt;						// 影の割り当て
 
@@ -53,60 +52,9 @@ static int s_nShadowCnt;						// 影の割り当て
 //=========================================
 void InitPlayer(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 読み込み処理
 	LoadPlayer();
-
-	for (int i = 0; i < PARTS_NUM; i++)
-	{
-		Model* model = &(s_player.aModel[i]);
-
-		// Xファイルの読み込み
-		D3DXLoadMeshFromX(s_tex,
-			D3DXMESH_SYSTEMMEM,
-			pDevice,
-			NULL,
-			&model->pBuffMat,
-			NULL,
-			&model->nNumMat,
-			&model->pMesh);
-
-		// モデルのサイズ計測
-		ModelSize(&(s_player.MinVtx), &(s_player.MaxVtx), model->pMesh);
-
-		// メッシュに使用されているテクスチャ用の配列を用意する
-		model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
-
-		// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
-		D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
-
-		// 各メッシュのマテリアル情報を取得する
-		for (int j = 0; j < (int)model->nNumMat; j++)
-		{
-			model->pTexture[j] = NULL;
-
-			if (pMat[j].pTextureFilename != NULL)
-			{// マテリアルで設定されているテクスチャ読み込み
-				D3DXCreateTextureFromFileA(pDevice,
-					pMat[j].pTextureFilename,
-					&model->pTexture[j]);
-			}
-		}
-	}
-
-	s_player.aModel[0].pos = ZERO_VECTOR;
-	//s_player.aModel[0].pos.y = -s_player.MinVtx.y;
-	s_player.aModel[0].rot = ZERO_VECTOR;
-	s_player.aModel[0].nIdxModelParent = -1;
-	s_player.aModel[0].bUse = true;
-	s_player.aModel[1].bUse = true;
-
-	s_player.aModel[1].pos = ZERO_VECTOR;
-	s_player.aModel[1].pos.x = -10.0f;
-	s_player.aModel[1].pos.y = -s_player.MinVtx.y;
-	s_player.aModel[1].rot = ZERO_VECTOR;
-	s_player.aModel[1].nIdxModelParent = 0;
 
 	s_player.pos = ZERO_VECTOR;
 	s_player.pos.y = -s_player.MinVtx.y;
@@ -114,14 +62,13 @@ void InitPlayer(void)
 	s_player.movevec = ZERO_VECTOR;
 	s_player.aModel[0].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
-	D3DXVECTOR3 ShadowPos;
-	ShadowPos.x = s_player.pos.x;
-	ShadowPos.y = 0.01f;
-	ShadowPos.z = s_player.pos.z;
-	s_nShadowCnt = SetShadow(ShadowPos, s_player.rot);
+	//D3DXVECTOR3 ShadowPos;
+	//ShadowPos.x = s_player.pos.x;
+	//ShadowPos.y = 0.01f;
+	//ShadowPos.z = s_player.pos.z;
+	//s_nShadowCnt = SetShadow(ShadowPos, s_player.rot);
 
 	LoadPlayerModel();
-
 }
 
 //=========================================
@@ -171,6 +118,11 @@ void UpdatePlayer(void)
 	Player* pPlayer = &(s_player);
 
 	pPlayer->pos_old = pPlayer->pos;
+	for (int i = 0; i < PARTS_NUM; i++)
+	{
+		pPlayer->aModel[i].pos_old = pPlayer->aModel[i].pos;
+	}
+
 
 	// 移動処理
 	MovePlayer();
@@ -180,9 +132,10 @@ void UpdatePlayer(void)
 
 	// 床の当たり判定
 	CollisionMeshField(&pPlayer->pos);
+	//CollisionMeshField(&pPlayer->pos,);
 
 	// モデルの当たり判定
-	CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);
+	//CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);
 
 	// モデルパーツごとの当たり判定
 	ColisionPartsModel();
@@ -297,20 +250,11 @@ void DrawPlayer(void)
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&model->mtxWorld);
 
-		//if ( i == 0)
-		{
-			// クォータニオンの使用した姿勢の設定
-			D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);							// クオータニオンによる行列回転
-			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-		}
-		//else
-		//{
-		//	// 向きを反映
-		//	D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-		//	D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-		//}
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);			// クオータニオンによる行列回転
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-		// 位置を反映
+	// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
@@ -370,6 +314,7 @@ Player *GetPlayer(void)
 void LoadPlayer(void)
 {
 	FILE* pFile;
+	char modelFile[255] = {};	// モデルファイル
 
 	pFile = fopen("data/FILE/Player.txt", "r");
 
@@ -379,10 +324,52 @@ void LoadPlayer(void)
 	if (strcmp(&read[0], "PlayerModel") == 0)
 	{
 		fscanf(pFile, "%s", &read);			// = の除去
-		fscanf(pFile, "%s", &s_tex);		// 値を入れる
+		fscanf(pFile, "%s", &modelFile);		// 値を入れる
 	}
 
-	fclose(pFile);
+	read[0] = *modelFile;
+
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	Model* model = &(s_player.aModel[0]);
+
+	// Xファイルの読み込み
+	D3DXLoadMeshFromX(modelFile,
+		D3DXMESH_SYSTEMMEM,
+		pDevice,
+		NULL,
+		&model->pBuffMat,
+		NULL,
+		&model->nNumMat,
+		&model->pMesh);
+
+	// モデルのサイズ計測
+	ModelSize(&(s_player.MinVtx), &(s_player.MaxVtx), model->pMesh);
+
+	// メッシュに使用されているテクスチャ用の配列を用意する
+	model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
+
+	// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+	D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+
+	// 各メッシュのマテリアル情報を取得する
+	for (int j = 0; j < (int)model->nNumMat; j++)
+	{
+		model->pTexture[j] = NULL;
+
+		if (pMat[j].pTextureFilename != NULL)
+		{// マテリアルで設定されているテクスチャ読み込み
+			D3DXCreateTextureFromFileA(pDevice,
+				pMat[j].pTextureFilename,
+				&model->pTexture[j]);
+		}
+	}
+
+	s_player.aModel[0].pos = ZERO_VECTOR;
+	//s_player.aModel[0].pos.y = -s_player.MinVtx.y;
+	s_player.aModel[0].rot = ZERO_VECTOR;
+	s_player.aModel[0].nIdxModelParent = -1;
+	s_player.aModel[0].bUse = true;
+
 }
 
 //=========================================
@@ -396,7 +383,7 @@ void LoadPlayerModel(void)
 	char modelFile[255][255] = {};
 	int nTexCnt;
 	int nModelFileCnt = 0;
-	int nModelCnt = 2;
+	int nModelCnt = 1;
 
 	pFile = fopen(MODEL_LOAD_FILE, "r");
 
@@ -440,7 +427,7 @@ void LoadPlayerModel(void)
 			{
 				int nData;
 				Model* model = &(s_player.aModel[nModelCnt]);
-
+				
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%d", &nData);
 
@@ -528,49 +515,45 @@ void ColisionPartsModel(void)
 			D3DXVECTOR3 pos = s_player.pos + model->pos;
 			D3DXVECTOR3 pos_old = s_player.pos_old + model->pos_old;
 
-			if ((pos.y + model->MaxVtx.y > hitMin.y) && (pos.y + model->MinVtx.y < hitMax.y))
+			if ((pos.x + model->MaxVtx.x > hitMin.x) && (pos.x + model->MinVtx.x < hitMax.x))
 			{
-				if ((pos.x + model->MaxVtx.x > hitMin.x) && (pos.x + model->MinVtx.x < hitMax.x))
+				// 奥
+				if ((pos.z + model->MaxVtx.z >= hitMin.z) && (pos_old.z + model->MaxVtx.z <= hitMin.z))
 				{
-					// 奥
-					if ((pos.z + model->MaxVtx.z >= hitMin.z) && (pos_old.z + model->MaxVtx.z <= hitMin.z))
-					{
-						hitModel->pos -= s_player.pos;
-						//hitModel->quaternion = s_player.aModel[0].quaternion;
-						hitModel->nIdxModelParent = 0;
-						//s_player.pos.z = hitMin.z - model->MaxVtx.z;
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion = s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//s_player.pos.z = hitMin.z - model->MaxVtx.z;
 
-					}
-					// 手前
-					else if ((pos.z + model->MinVtx.z <= hitMax.z) && pos_old.z + model->MinVtx.z >= hitMax.z)
-					{
-						hitModel->pos -= s_player.pos;
-						//hitModel->quaternion = s_player.aModel[0].quaternion;
-						hitModel->nIdxModelParent = 0;
-						//	s_player.pos.z = hitMax.z - model->MinVtx.z;
-					}
 				}
-				if (pos.z + model->MaxVtx.z > hitMin.z && pos.z + model->MinVtx.z < hitMax.z)
+				// 手前
+				else if ((pos.z + model->MinVtx.z <= hitMax.z) && pos_old.z + model->MinVtx.z >= hitMax.z)
 				{
-					// 左
-					if (pos.x + model->MaxVtx.x >= hitMin.x && pos_old.x + model->MaxVtx.x <= hitMin.x)
-					{
-						hitModel->pos -= s_player.pos;
-						//hitModel->quaternion = s_player.aModel[0].quaternion;
-						hitModel->nIdxModelParent = 0;
-						//s_player.pos.x = hitMin.x - model->MaxVtx.x;
-					}
-					// 右
-					else if (pos.x + model->MinVtx.x <= hitMax.x && pos_old.x + model->MinVtx.x >= hitMax.x)
-					{
-						hitModel->pos -= s_player.pos;
-						//hitModel->quaternion = s_player.aModel[0].quaternion;
-						hitModel->nIdxModelParent = 0;
-						//s_player.pos.x = hitMax.x - model->MinVtx.x;
-					}
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion = s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//	s_player.pos.z = hitMax.z - model->MinVtx.z;
 				}
 			}
-
+			if (pos.z + model->MaxVtx.z > hitMin.z && pos.z + model->MinVtx.z < hitMax.z)
+			{
+				// 左
+				if (pos.x + model->MaxVtx.x >= hitMin.x && pos_old.x + model->MaxVtx.x <= hitMin.x)
+				{
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion = s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//s_player.pos.x = hitMin.x - model->MaxVtx.x;
+				}
+				// 右
+				else if (pos.x + model->MinVtx.x <= hitMax.x && pos_old.x + model->MinVtx.x >= hitMax.x)
+				{
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion = s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//s_player.pos.x = hitMax.x - model->MinVtx.x;
+				}
+			}
 		}
 	}
 }

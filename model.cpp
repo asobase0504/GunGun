@@ -21,7 +21,7 @@
 // É}ÉNÉçíËã`
 //------------------------------------
 #define MODEL_MAX				(1)
-#define MODEL_MOVE				(1.0f)
+#define PLAYER_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
 #define MODEL_LOAD_FILE			("data/model.txt")
 //------------------------------------

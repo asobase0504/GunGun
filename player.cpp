@@ -17,11 +17,12 @@
 #include "shadow.h"
 #include "mesh_field.h"
 #include <stdio.h>
+#include <math.h>
 
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MODEL_MOVE				(1.0f)
+#define PLAYER_MOVE				(1.5f)	// プレイヤーの移動量
 #define MODEL_ROT_ATTENUATION	(0.05f)	// 減算
 #define MODEL_LOAD_FILE			("data/model.txt")
 
@@ -38,7 +39,10 @@ typedef enum
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-void LoadPlayer(void);		//プレイヤーの読み込み処理
+void LoadPlayer(void);			// プレイヤーの読み込み処理
+void LoadPlayerModel(void);		// プレイヤーパーツの読み込み処理
+void ColisionPartsModel(void);	// モデルパーツ同士の当たり判定
+void LookUpSizePlayer(void);	// プレイヤーのサイズを調べる
 
 //------------------------------------
 // 静的変数
@@ -62,12 +66,7 @@ void InitPlayer(void)
 	s_player.movevec = ZERO_VECTOR;
 	s_player.aModel[0].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
-	//D3DXVECTOR3 ShadowPos;
-	//ShadowPos.x = s_player.pos.x;
-	//ShadowPos.y = 0.01f;
-	//ShadowPos.z = s_player.pos.z;
-	//s_nShadowCnt = SetShadow(ShadowPos, s_player.rot);
-
+	// プレイヤーにくっつくモデルの配置
 	LoadPlayerModel();
 }
 
@@ -117,39 +116,38 @@ void UpdatePlayer(void)
 {
 	Player* pPlayer = &(s_player);
 
-	pPlayer->pos_old = pPlayer->pos;
+	pPlayer->pos_old = pPlayer->pos;	// プレイヤー位置の保存
+
+	// モデル位置の保存
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
 		pPlayer->aModel[i].pos_old = pPlayer->aModel[i].pos;
 	}
 
-
 	// 移動処理
 	MovePlayer();
-
-	pPlayer->pos += pPlayer->movevec;
-	pPlayer->rot.y += NormalizeRot(pPlayer->rotDest.y - pPlayer->rot.y) * MODEL_ROT_ATTENUATION;
-
-	// 床の当たり判定
+	
+	// プレイヤーと床の当たり判定
 	CollisionMeshField(&pPlayer->pos);
+
+	// モデルパーツと床の当たり判定
 	//CollisionMeshField(&pPlayer->pos,);
 
-	// モデルの当たり判定
+	//// プレイヤーとモデルの当たり判定
 	//CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);
 
 	// モデルパーツごとの当たり判定
 	ColisionPartsModel();
 
+	// プレイヤーの球の半径を求める
+	LookUpSizePlayer();
+	
+	// プレイヤー位置とモデル回転する軸の位置の調整。
+	//pPlayer->pos.y += s_player.fLength;	// 半径分床の当たり判定を底上げする
 	pPlayer->pos.y += -s_player.MinVtx.y;
 
 	// 角度の正規化
 	NormalizeRot(pPlayer->rot.y);
-
-	D3DXVECTOR3 ShadowPos;
-	ShadowPos.x = pPlayer->pos.x;
-	ShadowPos.y = 0.01f;
-	ShadowPos.z = pPlayer->pos.z;
-	SetPositionShadow(s_nShadowCnt,ShadowPos);
 }
 
 //=========================================
@@ -157,7 +155,6 @@ void UpdatePlayer(void)
 //=========================================
 void MovePlayer()
 {
-	Player* pPlayer = &(s_player);
 	D3DXVECTOR3 CameraRot = GetRotCamera();	// カメラの角度情報取得
 	D3DXVECTOR3 move = ZERO_VECTOR;			// 移動量の初期化
 
@@ -183,22 +180,12 @@ void MovePlayer()
 		move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 	}
 
-	// モデルの上下の移動
-	if (GetKeyboardPress(DIK_T))
-	{
-		pPlayer->pos.y += MODEL_MOVE;
-	}
-	if (GetKeyboardPress(DIK_B))
-	{
-		pPlayer->pos.y += -(MODEL_MOVE);
-	}
+	D3DXVECTOR3 axis;	// 回転軸
 
-	D3DXVECTOR3 axis;
+	D3DXVec3Normalize(&move, &move);								// 正規化する(大きさ１のベクトルにする)
+	D3DXVec3Cross(&axis, &-move, &D3DXVECTOR3(0.0f, 1.0f, 0.0f));	// 行列計算
 
-	D3DXVec3Normalize(&move, &move);	// 正規化する(大きさ１のベクトルにする)
-	D3DXVec3Cross(&axis, &-move, &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-
-	D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);
+	D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
 
 	D3DXQuaternionRotationAxis(&quaternion, &axis, 0.1f);	// 回転軸と回転角度を指定
 
@@ -207,7 +194,9 @@ void MovePlayer()
 	// クオータニオンのノーマライズ
 	D3DXQuaternionNormalize(&s_player.aModel[0].quaternion, &s_player.aModel[0].quaternion);
 
-	pPlayer->movevec = move * MODEL_MOVE;
+	s_player.movevec = move * PLAYER_MOVE;
+	s_player.pos += s_player.movevec;
+	//pPlayer->rot.y += NormalizeRot(pPlayer->rotDest.y - pPlayer->rot.y) * MODEL_ROT_ATTENUATION;
 }
 
 //=========================================
@@ -254,7 +243,7 @@ void DrawPlayer(void)
 		D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);			// クオータニオンによる行列回転
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-	// 位置を反映
+		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
@@ -268,6 +257,7 @@ void DrawPlayer(void)
 			mtxParent = s_player.aModel[model->nIdxModelParent].mtxWorld;
 		}
 
+		// プレイヤーとくっついている状態のモデルはプレイヤーとの行列計算
 		if (model->nIdxModelParent != -2)
 		{
 			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
@@ -300,13 +290,6 @@ void DrawPlayer(void)
 	}
 }
 
-//--------------------------------------------------
-// 取得
-//--------------------------------------------------
-Player *GetPlayer(void)
-{
-	return &s_player;
-}
 
 //--------------------------------------------------
 // 読み込み処理
@@ -497,7 +480,7 @@ void ColisionPartsModel(void)
 	{
 		Model* model = &(s_player.aModel[i]);
 
-		if (!model->bUse || model->nIdxModelParent == -2)
+		if (!(model->bUse) || model->nIdxModelParent == -2)
 		{
 			continue;
 		}
@@ -556,4 +539,90 @@ void ColisionPartsModel(void)
 			}
 		}
 	}
+}
+
+//--------------------------------------------------
+// プレイヤーのサイズを調べる
+//--------------------------------------------------
+void LookUpSizePlayer(void)
+{
+	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
+	{
+		Model* model = &(s_player.aModel[i]);
+
+		if (model->nIdxModelParent != -2)
+		{
+			continue;
+		}
+
+		D3DXVECTOR3 modelMaxVtx = model->pos + model->MaxVtx;
+		D3DXVECTOR3 modelMinVtx = model->pos + model->MinVtx;
+
+
+		if (modelMinVtx.x < s_player.MinVtx.x)
+		{
+			s_player.MinVtx.x = modelMaxVtx.x;
+		}
+		if (modelMinVtx.y < s_player.MinVtx.y)
+		{
+			s_player.MinVtx.y = modelMinVtx.y;
+		}
+		if (modelMinVtx.z < s_player.MinVtx.z)
+		{
+			s_player.MinVtx.z = modelMinVtx.z;
+		}
+		if (modelMinVtx.x > s_player.MaxVtx.x)
+		{
+			s_player.MaxVtx.x = modelMinVtx.x;
+		}
+		if (modelMinVtx.y > s_player.MaxVtx.y)
+		{
+			s_player.MaxVtx.y = modelMinVtx.y;
+		}
+		if (modelMinVtx.z > s_player.MaxVtx.z)
+		{
+			s_player.MaxVtx.z = modelMinVtx.z;
+		}
+
+		if (modelMaxVtx.x < s_player.MinVtx.x)
+		{
+			s_player.MinVtx.x = modelMaxVtx.x;
+		}
+		if (modelMaxVtx.y < s_player.MinVtx.y)
+		{
+			s_player.MinVtx.y = modelMaxVtx.y;
+		}
+		if (modelMaxVtx.z < s_player.MinVtx.z)
+		{
+			s_player.MinVtx.z = modelMaxVtx.z;
+		}
+		if (modelMaxVtx.x > s_player.MaxVtx.x)
+		{
+			s_player.MaxVtx.x = modelMaxVtx.x;
+		}
+		if (modelMaxVtx.y > s_player.MaxVtx.y)
+		{
+			s_player.MaxVtx.y = modelMaxVtx.y;
+		}
+		if (modelMaxVtx.z > s_player.MaxVtx.z)
+		{
+			s_player.MaxVtx.z = modelMaxVtx.z;
+		}
+
+	}
+
+	s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.x) ? s_player.fLength : fabsf(s_player.MinVtx.x);
+	s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.y) ? s_player.fLength : fabsf(s_player.MinVtx.y);
+	s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.z) ? s_player.fLength : fabsf(s_player.MinVtx.z);
+	s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.x) ? s_player.fLength : fabsf(s_player.MaxVtx.x);
+	s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.y) ? s_player.fLength : fabsf(s_player.MaxVtx.y);
+	s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.z) ? s_player.fLength : fabsf(s_player.MaxVtx.z);
+}
+
+//--------------------------------------------------
+// 取得
+//--------------------------------------------------
+Player *GetPlayer(void)
+{
+	return &s_player;
 }

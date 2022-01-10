@@ -94,85 +94,85 @@ void InitPlayer(void)
 		// 線の作成
 		start = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
 		end	= D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
 		end	= D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		/*	x軸		*/
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		/*	y軸		*/
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
 		end	= D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		/*	x軸		*/
 		// 線の作成
 		start = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
 		end	= D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 
 		// 線の作成
 		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
 		end = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
-		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+		SetLine(&model->pos_world, &model->quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
 	}
 }
 

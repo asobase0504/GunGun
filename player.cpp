@@ -12,6 +12,7 @@
 #include "player.h"
 #include "input.h"
 #include "setup.h"
+#include "line.h"
 #include "camera.h"
 #include "model.h"
 #include "shadow.h"
@@ -68,6 +69,111 @@ void InitPlayer(void)
 
 	// プレイヤーにくっつくモデルの配置
 	LoadPlayerModel();
+
+	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
+	{
+		Model* model = &(s_player.aModel[i]);
+
+		if (!(model->bUse))
+		{
+			continue;
+		}
+
+		if (model->nIdxModelParent == -2)
+		{
+			model->pos_world = model->pos;
+		}
+		else
+		{
+			model->pos_world = s_player.pos - model->pos;
+		}
+
+		D3DXVECTOR3 start;
+		D3DXVECTOR3 end;
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
+		end	= D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
+		end	= D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		/*	x軸		*/
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		/*	y軸		*/
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
+		end	= D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		/*	x軸		*/
+		// 線の作成
+		start = D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
+		end	= D3DXVECTOR3(model->MinVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MaxVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MaxVtx.x, model->MinVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MinVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+
+		// 線の作成
+		start = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MaxVtx.z);				// 線の始点
+		end = D3DXVECTOR3(model->MaxVtx.x, model->MaxVtx.y, model->MinVtx.z);				// 線の終点
+		SetLine(&model->pos_world, &model->rot, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	}
 }
 
 //=========================================
@@ -122,6 +228,16 @@ void UpdatePlayer(void)
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
 		pPlayer->aModel[i].pos_old = pPlayer->aModel[i].pos;
+
+		if (pPlayer->aModel[i].nIdxModelParent == -2)
+		{
+			pPlayer->aModel[i].pos_world = pPlayer->aModel[i].pos;
+		}
+		else
+		{
+			pPlayer->aModel[i].pos_world = s_player.pos - pPlayer->aModel[i].pos;
+		}
+		pPlayer->aModel[i].rot = D3DXVECTOR3(pPlayer->aModel[i].quaternion.x, pPlayer->aModel[i].quaternion.y, pPlayer->aModel[i].quaternion.z);
 	}
 
 	// 移動処理
@@ -197,6 +313,179 @@ void MovePlayer()
 	s_player.movevec = move * PLAYER_MOVE;
 	s_player.pos += s_player.movevec;
 	//pPlayer->rot.y += NormalizeRot(pPlayer->rotDest.y - pPlayer->rot.y) * MODEL_ROT_ATTENUATION;
+}
+
+//=========================================
+// モデルパーツ同士の当たり判定
+//=========================================
+void ColisionPartsModel(void)
+{
+	for (int i = 0; i < PARTS_NUM; i++)
+	{
+		Model* model = &(s_player.aModel[i]);
+
+		if (!(model->bUse) || model->nIdxModelParent == -2)
+		{
+			continue;
+		}
+
+		for (int j = 0; j < PARTS_NUM; j++)
+		{
+			Model* hitModel = &(s_player.aModel[j]);
+
+			if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2 || i == j)
+			{
+				continue;
+			}
+			D3DXVECTOR3 hitMax = hitModel->pos + hitModel->MaxVtx;
+			D3DXVECTOR3 hitMin = hitModel->pos + hitModel->MinVtx;
+			D3DXVECTOR3 pos = s_player.pos + model->pos;
+			D3DXVECTOR3 pos_old = s_player.pos_old + model->pos_old;
+
+			if ((pos.x + model->MaxVtx.x > hitMin.x) && (pos.x + model->MinVtx.x < hitMax.x))
+			{
+				// 奥
+				if ((pos.z + model->MaxVtx.z >= hitMin.z) && (pos_old.z + model->MaxVtx.z <= hitMin.z))
+				{
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion *= s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//s_player.pos.z = hitMin.z - model->MaxVtx.z;
+
+				}
+				// 手前
+				else if ((pos.z + model->MinVtx.z <= hitMax.z) && pos_old.z + model->MinVtx.z >= hitMax.z)
+				{
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion *= s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//	s_player.pos.z = hitMax.z - model->MinVtx.z;
+				}
+			}
+			if (pos.z + model->MaxVtx.z > hitMin.z && pos.z + model->MinVtx.z < hitMax.z)
+			{
+				// 左
+				if (pos.x + model->MaxVtx.x >= hitMin.x && pos_old.x + model->MaxVtx.x <= hitMin.x)
+				{
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion *= s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//s_player.pos.x = hitMin.x - model->MaxVtx.x;
+				}
+				// 右
+				else if (pos.x + model->MinVtx.x <= hitMax.x && pos_old.x + model->MinVtx.x >= hitMax.x)
+				{
+					hitModel->pos -= s_player.pos;
+					hitModel->quaternion *= s_player.aModel[0].quaternion;
+					hitModel->nIdxModelParent = 0;
+					//s_player.pos.x = hitMax.x - model->MinVtx.x;
+				}
+			}
+		}
+	}
+}
+
+//--------------------------------------------------
+// プレイヤーのサイズを調べる
+//--------------------------------------------------
+void LookUpSizePlayer(void)
+{
+	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
+	{
+		Model* model = &(s_player.aModel[i]);
+
+		if (model->nIdxModelParent == -2)
+		{
+			continue;
+		}
+
+		D3DXVECTOR3 modelMaxVtx = model->pos + model->MaxVtx;
+		D3DXVECTOR3 modelMinVtx = model->pos + model->MinVtx;
+
+		if (modelMinVtx.x < s_player.MinVtx.x)
+		{
+			s_player.MinVtx.x = modelMaxVtx.x;
+		}
+		if (modelMinVtx.y < s_player.MinVtx.y)
+		{
+			s_player.MinVtx.y = modelMinVtx.y;
+		}
+		if (modelMinVtx.z < s_player.MinVtx.z)
+		{
+			s_player.MinVtx.z = modelMinVtx.z;
+		}
+		if (modelMinVtx.x > s_player.MaxVtx.x)
+		{
+			s_player.MaxVtx.x = modelMinVtx.x;
+		}
+		if (modelMinVtx.y > s_player.MaxVtx.y)
+		{
+			s_player.MaxVtx.y = modelMinVtx.y;
+		}
+		if (modelMinVtx.z > s_player.MaxVtx.z)
+		{
+			s_player.MaxVtx.z = modelMinVtx.z;
+		}
+
+		if (modelMaxVtx.x < s_player.MinVtx.x)
+		{
+			s_player.MinVtx.x = modelMaxVtx.x;
+		}
+		if (modelMaxVtx.y < s_player.MinVtx.y)
+		{
+			s_player.MinVtx.y = modelMaxVtx.y;
+		}
+		if (modelMaxVtx.z < s_player.MinVtx.z)
+		{
+			s_player.MinVtx.z = modelMaxVtx.z;
+		}
+		if (modelMaxVtx.x > s_player.MaxVtx.x)
+		{
+			s_player.MaxVtx.x = modelMaxVtx.x;
+		}
+		if (modelMaxVtx.y > s_player.MaxVtx.y)
+		{
+			s_player.MaxVtx.y = modelMaxVtx.y;
+		}
+		if (modelMaxVtx.z > s_player.MaxVtx.z)
+		{
+			s_player.MaxVtx.z = modelMaxVtx.z;
+		}
+
+	}
+
+	// 一番値が大きい値を半径にする。
+	if (s_player.fLength < fabsf(s_player.MinVtx.x))
+	{
+		s_player.fLength = fabsf(s_player.MinVtx.x);
+	}
+	if (s_player.fLength < fabsf(s_player.MinVtx.y))
+	{
+		s_player.fLength = fabsf(s_player.MinVtx.y);
+	}
+	if (s_player.fLength < fabsf(s_player.MinVtx.z))
+	{
+		s_player.fLength = fabsf(s_player.MinVtx.z);
+	}
+	if (s_player.fLength < fabsf(s_player.MaxVtx.x))
+	{
+		s_player.fLength = fabsf(s_player.MaxVtx.x);
+	}
+	if (s_player.fLength < fabsf(s_player.MaxVtx.y))
+	{
+		s_player.fLength = fabsf(s_player.MaxVtx.y);
+	}
+	if (s_player.fLength < fabsf(s_player.MaxVtx.z))
+	{
+		s_player.fLength = fabsf(s_player.MaxVtx.z);
+	}
+
+	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.x) ? s_player.fLength : fabsf(s_player.MinVtx.x);
+	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.y) ? s_player.fLength : fabsf(s_player.MinVtx.y);
+	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.z) ? s_player.fLength : fabsf(s_player.MinVtx.z);
+	//s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.x) ? s_player.fLength : fabsf(s_player.MaxVtx.x);
+	//s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.y) ? s_player.fLength : fabsf(s_player.MaxVtx.y);
+	//s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.z) ? s_player.fLength : fabsf(s_player.MaxVtx.z);
 }
 
 //=========================================
@@ -327,6 +616,8 @@ void LoadPlayer(void)
 
 	// モデルのサイズ計測
 	ModelSize(&(s_player.MinVtx), &(s_player.MaxVtx), model->pMesh);
+	// モデルのサイズ計測
+	ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
 
 	// メッシュに使用されているテクスチャ用の配列を用意する
 	model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
@@ -469,154 +760,6 @@ void LoadPlayerModel(void)
 			}
 		}
 	}
-}
-
-//=========================================
-// モデルパーツ同士の当たり判定
-//=========================================
-void ColisionPartsModel(void)
-{
-	for (int i = 0; i < PARTS_NUM; i++)
-	{
-		Model* model = &(s_player.aModel[i]);
-
-		if (!(model->bUse) || model->nIdxModelParent == -2)
-		{
-			continue;
-		}
-
-		for (int j = 0; j < PARTS_NUM; j++)
-		{
-			Model* hitModel = &(s_player.aModel[j]);
-
-			if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2 || i == j)
-			{
-				continue;
-			}
-			D3DXVECTOR3 hitMax = hitModel->pos + hitModel->MaxVtx;
-			D3DXVECTOR3 hitMin = hitModel->pos + hitModel->MinVtx;
-			D3DXVECTOR3 pos = s_player.pos + model->pos;
-			D3DXVECTOR3 pos_old = s_player.pos_old + model->pos_old;
-
-			if ((pos.x + model->MaxVtx.x > hitMin.x) && (pos.x + model->MinVtx.x < hitMax.x))
-			{
-				// 奥
-				if ((pos.z + model->MaxVtx.z >= hitMin.z) && (pos_old.z + model->MaxVtx.z <= hitMin.z))
-				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion = s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//s_player.pos.z = hitMin.z - model->MaxVtx.z;
-
-				}
-				// 手前
-				else if ((pos.z + model->MinVtx.z <= hitMax.z) && pos_old.z + model->MinVtx.z >= hitMax.z)
-				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion = s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//	s_player.pos.z = hitMax.z - model->MinVtx.z;
-				}
-			}
-			if (pos.z + model->MaxVtx.z > hitMin.z && pos.z + model->MinVtx.z < hitMax.z)
-			{
-				// 左
-				if (pos.x + model->MaxVtx.x >= hitMin.x && pos_old.x + model->MaxVtx.x <= hitMin.x)
-				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion = s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//s_player.pos.x = hitMin.x - model->MaxVtx.x;
-				}
-				// 右
-				else if (pos.x + model->MinVtx.x <= hitMax.x && pos_old.x + model->MinVtx.x >= hitMax.x)
-				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion = s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//s_player.pos.x = hitMax.x - model->MinVtx.x;
-				}
-			}
-		}
-	}
-}
-
-//--------------------------------------------------
-// プレイヤーのサイズを調べる
-//--------------------------------------------------
-void LookUpSizePlayer(void)
-{
-	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
-	{
-		Model* model = &(s_player.aModel[i]);
-
-		if (model->nIdxModelParent != -2)
-		{
-			continue;
-		}
-
-		D3DXVECTOR3 modelMaxVtx = model->pos + model->MaxVtx;
-		D3DXVECTOR3 modelMinVtx = model->pos + model->MinVtx;
-
-
-		if (modelMinVtx.x < s_player.MinVtx.x)
-		{
-			s_player.MinVtx.x = modelMaxVtx.x;
-		}
-		if (modelMinVtx.y < s_player.MinVtx.y)
-		{
-			s_player.MinVtx.y = modelMinVtx.y;
-		}
-		if (modelMinVtx.z < s_player.MinVtx.z)
-		{
-			s_player.MinVtx.z = modelMinVtx.z;
-		}
-		if (modelMinVtx.x > s_player.MaxVtx.x)
-		{
-			s_player.MaxVtx.x = modelMinVtx.x;
-		}
-		if (modelMinVtx.y > s_player.MaxVtx.y)
-		{
-			s_player.MaxVtx.y = modelMinVtx.y;
-		}
-		if (modelMinVtx.z > s_player.MaxVtx.z)
-		{
-			s_player.MaxVtx.z = modelMinVtx.z;
-		}
-
-		if (modelMaxVtx.x < s_player.MinVtx.x)
-		{
-			s_player.MinVtx.x = modelMaxVtx.x;
-		}
-		if (modelMaxVtx.y < s_player.MinVtx.y)
-		{
-			s_player.MinVtx.y = modelMaxVtx.y;
-		}
-		if (modelMaxVtx.z < s_player.MinVtx.z)
-		{
-			s_player.MinVtx.z = modelMaxVtx.z;
-		}
-		if (modelMaxVtx.x > s_player.MaxVtx.x)
-		{
-			s_player.MaxVtx.x = modelMaxVtx.x;
-		}
-		if (modelMaxVtx.y > s_player.MaxVtx.y)
-		{
-			s_player.MaxVtx.y = modelMaxVtx.y;
-		}
-		if (modelMaxVtx.z > s_player.MaxVtx.z)
-		{
-			s_player.MaxVtx.z = modelMaxVtx.z;
-		}
-
-	}
-
-	s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.x) ? s_player.fLength : fabsf(s_player.MinVtx.x);
-	s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.y) ? s_player.fLength : fabsf(s_player.MinVtx.y);
-	s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.z) ? s_player.fLength : fabsf(s_player.MinVtx.z);
-	s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.x) ? s_player.fLength : fabsf(s_player.MaxVtx.x);
-	s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.y) ? s_player.fLength : fabsf(s_player.MaxVtx.y);
-	s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.z) ? s_player.fLength : fabsf(s_player.MaxVtx.z);
 }
 
 //--------------------------------------------------

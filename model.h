@@ -21,6 +21,7 @@ typedef struct
 	D3DXMATRIX mtxWorld;			// ワールドマトリックス
 	D3DXVECTOR3 pos;				// 位置
 	D3DXVECTOR3 pos_old;			// 前回位置
+	D3DXVECTOR3 pos_world;			// ワールド位置
 	D3DXVECTOR3 rot;				// 角度
 	D3DXVECTOR3 rotDest;			// 目的の角度
 

@@ -18,12 +18,18 @@
 #include "mesh_cylinder.h"
 #include "mesh_sphere.h"
 #include "mesh_sky.h"
+#include "line.h"
 
 //=========================================
 // 初期化
 //=========================================
 void InitGame(void)
 {
+#ifdef _DEBUG
+	// ラインの初期化処理
+	InitLine();
+#endif // !_DEBUG
+
 	// ポリゴンの初期化処理
 	InitPolygon();
 
@@ -67,7 +73,6 @@ void InitGame(void)
 	//SetWall(D3DXVECTOR3(0.0f, 0.0f, -50.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
 	//SetWall(D3DXVECTOR3(50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));
 	//SetWall(D3DXVECTOR3(-50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f));
-
 }
 
 //=========================================
@@ -110,6 +115,11 @@ void UnInitGame(void)
 
 	// 壁の終了処理
 	UninitWall();
+
+#ifdef _DEBUG
+	// ラインの更新処理
+	UninitLine();
+#endif // !_DEBUG
 }
 
 //=========================================
@@ -152,6 +162,11 @@ void UpdateGame(void)
 
 	// 壁の更新
 	UpdateWall();
+
+#ifdef _DEBUG
+	// ラインの更新処理
+	UpdateLine();
+#endif // !_DEBUG
 }
 
 //=========================================
@@ -195,4 +210,8 @@ void DrawGame(void)
 	//// ビルボードの描画処理
 	//DrawBillboard();
 
+#ifdef _DEBUG
+	// ラインの描画処理
+	DrawLine();
+#endif // !_DEBUG
 }

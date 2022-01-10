@@ -64,9 +64,18 @@ typedef struct
 //------------------------------------
 typedef struct
 {
-	D3DXVECTOR3		pos;		// 頂点座標
-	D3DCOLOR		col;		// 頂点カラー
+	D3DXVECTOR3 pos;	// 頂点座標
+	D3DCOLOR col;		// 頂点カラー
 }VERTEX_LINE;
+
+//------------------------------------
+// 線分の構造体を定義
+//------------------------------------
+typedef struct
+{
+	D3DXVECTOR3 start;		// 頂点座標
+	D3DXVECTOR3 end;		// 頂点座標
+}Segment;
 
 //------------------------------------
 // プロトタイプ宣言

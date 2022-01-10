@@ -11,7 +11,6 @@
 #include "model.h"
 #include "common.h"
 #include "input.h"
-#include "setup.h"
 #include "camera.h"
 #include "shadow.h"
 #include "player.h"

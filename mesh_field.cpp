@@ -10,7 +10,7 @@
 #include "main.h"
 #include "mesh_field.h"
 #include "polygon.h"
-#include "setup.h"
+#include "common.h"
 #include "input.h"
 
 //------------------------------------

@@ -10,8 +10,8 @@
 #include "main.h"
 #include "mesh_sphere.h"
 #include "polygon.h"
-#include "setup.h"
 #include "input.h"
+#include "common.h"
 
 //------------------------------------
 // ƒ}ƒNƒ’è‹`

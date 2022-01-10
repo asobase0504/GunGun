@@ -166,7 +166,6 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="polygon.cpp" />
-    <ClCompile Include="setup.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
@@ -186,7 +185,6 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="polygon.h" />
-    <ClInclude Include="setup.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>

@@ -11,7 +11,6 @@
 #include "common.h"
 #include "player.h"
 #include "input.h"
-#include "setup.h"
 #include "line.h"
 #include "camera.h"
 #include "model.h"
@@ -295,6 +294,10 @@ void MovePlayer()
 		move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
 		move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 	}
+	if (GetKeyboardPress(DIK_O))
+	{
+		s_player.rot.y += 0.05f;
+	}
 
 	D3DXVECTOR3 axis;	// ‰ñ“]Ž²
 
@@ -342,24 +345,19 @@ void ColisionPartsModel(void)
 			D3DXVECTOR3 pos = s_player.pos + model->pos;
 			D3DXVECTOR3 pos_old = s_player.pos_old + model->pos_old;
 
+			bool isHit = false;
+
 			if ((pos.x + model->MaxVtx.x > hitMin.x) && (pos.x + model->MinVtx.x < hitMax.x))
 			{
 				// ‰œ
 				if ((pos.z + model->MaxVtx.z >= hitMin.z) && (pos_old.z + model->MaxVtx.z <= hitMin.z))
 				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion *= s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//s_player.pos.z = hitMin.z - model->MaxVtx.z;
-
+					isHit = true;
 				}
 				// Žè‘O
 				else if ((pos.z + model->MinVtx.z <= hitMax.z) && pos_old.z + model->MinVtx.z >= hitMax.z)
 				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion *= s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//	s_player.pos.z = hitMax.z - model->MinVtx.z;
+					isHit = true;
 				}
 			}
 			if (pos.z + model->MaxVtx.z > hitMin.z && pos.z + model->MinVtx.z < hitMax.z)
@@ -367,19 +365,22 @@ void ColisionPartsModel(void)
 				// ¶
 				if (pos.x + model->MaxVtx.x >= hitMin.x && pos_old.x + model->MaxVtx.x <= hitMin.x)
 				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion *= s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//s_player.pos.x = hitMin.x - model->MaxVtx.x;
+					isHit = true;
 				}
 				// ‰E
 				else if (pos.x + model->MinVtx.x <= hitMax.x && pos_old.x + model->MinVtx.x >= hitMax.x)
 				{
-					hitModel->pos -= s_player.pos;
-					hitModel->quaternion *= s_player.aModel[0].quaternion;
-					hitModel->nIdxModelParent = 0;
-					//s_player.pos.x = hitMax.x - model->MinVtx.x;
+					isHit = true;
 				}
+			}
+
+			// “–‚½‚Á‚½ê‡
+			if (isHit)
+			{
+				hitModel->pos -= s_player.pos;
+				hitModel->quaternion = s_player.aModel[0].quaternion;
+				hitModel->nIdxModelParent = 0;
+				//s_player.pos.z = hitMin.z - model->MaxVtx.z;
 			}
 		}
 	}

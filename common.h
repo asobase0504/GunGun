@@ -25,4 +25,7 @@ float NormalizeRot(float rot);	// Šp“x‚Ì³‹K‰»
 void RectDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ’Êí‚Ì•`Ê
 void RectAddDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ‰ÁZˆ—‚Ì•`Ê
 
+// “–‚½‚è”»’è
+bool SegmentColision(Segment seg1, Segment seg2);	// ü•ª“¯m‚Ì“–‚½‚è”»’è
+
 #endif // !_COMMON_H_

@@ -9,7 +9,7 @@
 //------------------------------------
 #include "main.h"
 #include "shadow.h"
-#include "setup.h"
+#include "common.h"
 
 //------------------------------------
 // É}ÉNÉçíËã`

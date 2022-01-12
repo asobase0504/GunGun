@@ -111,10 +111,46 @@ void ModelSize(D3DXVECTOR3* Min, D3DXVECTOR3* Max, LPD3DXMESH Mesh)
 	Mesh->UnlockVertexBuffer();
 }
 
+////=========================================
+//// 線分同士の当たり判定
+////=========================================
+//bool SegmentColision(Segment seg1, Segment seg2)
+//{
+//	// ベクトルの始点同士の距離。
+//	D3DXVECTOR3 v = seg2.s - seg1.s;
+//
+//	// ブロックのベクトルと被対象のベクトルが平行か調べる
+//	float Bv_Tv = D3DXVec2Cross(&(seg1.v), &(seg2.v));
+//	if (Bv_Tv == 0.0f)
+//	{
+//		// 並行である。
+//		return false;
+//	}
+//
+//	D3DXVec3Cross()
+//
+//	float v_Bv = D3DXVec2Cross(&(v), &(seg1.v));
+//	float v_Tv = D3DXVec2Cross(&(v), &(seg2.v));
+//
+//	float hit1 = v_Tv / Bv_Tv;
+//	float hit2 = v_Bv / Bv_Tv;
+//
+//	if ((hit1 < 0.0f) || (hit1 > 1.0f) || (hit2 < 0.0f) || (hit2 > 1.0f))
+//	{
+//		return false;
+//	}
+//
+//	if (Outpos != NULL)
+//	{
+//		*Outpos = seg1.s + seg1.v * hit1;
+//	}
+//	return true;
+//}
+
 //=========================================
-// 線分同士の当たり判定
+// モデルのサイズを算出(球と球の当たり判定)
 //=========================================
-bool SegmentColision(Segment seg1, Segment seg2)
+bool SphereColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, float fLength2)
 {
-	return false;
+	return (pow((pos2.x - pos1.x), 2.0f) + pow((pos2.y - pos1.y), 2.0f) + pow((pos2.z - pos1.z), 2.0f)) <= (pow((fLength1 + fLength2), 2.0f));
 }

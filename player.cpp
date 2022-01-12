@@ -47,9 +47,9 @@ void LookUpSizePlayer(void);	// プレイヤーのサイズを調べる
 //------------------------------------
 // 静的変数
 //------------------------------------
-static Player s_player;							// モデルの構造体
-static MODEL_STATE s_state;						// モデルのステータス
-static int s_nShadowCnt;						// 影の割り当て
+static Player s_player;			// モデルの構造体
+static MODEL_STATE s_state;		// モデルのステータス
+static int s_nShadowCnt;		// 影の割り当て
 
 //=========================================
 // 初期化
@@ -246,7 +246,7 @@ void UpdatePlayer(void)
 	CollisionMeshField(&pPlayer->pos);
 
 	// モデルパーツと床の当たり判定
-	//CollisionMeshField(&pPlayer->pos,);
+	//CollisionMeshField(&pPlayer->pos);
 
 	//// プレイヤーとモデルの当たり判定
 	//CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);
@@ -340,42 +340,11 @@ void ColisionPartsModel(void)
 			{
 				continue;
 			}
-			D3DXVECTOR3 hitMax = hitModel->pos + hitModel->MaxVtx;
-			D3DXVECTOR3 hitMin = hitModel->pos + hitModel->MinVtx;
 			D3DXVECTOR3 pos = s_player.pos + model->pos;
 			D3DXVECTOR3 pos_old = s_player.pos_old + model->pos_old;
 
-			bool isHit = false;
-
-			if ((pos.x + model->MaxVtx.x > hitMin.x) && (pos.x + model->MinVtx.x < hitMax.x))
-			{
-				// 奥
-				if ((pos.z + model->MaxVtx.z >= hitMin.z) && (pos_old.z + model->MaxVtx.z <= hitMin.z))
-				{
-					isHit = true;
-				}
-				// 手前
-				else if ((pos.z + model->MinVtx.z <= hitMax.z) && pos_old.z + model->MinVtx.z >= hitMax.z)
-				{
-					isHit = true;
-				}
-			}
-			if (pos.z + model->MaxVtx.z > hitMin.z && pos.z + model->MinVtx.z < hitMax.z)
-			{
-				// 左
-				if (pos.x + model->MaxVtx.x >= hitMin.x && pos_old.x + model->MaxVtx.x <= hitMin.x)
-				{
-					isHit = true;
-				}
-				// 右
-				else if (pos.x + model->MinVtx.x <= hitMax.x && pos_old.x + model->MinVtx.x >= hitMax.x)
-				{
-					isHit = true;
-				}
-			}
-
 			// 当たった場合
-			if (isHit)
+			if (SphereColision(pos, model->MaxVtx.x, hitModel->pos, hitModel->MaxVtx.x))
 			{
 				hitModel->pos -= s_player.pos;
 				hitModel->quaternion = s_player.aModel[0].quaternion;

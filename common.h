@@ -27,5 +27,5 @@ void RectAddDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt
 
 // “–‚½‚è”»’è
 bool SegmentColision(Segment seg1, Segment seg2);	// ü•ª“¯m‚Ì“–‚½‚è”»’è
-
+bool SphereColision(D3DXVECTOR3 pos1,float fLength1, D3DXVECTOR3 pos2, float fLength2);
 #endif // !_COMMON_H_

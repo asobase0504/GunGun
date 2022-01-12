@@ -73,8 +73,8 @@ typedef struct
 //------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 start;		// 頂点座標
-	D3DXVECTOR3 end;		// 頂点座標
+	D3DXVECTOR3 s;		// 頂点座標
+	D3DXVECTOR3 v;		// 頂点座標
 }Segment;
 
 //------------------------------------

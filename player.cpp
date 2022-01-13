@@ -325,27 +325,6 @@ void ColisionPartsModel(void)
 			hitModel->nIdxModelParent = 0;
 		}
 	}
-
-	//for (int i = 0; i < PARTS_NUM; i++)
-	//{
-	//	Model* model = &(s_player.aModel[i]);
-
-	//	if (!(model->bUse) || model->nIdxModelParent == -2)
-	//	{
-	//		continue;
-	//	}
-
-	//	for (int j = 0; j < PARTS_NUM; j++)
-	//	{
-	//		Model* hitModel = &(s_player.aModel[j]);
-
-	//		if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2 || i == j)
-	//		{
-	//			continue;
-	//		}
-
-	//	}
-	//}
 }
 
 //--------------------------------------------------
@@ -417,40 +396,8 @@ void LookUpSizePlayer(void)
 
 	}
 
-	s_player.fLength = (fabsf(s_player.MinVtx.x) + fabsf(s_player.MinVtx.y) + fabsf(s_player.MinVtx.z) + fabsf(s_player.MaxVtx.x) + fabsf(s_player.MaxVtx.y) + fabsf(s_player.MaxVtx.z))/ 6.0f;
-	//s_player.fLength = sqrtf(s_player.fLength);
-	//// àÍî‘ílÇ™ëÂÇ´Ç¢ílÇîºåaÇ…Ç∑ÇÈÅB
-	//if (s_player.fLength < fabsf(s_player.MinVtx.x))
-	//{
-	//	s_player.fLength = fabsf(s_player.MinVtx.x);
-	//}
-	//if (s_player.fLength < fabsf(s_player.MinVtx.y))
-	//{
-	//	s_player.fLength = fabsf(s_player.MinVtx.y);
-	//}
-	//if (s_player.fLength < fabsf(s_player.MinVtx.z))
-	//{
-	//	s_player.fLength = fabsf(s_player.MinVtx.z);
-	//}
-	//if (s_player.fLength < fabsf(s_player.MaxVtx.x))
-	//{
-	//	s_player.fLength = fabsf(s_player.MaxVtx.x);
-	//}
-	//if (s_player.fLength < fabsf(s_player.MaxVtx.y))
-	//{
-	//	s_player.fLength = fabsf(s_player.MaxVtx.y);
-	//}
-	//if (s_player.fLength < fabsf(s_player.MaxVtx.z))
-	//{
-	//	s_player.fLength = fabsf(s_player.MaxVtx.z);
-	//}
-
-	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.x) ? s_player.fLength : fabsf(s_player.MinVtx.x);
-	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.y) ? s_player.fLength : fabsf(s_player.MinVtx.y);
-	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.z) ? s_player.fLength : fabsf(s_player.MinVtx.z);
-	//s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.x) ? s_player.fLength : fabsf(s_player.MaxVtx.x);
-	//s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.y) ? s_player.fLength : fabsf(s_player.MaxVtx.y);
-	//s_player.fLength = s_player.fLength > fabsf(s_player.MaxVtx.z) ? s_player.fLength : fabsf(s_player.MaxVtx.z);
+	D3DXVECTOR3 v = s_player.MaxVtx - s_player.MinVtx;
+	s_player.fLength = sqrtf((v.x + v.y + v.z) / 6.0f - s_player.aModel[0].MaxVtx.x) + s_player.aModel[0].MaxVtx.x;
 }
 
 //=========================================

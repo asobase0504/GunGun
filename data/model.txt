@@ -14,8 +14,9 @@ NUM_MODEL = 15
 #------------------------------------------------------------------------------
 # ÉÇÉfÉãÉtÉ@ÉCÉãñº
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/bee_head.x				# [0]ñI(è¨)
-MODEL_FILENAME = data/MODEL/desk.x				# [1]ñI(è¨)
+MODEL_FILENAME = data/MODEL/gabyou.x			# [1]âÊïe(è¨)
+MODEL_FILENAME = data/MODEL/bee_head.x			# [0]ñI(è¨)
+MODEL_FILENAME = data/MODEL/desk.x				# [1]ä˜(è¨)
 
 #------------------
 # test
@@ -98,8 +99,151 @@ MODELSET
 	POS = 100 0 100
 	ROT = 0 0 0
 END_MODELSET
-
-
+MODELSET
+	TYPE = 0
+	POS = 100 0 150
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 200
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 250
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 100 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 150 0 100
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 150 0 150
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 150 0 200
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 150 0 250
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 0
+	POS = 150 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 175 0 100
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 175 0 150
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 175 0 200
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 175 0 250
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 175 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 200 0 100
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 200 0 150
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 200 0 200
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 200 0 250
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 1
+	POS = 200 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 220 0 100
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 220 0 150
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 220 0 200
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 230 0 250
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 230 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 230 0 100
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 230 0 150
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 230 0 200
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 230 0 250
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 230 0 300
+	ROT = 0 0 0
+END_MODELSET
 #------------------------------------------------------------------------------
 # ÉvÉåÉCÉÑÅ[èÓïÒ
 #------------------------------------------------------------------------------

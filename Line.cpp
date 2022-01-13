@@ -19,9 +19,9 @@
 //--------------------------------------------------
 typedef struct
 {
-	D3DXVECTOR3* pos;			// 位置
-	D3DXVECTOR3* rot;			// 向き
-	D3DXQUATERNION* quaternion;		// クオータニオン
+	D3DXVECTOR3 pos;			// 位置
+	D3DXVECTOR3 rot;			// 向き
+	D3DXQUATERNION quaternion;		// クオータニオン
 	D3DXCOLOR col;			// 色
 	D3DXMATRIX mtxWorld;		// ワールドマトリックス
 	bool bUse;			// 使用しているかどうか
@@ -126,11 +126,11 @@ void DrawLine(void)
 		//D3DXMatrixRotationYawPitchRoll(&mtxRot, pLine->rot->y, pLine->rot->x, pLine->rot->z);
 		//D3DXMatrixMultiply(&pLine->mtxWorld, &pLine->mtxWorld, &mtxRot);
 		// クォータニオンの使用した姿勢の設定
-		D3DXMatrixRotationQuaternion(&mtxRot, pLine->quaternion);			// クオータニオンによる行列回転
+		D3DXMatrixRotationQuaternion(&mtxRot, &pLine->quaternion);			// クオータニオンによる行列回転
 		D3DXMatrixMultiply(&pLine->mtxWorld, &pLine->mtxWorld, &mtxRot);	// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, pLine->pos->x, pLine->pos->y, pLine->pos->z);
+		D3DXMatrixTranslation(&mtxTrans, pLine->pos.x, pLine->pos.y, pLine->pos.z);
 		D3DXMatrixMultiply(&pLine->mtxWorld, &pLine->mtxWorld, &mtxTrans);
 
 		// ワールドマトリックスの設定
@@ -174,8 +174,8 @@ void SetLine(D3DXVECTOR3* pos, D3DXQUATERNION* quaternion, D3DXVECTOR3 start, D3
 
 		/*↓ 使用されていない ↓*/
 
-		pLine->pos = pos;
-		pLine->quaternion = quaternion;
+		pLine->pos = *pos;
+		pLine->quaternion = *quaternion;
 		pLine->col = col;
 		pLine->bUse = true;
 
@@ -188,8 +188,8 @@ void SetLine(D3DXVECTOR3* pos, D3DXQUATERNION* quaternion, D3DXVECTOR3 start, D3
 		pVtx[0].pos = start;
 		pVtx[1].pos = end;
 
-		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[0].col = pLine->col;
+		pVtx[1].col = pLine->col;
 
 		// 頂点バッファをアンロックする
 		s_pVtxBuff->Unlock();

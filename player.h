@@ -16,7 +16,7 @@
 //------------------------------------
 // モデルパーツの構造体定義
 //------------------------------------
-#define PARTS_NUM	(20)		// パーツの数
+#define PARTS_NUM	(255)		// パーツの数
 
 //------------------------------------
 // モデルの構造体定義
@@ -28,6 +28,7 @@ typedef struct
 	D3DXVECTOR3 rot;				// 角度
 	D3DXVECTOR3 rotDest;			// 目的の角度
 	D3DXVECTOR3 movevec;			// ベクトル
+	D3DXQUATERNION quaternion;		// クオータニオン
 	float moverot;					// 移動時の回転量
 	float fLength;					// 大きさ
 	D3DXVECTOR3 MinVtx;				// 頂点の最小値

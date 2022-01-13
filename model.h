@@ -27,6 +27,7 @@ typedef struct
 
 	// クオータニオン系統
 	D3DXQUATERNION quaternion;		// クオータニオン
+	D3DXQUATERNION quaternion_old;		// クオータニオン
 	bool isQuaternion;				// クオータニオンを使用するかどうか。
 
 	D3DXVECTOR3 movevec;			// ベクトル

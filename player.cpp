@@ -84,11 +84,69 @@ void InitPlayer(void)
 		}
 		else
 		{
-			model->pos_world = s_player.pos - model->pos;
+			model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
 		}
 
 		// 線の設定
-		SetModelLine(&model->pos_world, &model->quaternion, model->MaxVtx, model->MinVtx, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		//SetModelLine(&model->pos_world, &model->quaternion, model->MaxVtx, model->MinVtx, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
+	D3DXMATRIX /*mtxScale,*/ mtxRot, mtxTrans;	// 計算用マトリックス
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&s_player.mtxWorld);
+
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, s_player.pos.x, s_player.pos.y, s_player.pos.z);	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &s_player.mtxWorld);
+
+	for (int i = 0; i < PARTS_NUM; i++)
+	{
+		Model* model = &(s_player.aModel[i]);
+
+		if (!model->bUse)
+		{
+			continue;
+		}
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&model->mtxWorld);
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);			// クオータニオンによる行列回転
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+		D3DXMATRIX mtxParent;
+		if (model->nIdxModelParent == -1)
+		{
+			mtxParent = s_player.mtxWorld;
+		}
+		else
+		{
+			mtxParent = s_player.aModel[model->nIdxModelParent].mtxWorld;
+		}
+
+		// プレイヤーとくっついている状態のモデルはプレイヤーとの行列計算
+		if (model->nIdxModelParent != -2)
+		{
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
+		}
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
 	}
 }
 
@@ -143,17 +201,11 @@ void UpdatePlayer(void)
 	// モデル位置の保存
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
-		pPlayer->aModel[i].pos_old = pPlayer->aModel[i].pos;
+		Model* model = &(pPlayer->aModel[i]);
+		model->pos_old = model->pos;
+		model->quaternion_old = model->quaternion;
 
-		if (pPlayer->aModel[i].nIdxModelParent == -2)
-		{
-			pPlayer->aModel[i].pos_world = pPlayer->aModel[i].pos;
-		}
-		else
-		{
-			pPlayer->aModel[i].pos_world = s_player.pos - pPlayer->aModel[i].pos;
-		}
-		pPlayer->aModel[i].rot = D3DXVECTOR3(pPlayer->aModel[i].quaternion.x, pPlayer->aModel[i].quaternion.y, pPlayer->aModel[i].quaternion.z);
+		model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
 	}
 
 	// 移動処理
@@ -176,7 +228,7 @@ void UpdatePlayer(void)
 	
 	// プレイヤー位置とモデル回転する軸の位置の調整。
 	//pPlayer->pos.y += s_player.fLength;	// 半径分床の当たり判定を底上げする
-	pPlayer->pos.y += -s_player.MinVtx.y;
+	pPlayer->pos.y += s_player.fLength;	// プレイヤーの位置を底上げ。
 
 	// 角度の正規化
 	NormalizeRot(pPlayer->rot.y);
@@ -211,10 +263,6 @@ void MovePlayer()
 		move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
 		move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 	}
-	if (GetKeyboardPress(DIK_O))
-	{
-		s_player.rot.y += 0.05f;
-	}
 
 	D3DXVECTOR3 axis;	// 回転軸
 
@@ -223,9 +271,14 @@ void MovePlayer()
 
 	D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
 
-	D3DXQuaternionRotationAxis(&quaternion, &axis, 0.1f);	// 回転軸と回転角度を指定
+	D3DXQuaternionRotationAxis(&quaternion, &axis, 0.125f);	// 回転軸と回転角度を指定
 
 	s_player.aModel[0].quaternion *= quaternion;
+
+	if (GetKeyboardPress(DIK_O))
+	{
+		s_player.aModel[0].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);
+	}
 
 	// クオータニオンのノーマライズ
 	D3DXQuaternionNormalize(&s_player.aModel[0].quaternion, &s_player.aModel[0].quaternion);
@@ -240,36 +293,59 @@ void MovePlayer()
 //=========================================
 void ColisionPartsModel(void)
 {
-	for (int i = 0; i < PARTS_NUM; i++)
-	{
-		Model* model = &(s_player.aModel[i]);
+	Model* model = &(s_player.aModel[0]);
 
-		if (!(model->bUse) || model->nIdxModelParent == -2)
+	for (int j = 0; j < PARTS_NUM; j++)
+	{
+		Model* hitModel = &(s_player.aModel[j]);
+
+		if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2)
 		{
 			continue;
 		}
 
-		for (int j = 0; j < PARTS_NUM; j++)
+		// 当たった場合
+		if (SphereColision(model->pos_world, s_player.fLength, hitModel->pos_world, hitModel->MaxVtx.x))
 		{
-			Model* hitModel = &(s_player.aModel[j]);
+			D3DXMATRIX mtxRot;
+			D3DXVECTOR3 pos_local = hitModel->pos_world - s_player.pos_old;
+			D3DXVECTOR3 v = ZERO_VECTOR;
 
-			if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2 || i == j)
-			{
-				continue;
-			}
-			D3DXVECTOR3 pos = s_player.pos + model->pos;
-			D3DXVECTOR3 pos_old = s_player.pos_old + model->pos_old;
+			D3DXQUATERNION quaternionHit = s_player.aModel[0].quaternion;
+			quaternionHit.w *= -1;
 
-			// 当たった場合
-			if (SphereColision(pos, model->MaxVtx.x, hitModel->pos, hitModel->MaxVtx.x))
-			{
-				hitModel->pos -= s_player.pos;
-				hitModel->quaternion = s_player.aModel[0].quaternion;
-				hitModel->nIdxModelParent = 0;
-				//s_player.pos.z = hitMin.z - model->MaxVtx.z;
-			}
+			// クォータニオンの使用した姿勢の設定
+			D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+			D3DXVec3TransformCoord(&hitModel->pos, &pos_local, &mtxRot);
+
+			D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
+			SetLine(&v, &quaternion, hitModel->pos_world, s_player.pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+			hitModel->quaternion = quaternionHit;
+			hitModel->nIdxModelParent = 0;
 		}
 	}
+
+	//for (int i = 0; i < PARTS_NUM; i++)
+	//{
+	//	Model* model = &(s_player.aModel[i]);
+
+	//	if (!(model->bUse) || model->nIdxModelParent == -2)
+	//	{
+	//		continue;
+	//	}
+
+	//	for (int j = 0; j < PARTS_NUM; j++)
+	//	{
+	//		Model* hitModel = &(s_player.aModel[j]);
+
+	//		if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2 || i == j)
+	//		{
+	//			continue;
+	//		}
+
+	//	}
+	//}
 }
 
 //--------------------------------------------------
@@ -291,7 +367,7 @@ void LookUpSizePlayer(void)
 
 		if (modelMinVtx.x < s_player.MinVtx.x)
 		{
-			s_player.MinVtx.x = modelMaxVtx.x;
+			s_player.MinVtx.x = modelMinVtx.x;
 		}
 		if (modelMinVtx.y < s_player.MinVtx.y)
 		{
@@ -341,31 +417,33 @@ void LookUpSizePlayer(void)
 
 	}
 
-	// 一番値が大きい値を半径にする。
-	if (s_player.fLength < fabsf(s_player.MinVtx.x))
-	{
-		s_player.fLength = fabsf(s_player.MinVtx.x);
-	}
-	if (s_player.fLength < fabsf(s_player.MinVtx.y))
-	{
-		s_player.fLength = fabsf(s_player.MinVtx.y);
-	}
-	if (s_player.fLength < fabsf(s_player.MinVtx.z))
-	{
-		s_player.fLength = fabsf(s_player.MinVtx.z);
-	}
-	if (s_player.fLength < fabsf(s_player.MaxVtx.x))
-	{
-		s_player.fLength = fabsf(s_player.MaxVtx.x);
-	}
-	if (s_player.fLength < fabsf(s_player.MaxVtx.y))
-	{
-		s_player.fLength = fabsf(s_player.MaxVtx.y);
-	}
-	if (s_player.fLength < fabsf(s_player.MaxVtx.z))
-	{
-		s_player.fLength = fabsf(s_player.MaxVtx.z);
-	}
+	s_player.fLength = (fabsf(s_player.MinVtx.x) + fabsf(s_player.MinVtx.y) + fabsf(s_player.MinVtx.z) + fabsf(s_player.MaxVtx.x) + fabsf(s_player.MaxVtx.y) + fabsf(s_player.MaxVtx.z))/ 6.0f;
+	//s_player.fLength = sqrtf(s_player.fLength);
+	//// 一番値が大きい値を半径にする。
+	//if (s_player.fLength < fabsf(s_player.MinVtx.x))
+	//{
+	//	s_player.fLength = fabsf(s_player.MinVtx.x);
+	//}
+	//if (s_player.fLength < fabsf(s_player.MinVtx.y))
+	//{
+	//	s_player.fLength = fabsf(s_player.MinVtx.y);
+	//}
+	//if (s_player.fLength < fabsf(s_player.MinVtx.z))
+	//{
+	//	s_player.fLength = fabsf(s_player.MinVtx.z);
+	//}
+	//if (s_player.fLength < fabsf(s_player.MaxVtx.x))
+	//{
+	//	s_player.fLength = fabsf(s_player.MaxVtx.x);
+	//}
+	//if (s_player.fLength < fabsf(s_player.MaxVtx.y))
+	//{
+	//	s_player.fLength = fabsf(s_player.MaxVtx.y);
+	//}
+	//if (s_player.fLength < fabsf(s_player.MaxVtx.z))
+	//{
+	//	s_player.fLength = fabsf(s_player.MaxVtx.z);
+	//}
 
 	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.x) ? s_player.fLength : fabsf(s_player.MinVtx.x);
 	//s_player.fLength = s_player.fLength > fabsf(s_player.MinVtx.y) ? s_player.fLength : fabsf(s_player.MinVtx.y);

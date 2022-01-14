@@ -214,8 +214,32 @@ void UpdatePlayer(void)
 	// プレイヤーと床の当たり判定
 	CollisionMeshField(&pPlayer->pos);
 
-	// モデルパーツと床の当たり判定
-	//CollisionMeshField(&pPlayer->pos);
+	// 球の凸凹を表現するための当たり判定
+	//for (int i = 0; i < PARTS_NUM; i++)
+	//{
+	//	Model* model = &(pPlayer->aModel[i]);
+
+	//	if (!model->bUse || model->nIdxModelParent != 0)
+	//	{
+	//		continue;
+	//	}
+
+	//	if (fabsf(model->MaxVtx.x) >= pPlayer->fLength ||
+	//		fabsf(model->MaxVtx.y) >= pPlayer->fLength ||
+	//		fabsf(model->MaxVtx.z) >= pPlayer->fLength)
+	//	{
+	//		// モデルパーツと床の当たり判定
+	//		CollisionMeshField(&pPlayer->pos, &(model->pos_world + model->MaxVtx));
+	//	}
+
+	//	if (fabsf(model->MinVtx.x) >= pPlayer->fLength ||
+	//		fabsf(model->MinVtx.y) >= pPlayer->fLength ||
+	//		fabsf(model->MinVtx.z) >= pPlayer->fLength)
+	//	{
+	//		// モデルパーツと床の当たり判定
+	//		CollisionMeshField(&pPlayer->pos, &(model->pos_world + model->MinVtx));
+	//	}
+	//}
 
 	//// プレイヤーとモデルの当たり判定
 	//CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);

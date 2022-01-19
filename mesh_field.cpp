@@ -67,8 +67,8 @@ void InitMeshBuild(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh.nSurfaceWidth = 30;									// X軸の面の数
-	s_aMesh.nSurfaceHeight = 30;								// Y軸の面の数
+	s_aMesh.nSurfaceWidth = 30.0f;								// X軸の面の数
+	s_aMesh.nSurfaceHeight = 30.0f;								// Y軸の面の数
 	s_aMesh.fLineWidth = 50.0f;									// X軸の面の数
 	s_aMesh.fLineHeight = 50.0f;								// Y軸の面の数
 
@@ -128,7 +128,7 @@ void InitMeshBuild(void)
 	{
 		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
 		{
-			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh.nSurfaceWidth * 0.5f) *  s_aMesh.fLineWidth,0.0f,(Z - s_aMesh.nSurfaceHeight * 0.5f) * -s_aMesh.fLineHeight);
+			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh.nSurfaceWidth * 0.5f) *  s_aMesh.fLineWidth, 0.0f, (Z - s_aMesh.nSurfaceHeight * 0.5f) * -s_aMesh.fLineHeight);
 
 			pVtx[X + Z * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			pVtx[X + Z * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -160,7 +160,7 @@ void InitMeshBuild(void)
 
 		if (Y < s_aMesh.nSurfaceHeight - 1)
 		{
-			pIdx[nLineVtx * 2 + 0 + nlineTop] = s_aMesh.nSurfaceWidth + nLineVtx * Y;
+			pIdx[nLineVtx * 2 + nlineTop] = s_aMesh.nSurfaceWidth + nLineVtx * Y;
 			pIdx[nLineVtx * 2 + 1 + nlineTop] = nLineVtx * 2 + nLineVtx * Y;
 			s_aIdx[nLineVtx * 2 + nlineTop] = pIdx[nLineVtx * 2 + nlineTop];
 			s_aIdx[nLineVtx * 2 + 1 + nlineTop] = pIdx[nLineVtx * 2 + 1 + nlineTop];
@@ -351,7 +351,7 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 	D3DXVECTOR3 vecField[3];						// ポリゴンの線分
 	D3DXVECTOR3 vecModel[3];						// モデルからポリゴンの線分
 
-								// 頂点座標をロック
+	// 頂点座標をロック
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の反映
@@ -393,10 +393,7 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 
 				float fLength;
 				fLength = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
-				if (fLength < 0.0f)
-				{
-					int a = 5;
-				}
+
 				//pos->y = -fLength;
 				HitPos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
 			}
@@ -419,10 +416,6 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 
 				float fLength;
 				fLength = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
-				if (fLength < 0.0f)
-				{
-					int a = 5;
-				}
 
 				//pos->y = -fLength;
 				HitPos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));

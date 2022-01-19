@@ -244,6 +244,26 @@ MODELSET
 	POS = 230 0 300
 	ROT = 0 0 0
 END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 260 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 290 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 320 0 300
+	ROT = 0 0 0
+END_MODELSET
+MODELSET
+	TYPE = 2
+	POS = 350 0 300
+	ROT = 0 0 0
+END_MODELSET
 #------------------------------------------------------------------------------
 # ÉvÉåÉCÉÑÅ[èÓïÒ
 #------------------------------------------------------------------------------

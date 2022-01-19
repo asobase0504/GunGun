@@ -78,15 +78,7 @@ void InitPlayer(void)
 			continue;
 		}
 
-		if (model->nIdxModelParent == -2)
-		{
-			model->pos_world = model->pos;
-		}
-		else
-		{
-			model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
-		}
-
+		model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
 		// 線の設定
 		//SetModelLine(&model->pos_world, &model->quaternion, model->MaxVtx, model->MinVtx, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
@@ -214,31 +206,31 @@ void UpdatePlayer(void)
 	// プレイヤーと床の当たり判定
 	CollisionMeshField(&pPlayer->pos);
 
-	// 球の凸凹を表現するための当たり判定
+	/// 球の凸凹を表現するための当たり判定
 	//for (int i = 0; i < PARTS_NUM; i++)
 	//{
 	//	Model* model = &(pPlayer->aModel[i]);
-
+	//
 	//	if (!model->bUse || model->nIdxModelParent != 0)
 	//	{
 	//		continue;
 	//	}
-
-	//	if (fabsf(model->MaxVtx.x) >= pPlayer->fLength ||
-	//		fabsf(model->MaxVtx.y) >= pPlayer->fLength ||
-	//		fabsf(model->MaxVtx.z) >= pPlayer->fLength)
-	//	{
-	//		// モデルパーツと床の当たり判定
-	//		CollisionMeshField(&pPlayer->pos, &(model->pos_world + model->MaxVtx));
-	//	}
-
-	//	if (fabsf(model->MinVtx.x) >= pPlayer->fLength ||
-	//		fabsf(model->MinVtx.y) >= pPlayer->fLength ||
-	//		fabsf(model->MinVtx.z) >= pPlayer->fLength)
+	//
+	//	if (model->pos_world.x + model->MinVtx.x <= s_player.fLength ||
+	//		model->pos_world.y + model->MinVtx.y <= s_player.fLength ||
+	//		model->pos_world.z + model->MinVtx.z <= s_player.fLength)
 	//	{
 	//		// モデルパーツと床の当たり判定
 	//		CollisionMeshField(&pPlayer->pos, &(model->pos_world + model->MinVtx));
 	//	}
+	//	if (model->pos.x + model->MaxVtx.x == s_player.MaxVtx.x ||
+	//		model->pos.y + model->MaxVtx.y == s_player.MaxVtx.y ||
+	//		model->pos.z + model->MaxVtx.z == s_player.MaxVtx.z)
+	//	{
+	//		// モデルパーツと床の当たり判定
+	//		CollisionMeshField(&pPlayer->pos, &(model->pos_world + model->MaxVtx));
+	//	}
+	//
 	//}
 
 	//// プレイヤーとモデルの当たり判定
@@ -252,7 +244,6 @@ void UpdatePlayer(void)
 	
 	// プレイヤー位置とモデル回転する軸の位置の調整。
 	//pPlayer->pos.y += s_player.fLength;	// 半径分床の当たり判定を底上げする
-	pPlayer->pos.y += s_player.fLength;	// プレイヤーの位置を底上げ。
 
 	// 角度の正規化
 	NormalizeRot(pPlayer->rot.y);
@@ -317,36 +308,54 @@ void MovePlayer()
 //=========================================
 void ColisionPartsModel(void)
 {
-	Model* model = &(s_player.aModel[0]);
+//	Model* model = &(s_player.aModel[0]);
 
 	for (int j = 0; j < PARTS_NUM; j++)
 	{
-		Model* hitModel = &(s_player.aModel[j]);
+		Model* model = &(s_player.aModel[j]);
 
-		if (!(hitModel->bUse) || hitModel->nIdxModelParent != -2)
+		if (!(model->bUse) || model->nIdxModelParent != -2)
 		{
 			continue;
 		}
 
 		// 当たった場合
-		if (SphereColision(model->pos_world, s_player.fLength, hitModel->pos_world, hitModel->MaxVtx.x))
+		if (SphereColision(s_player.aModel[0].pos_world, s_player.fLength, model->pos_world, model->MaxVtx.x))
 		{
-			D3DXMATRIX mtxRot;
-			D3DXVECTOR3 pos_local = hitModel->pos_world - s_player.pos_old;
-			D3DXVECTOR3 v = ZERO_VECTOR;
+			if (s_player.fLength >= model->MaxVtx.x * 1.5f)
+			{	// 取り込めるサイズの場合
+				D3DXMATRIX mtxRot;
+				D3DXVECTOR3 pos_local = model->pos_world - s_player.pos_old;
+				D3DXVECTOR3 v = ZERO_VECTOR;
 
-			D3DXQUATERNION quaternionHit = s_player.aModel[0].quaternion;
-			quaternionHit.w *= -1;
+				D3DXQUATERNION quaternionHit = s_player.aModel[0].quaternion;
+				quaternionHit.w *= -1;
 
-			// クォータニオンの使用した姿勢の設定
-			D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
-			D3DXVec3TransformCoord(&hitModel->pos, &pos_local, &mtxRot);
+				// クォータニオンの使用した姿勢の設定
+				D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+				D3DXVec3TransformCoord(&model->pos, &pos_local, &mtxRot);
 
-			D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
-			SetLine(&v, &quaternion, hitModel->pos_world, s_player.pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
+				SetLine(&v, &quaternion, model->pos_world, s_player.pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
-			hitModel->quaternion = quaternionHit;
-			hitModel->nIdxModelParent = 0;
+				model->quaternion = quaternionHit;
+				model->nIdxModelParent = 0;
+			}
+			else
+			{	// 取り込めないサイズの場合
+				D3DXVECTOR3 vec(model->pos_world - s_player.pos);	// 方向ベクトル
+				D3DXVec3Normalize(&vec, &vec);						// 当たった方向を取得
+
+				float fLength = s_player.fLength + model->MaxVtx.x;	// 長さ
+
+				// 方向ベクトルに長さを掛ける
+				vec *= fLength;
+				
+				// 速度を0にする
+				s_player.movevec = ZERO_VECTOR;
+
+				s_player.pos = model->pos_world - vec;
+			}
 		}
 	}
 }
@@ -422,9 +431,10 @@ void LookUpSizePlayer(void)
 
 	D3DXVECTOR3 v = s_player.MaxVtx - s_player.MinVtx;
 	s_player.fLength = sqrtf((v.x + v.y + v.z) / 6.0f - s_player.aModel[0].MaxVtx.x) + s_player.aModel[0].MaxVtx.x;
+	s_player.pos.y += s_player.fLength;	// プレイヤーの位置を底上げ。
 }
 
-//=========================================
+//=========================================r
 // 描画
 //=========================================
 void DrawPlayer(void)
@@ -437,7 +447,7 @@ void DrawPlayer(void)
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_player.mtxWorld);
 
-	// スケールの反映
+	//// スケールの反映
 	//D3DXMatrixScaling(&mtxScale, 1.0f, 1.0f, 1.0f);
 	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxScale);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 	

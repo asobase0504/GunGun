@@ -56,12 +56,12 @@ typedef struct
 {
 	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = NULL;	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9 Tex = NULL;				// テクスチャへのポインタ
-	D3DXVECTOR3 pos;					// 位置
-	D3DXVECTOR3 rot;					// 角度
-	D3DXCOLOR col;						// 色
-	bool bUse;							// 使用してるかどうか
-	float Height;						// 高さ
-	float Width;						// 幅
+	D3DXVECTOR3 pos;							// 位置
+	D3DXVECTOR3 rot;							// 角度
+	D3DXCOLOR col;								// 色
+	bool bUse;									// 使用してるかどうか
+	float Height;								// 高さ
+	float Width;								// 幅
 }OBJECT;
 
 // グローバル変数

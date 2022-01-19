@@ -146,14 +146,14 @@ void InitMeshSphere(void)
 		for (int X = 0; X <= s_aMesh[0].nSurfaceWidth; X++)
 		{
 			int nIdxData = X * 2 + nlineTop;
-			pIdx[nIdxData + 1] = X + nLineVtx * Y;
-			pIdx[nIdxData] = pIdx[nIdxData + 1] + nLineVtx;
+			pIdx[nIdxData + 1] = (WORD)(X + nLineVtx * Y);
+			pIdx[nIdxData] = pIdx[nIdxData + 1] + (WORD)nLineVtx;
 		}
 
 		if (Y < s_aMesh[0].nSurfaceHeight - 1)
 		{
-			pIdx[nLineVtx * 2 + 0 + nlineTop] = s_aMesh[0].nSurfaceWidth + nLineVtx * Y;
-			pIdx[nLineVtx * 2 + 1 + nlineTop] = nLineVtx * 2 + nLineVtx * Y;
+			pIdx[nLineVtx * 2 + 0 + nlineTop] = (WORD)(s_aMesh[0].nSurfaceWidth + nLineVtx * Y);
+			pIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)(nLineVtx * 2 + nLineVtx * Y);
 		}
 	}
 

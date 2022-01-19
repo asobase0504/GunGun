@@ -192,7 +192,6 @@ void LoadModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	bool isModel = false;
 	char modelFile[255][255] = {};
-	int nTexCnt;
 	int nModelFileCnt = 0;
 	int nModelCnt = 0;
 

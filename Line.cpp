@@ -207,86 +207,86 @@ void SetModelLine(D3DXVECTOR3 * pos, D3DXQUATERNION * quaternion, D3DXVECTOR3 Ma
 	D3DXVECTOR3 end;
 
 	// 線の作成
-	start = D3DXVECTOR3(Min.x, Max.y, Min.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Min.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Min.x, Max.y, Min.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Min.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Max.y, Min.z);			// 線の始点
-	end = D3DXVECTOR3(Max.x, Min.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Max.y, Min.z);	// 線の始点
+	end = D3DXVECTOR3(Max.x, Min.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Min.x, Max.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Min.y, Max.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Min.x, Max.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Min.y, Max.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	/*	x軸		*/
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Max.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Max.y, Max.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Max.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Max.y, Max.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Min.y, Min.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Min.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Min.y, Min.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Min.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Max.y, Min.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Max.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Max.y, Min.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Max.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Min.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Min.y, Max.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Min.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Min.y, Max.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Max.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Max.y, Max.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Max.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Max.y, Max.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	/*	y軸		*/
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Max.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Max.x, Min.y, Max.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Max.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Max.x, Min.y, Max.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Min.y, Min.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Min.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Min.y, Min.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Min.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Max.y, Min.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Max.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Max.y, Min.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Max.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Min.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Min.y, Max.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Min.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Min.y, Max.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	/*	z軸		*/
 	// 線の作成
-	start = D3DXVECTOR3(Min.x, Min.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Min.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Min.x, Min.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Min.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Min.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Max.x, Min.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Min.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Max.x, Min.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Min.x, Max.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Min.x, Max.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Min.x, Max.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Min.x, Max.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 	// 線の作成
-	start = D3DXVECTOR3(Max.x, Max.y, Max.z);			// 線の始点
-	end = D3DXVECTOR3(Max.x, Max.y, Min.z);				// 線の終点
-	SetLine(pos, quaternion, start, end, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 線の設定
+	start = D3DXVECTOR3(Max.x, Max.y, Max.z);	// 線の始点
+	end = D3DXVECTOR3(Max.x, Max.y, Min.z);		// 線の終点
+	SetLine(pos, quaternion, start, end, col);	// 線の設定
 
 }

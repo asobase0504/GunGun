@@ -137,7 +137,6 @@ void SetCamera(void)
 void InputCamera(void)
 {
 	Camera* pCamera = &(s_camera);
-	float fAngle;
 
 	pCamera->vec = ZERO_VECTOR;
 

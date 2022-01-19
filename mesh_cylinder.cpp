@@ -114,7 +114,6 @@ void InitMeshCylinder(void)
 	// 頂点座標の設定
 	for (int nHeight = 0; nHeight <= s_aMesh[0].nSurfaceHeight; nHeight++)
 	{
-		float fRotHeight = D3DX_PI / s_aMesh[0].nSurfaceHeight;
 		for (int nWidth = 0; nWidth <= s_aMesh[0].nSurfaceWidth; nWidth++)
 		{
 			D3DXVECTOR3 rot;
@@ -144,17 +143,17 @@ void InitMeshCylinder(void)
 		for (int X = 0; X <= s_aMesh[0].nSurfaceWidth; X++)
 		{
 			int nIdxData = X * 2 + nlineTop;
-			pIdx[nIdxData + 1] = X + nLineVtx * Y;
-			pIdx[nIdxData] = pIdx[nIdxData + 1] + nLineVtx;
+			pIdx[nIdxData + 1] = (WORD)(X + nLineVtx * Y);
+			pIdx[nIdxData] = pIdx[nIdxData + 1] + (WORD)nLineVtx;
 		}
 
 		if (Y < s_aMesh[0].nSurfaceHeight - 1)
 		{
-			pIdx[nLineVtx * 2 + 0 + nlineTop] = s_aMesh[0].nSurfaceWidth + nLineVtx * Y;
+			pIdx[nLineVtx * 2 + 0 + nlineTop] = (WORD)(s_aMesh[0].nSurfaceWidth + nLineVtx * Y);
 
 			//			pIdx[nWidth軸の頂点数 * 2 + 1 + 一行で使用するインデックス数] = nWidth軸の頂点数 * 2 + nWidth軸の頂点数 * nHeight軸の繰り返し;
 
-			pIdx[nLineVtx * 2 + 1 + nlineTop] = nLineVtx * 2 + nLineVtx * Y;
+			pIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)(nLineVtx * 2 + nLineVtx * Y);
 
 		}
 	}

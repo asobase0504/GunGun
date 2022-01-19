@@ -67,8 +67,8 @@ void InitMeshBuild(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh.nSurfaceWidth = 30.0f;								// X軸の面の数
-	s_aMesh.nSurfaceHeight = 30.0f;								// Y軸の面の数
+	s_aMesh.nSurfaceWidth = 30;								// X軸の面の数
+	s_aMesh.nSurfaceHeight = 30;								// Y軸の面の数
 	s_aMesh.fLineWidth = 50.0f;									// X軸の面の数
 	s_aMesh.fLineHeight = 50.0f;								// Y軸の面の数
 
@@ -152,18 +152,18 @@ void InitMeshBuild(void)
 		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
 		{
 			int nIdxData = X * 2 + nlineTop;
-			pIdx[nIdxData + 1] = X + nLineVtx * Y;
-			pIdx[nIdxData] = pIdx[nIdxData + 1] + nLineVtx;
-			s_aIdx[nIdxData + 1] = pIdx[nIdxData + 1];
-			s_aIdx[nIdxData] = pIdx[nIdxData];
+			pIdx[nIdxData + 1] = (WORD)(X + nLineVtx * Y);
+			pIdx[nIdxData] = (WORD)(pIdx[nIdxData + 1] + nLineVtx);
+			s_aIdx[nIdxData + 1] = (WORD)pIdx[nIdxData + 1];
+			s_aIdx[nIdxData] = (WORD)pIdx[nIdxData];
 		}
 
 		if (Y < s_aMesh.nSurfaceHeight - 1)
 		{
-			pIdx[nLineVtx * 2 + nlineTop] = s_aMesh.nSurfaceWidth + nLineVtx * Y;
-			pIdx[nLineVtx * 2 + 1 + nlineTop] = nLineVtx * 2 + nLineVtx * Y;
-			s_aIdx[nLineVtx * 2 + nlineTop] = pIdx[nLineVtx * 2 + nlineTop];
-			s_aIdx[nLineVtx * 2 + 1 + nlineTop] = pIdx[nLineVtx * 2 + 1 + nlineTop];
+			pIdx[nLineVtx * 2 + nlineTop] = (WORD)(s_aMesh.nSurfaceWidth + nLineVtx * Y);
+			pIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)(nLineVtx * 2 + nLineVtx * Y);
+			s_aIdx[nLineVtx * 2 + nlineTop] = (WORD)pIdx[nLineVtx * 2 + nlineTop];
+			s_aIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)pIdx[nLineVtx * 2 + 1 + nlineTop];
 
 		}
 	}
@@ -268,7 +268,6 @@ D3DXVECTOR3 GetMeshBuildPos(void)
 void CollisionMeshField(D3DXVECTOR3 * pos)
 {
 	VERTEX_3D* pVtx = NULL;
-	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);		// X軸の頂点数
 	D3DXVECTOR3 vecField[3];	// ポリゴンの線分
 	D3DXVECTOR3 vecModel[3];	// モデルからポリゴンの線分
 
@@ -347,7 +346,6 @@ void CollisionMeshField(D3DXVECTOR3 * pos)
 void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 {
 	VERTEX_3D* pVtx = NULL;
-	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);		// X軸の頂点数
 	D3DXVECTOR3 vecField[3];						// ポリゴンの線分
 	D3DXVECTOR3 vecModel[3];						// モデルからポリゴンの線分
 
@@ -395,7 +393,7 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 				fLength = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
 
 				//pos->y = -fLength;
-				HitPos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
+				pos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
 			}
 		}
 		else

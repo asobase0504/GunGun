@@ -1,7 +1,7 @@
 #==============================================================================
 #
-# 『モデルビューワ』スクリプトファイル [model.txt]
-# Author : AKIRA TANAKA
+# モデル配置テキスト [model.txt]
+# Author : Yuda Kaito
 #
 #==============================================================================
 SCRIPT			# この行は絶対消さないこと！
@@ -18,36 +18,24 @@ MODEL_FILENAME = data/MODEL/gabyou.x			# [1]画鋲(小)
 MODEL_FILENAME = data/MODEL/bee_head.x			# [0]蜂(小)
 MODEL_FILENAME = data/MODEL/desk.x				# [1]机(小)
 
-#------------------
-# test
-#------------------
 MODELSET
 	TYPE = 0
 	POS = 0 0 0
 	ROT = 0 0 0
 END_MODELSET
 
-#------------------
-# test
-#------------------
 MODELSET
 	TYPE = 0
 	POS = 20 50 0
 	ROT = 0 0 0
 END_MODELSET
 
-#------------------
-# test
-#------------------
 MODELSET
 	TYPE = 0
 	POS = 40 100 0
 	ROT = 0 0 0
 END_MODELSET
 
-#------------------
-# test
-#------------------
 MODELSET
 	TYPE = 0
 	POS = 60 25 0

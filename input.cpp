@@ -286,6 +286,12 @@ void UpdateJoypad(void)
 				= ~g_JoyKeyState[nCnt].Gamepad.wButtons
 				& JoyKeyState[nCnt].Gamepad.wButtons; //トリガー情報を保存
 			g_JoyKeyState[nCnt] = JoyKeyState[nCnt];  //プレス処理
+
+			s_bUseJoyPad[nCnt] = true; // 使用状況の更新
+		}
+		else
+		{
+			s_bUseJoyPad[nCnt] = false;	// 使用状況の更新
 		}
 
 		//ジョイパッドの振動
@@ -305,16 +311,42 @@ void UpdateJoypad(void)
 	}
 }
 
-//ジョイパッドのプレス処理
+//ジョイパッドのプレス処理(プレイヤー指定あり)
 bool GetJoypadPress(JOYKEY Key , int nPlayer)
 {
 	return (g_JoyKeyState[nPlayer].Gamepad.wButtons & (0x01 << Key)) ? true : false;
 }
 
-//ジョイパッドのトリガー処理
+//ジョイパッドのトリガー処理(プレイヤー指定あり)
 bool GetJoypadTrigger(JOYKEY Key, int nPlayer)
 {
 	return (g_JoyKeyStateTrigger[nPlayer].Gamepad.wButtons & (0x01 << Key)) ? true : false;
+}
+
+//ジョイパッドのプレス処理(プレイヤー指定なし)
+bool GetJoypadAPress(JOYKEY Key)
+{
+	for (int nPlayer = 0; nPlayer < PLAYER_MAX; nPlayer++)
+	{
+		if (GetJoypadPress(Key, nPlayer))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+//ジョイパッドのプレス処理(プレイヤー指定なし)
+bool GetJoypadTrigger(JOYKEY Key)
+{
+	for (int nPlayer = 0; nPlayer < PLAYER_MAX; nPlayer++)
+	{
+		if (GetJoypadTrigger((JOYKEY)Key, nPlayer))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 //ジョイパッドの全キープレス処理
@@ -344,32 +376,6 @@ bool GetJoyPadAllTrigger(void)
 			{
 				return true;
 			}
-		}
-	}
-	return false;
-}
-
-//ジョイパッドの全キープレス処理
-bool GetJoyPadAllPlayerPress(JOYKEY Key)
-{
-	for (int nPlayer = 0; nPlayer < PLAYER_MAX; nPlayer++)
-	{
-		if (GetJoypadPress(Key, nPlayer))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-//ジョイパッドの全キートリガー処理
-bool GetJoyPadAllPlayerTrigger(JOYKEY Key)
-{
-	for (int nPlayer = 0; nPlayer < PLAYER_MAX; nPlayer++)
-	{
-		if (GetJoypadTrigger((JOYKEY)Key, nPlayer))
-		{
-			return true;
 		}
 	}
 	return false;
@@ -413,6 +419,12 @@ void JoypadVibration(int nTime, WORD nStrength, int nPlayer)
 {
 	g_nTime[nPlayer] = nTime;			//振動持続時間
 	g_nStrength[nPlayer] = nStrength;	//振動の強さ
+}
+
+// ジョイパッドの使用されているか返す処理
+bool IsJoyPadUse(int nPlayer)
+{
+	return s_bUseJoyPad[nPlayer];
 }
 
 //*************************************************************************************

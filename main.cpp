@@ -22,7 +22,9 @@
 #include "mesh_cylinder.h"
 #include "mesh_sphere.h"
 #include "mesh_sky.h"
+#include "fade.h"
 #include "game.h"
+#include "title.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -35,12 +37,13 @@
 //-----------------------------------------
 // プロトタイプ宣言
 //-----------------------------------------
-LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-HRESULT Init(HINSTANCE hInstance, HWND hWmd, BOOL bWindow);
-void Uninit(void);
-void Update(void);
-void Draw(void);
-void DrawFPS(void);
+static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static HRESULT Init(HINSTANCE hInstance, HWND hWmd, BOOL bWindow);
+static void Uninit(void);
+static void Update(void);
+static void Draw(void);
+static void DrawFPS(void);
+static MODE s_mode = MODE_TITLE;
 
 //-----------------------------------------
 // グローバル変数
@@ -178,6 +181,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 //=========================================
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if (GetExit())
+	{
+		// ウィンドウを破棄する
+		DestroyWindow(hWnd);
+	}
+
 	switch (uMsg)
 	{
 	case WM_DESTROY:	// ウィンドウ破棄のメッセージ
@@ -238,7 +247,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;	// リフレッシュレート
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;	// インターバル
 
-																// Direct3Dデバイスの生成(描画処理と頂点処理をハードウェアで行う)
+	// Direct3Dデバイスの生成(描画処理と頂点処理をハードウェアで行う)
 	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL,
 		hWnd,
@@ -294,7 +303,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-	InitGame();	// ゲームの初期化処理
+	// モードの設定
+	InitFade(s_mode);
 
 	return S_OK;
 }
@@ -328,7 +338,10 @@ void Uninit(void)
 	UninitInput();
 
 	// ゲームの終了処理
-	UnInitGame();
+	UninitGame();
+
+	// タイトル画面の終了処理
+	UninitTitle();
 }
 
 //=========================================
@@ -339,8 +352,27 @@ void Update(void)
 	// 入力処理の更新
 	UpdateInput();
 
-	// ゲームの更新
-	UpdateGame();
+	// 現在の画面(モード)の更新処理
+	switch (s_mode)
+	{
+	case MODE_TITLE:	// タイトル画面
+		UpdateTitle();
+		break;
+
+	case MODE_GAME:		// ゲーム画面
+		UpdateGame();
+		break;
+
+	case MODE_TUTORIAL:	// チュートリアル画面
+		//UpdateTutorial();
+		break;
+
+	case MODE_RANKING:	// ランキング画面
+		//UpdateRanking();
+		break;
+	}
+
+	UpdateFade();
 
 	if (GetKeyboardTrigger(DIK_F1))
 	{
@@ -368,7 +400,27 @@ void Draw(void)
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{// 	描画開始が成功した場合
 
-		DrawGame();
+		switch (s_mode)
+		{
+		case MODE_TITLE:	// タイトル画面
+			DrawTitle();
+			break;
+
+		case MODE_GAME:		// ゲーム画面
+			DrawGame();
+			break;
+
+		case MODE_TUTORIAL:	// チュートリアル画面
+			//DrawTutorial();
+			break;
+
+		case MODE_RANKING:	// ランキング画面
+			//DrawRanking();
+			break;
+		}
+
+		// フェード処理
+		DrawFade();
 
 #ifdef _DEBUG
 		// FPSの表示
@@ -397,12 +449,13 @@ LPDIRECT3DDEVICE9 GetDevice(void)
 void DrawFPS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
-	char aStr[11][256];	// 表示文字
+	char aStr[12][256];	// 表示文字
 	D3DXVECTOR3 camerarot = GetRotCamera();
 	Player* player = GetPlayer();
 	Model* model = GetModel();
 	Camera* camera = GetCamera();
 	Shadow* shadow = GetShadow();
+	MODE mode = GetMode();
 	// 文字列に代入
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
 
@@ -426,47 +479,73 @@ void DrawFPS(void)
 	sprintf(&aStr[9][0], "posVDest: %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
 	// 文字列に代入
 	sprintf(&aStr[10][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
+	// 文字列に代入
+	sprintf(&aStr[11][0], "MODE: %d", mode);
 
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	for (int i = 0; i < 12; i++)
+	{
+		// テキストの描画
+		rect = { 0,i * 30,SCREEN_WIDTH,SCREEN_HEIGHT };
 
-	 rect = { 0,30,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[1][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+		g_pFont->DrawText(NULL, &aStr[i][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 255, 255));
 
-	rect = { 0,60,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[2][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	}
+}
 
-	rect = { 0,90,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[3][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+//=========================================
+// モードの設定
+//=========================================
+void SetMode(MODE mode)
+{
+	// 現在の画面(モード)の終了処理
+	switch (s_mode)
+	{
+	case MODE_TITLE:	// タイトル画面
+		UninitTitle();
+		break;
 
-	rect = { 0,120,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[4][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	case MODE_GAME:		// ゲーム画面
+		UninitGame();
+		break;
 
-	rect = { 0,150,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[5][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	case MODE_TUTORIAL:	// チュートリアル画面
+//		UninitTutorial();
+		break;
 
-	rect = { 0,180,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[6][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	case MODE_RANKING:	// ランキング画面
+//		UninitRanking();
+		break;
+	}
 
-	rect = { 0,210,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[7][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	// 新しい画面(モード)の初期化処理
+	switch (mode)
+	{
+	case MODE_TITLE:	// タイトル画面
+		InitTitle();
+		break;
 
-	rect = { 0,240,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[8][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	case MODE_GAME:		// ゲーム画面
+		InitGame();
+		break;
 
-	rect = { 0,270,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[9][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	case MODE_TUTORIAL:	// チュートリアル画面
+//		InitTutorial();
+		break;
 
-	rect = { 0,300,SCREEN_WIDTH,SCREEN_HEIGHT };
-	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[10][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	case MODE_RANKING:	// ランキング画面
+//		InitRanking();
+//		SetRanking(GetScore());
+		break;
+	}
+
+	s_mode = mode;	// 現在の画面(モード)を切り替える
+
+}
+
+//=========================================
+// モードの取得
+//=========================================
+MODE GetMode(void)
+{
+	return s_mode;
 }

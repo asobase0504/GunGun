@@ -1,0 +1,36 @@
+#==============================================================================
+#
+# モデル配置テキスト [model.txt]
+# Author : Yuda Kaito
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 15
+
+#------------------------------------------------------------------------------
+# 画像ファイル名
+#------------------------------------------------------------------------------
+FILENAME = "data/TEXTURE/enemy000.png"	# [0]画鋲(小)
+FILENAME = "data/TEXTURE/タイトル.png"	# [1]蜂(小)
+FILENAME = "data/TEXTURE/GAMESTART.png"	# [2]机(小)
+FILENAME = "data/TEXTURE/TUTORIAL.png"	# [3]画鋲(小)
+FILENAME = "data/TEXTURE/EXIT.png"		# [4]蜂(小)
+
+#define SELECTBG			"data/TEXTURE/enemy000.png"
+#define TITLE				"data/TEXTURE/タイトル.png"
+#define GAMESTART			"data/TEXTURE/GAMESTART.png"
+#define TUTORIAL			"data/TEXTURE/TUTORIAL.png"
+#define EXIT				"data/TEXTURE/EXIT.png"
+
+OBJECTSET
+	TYPE = 0
+	POS = 0 0 0
+	COL = 0 0 0 0
+	ROT = 0 0 0
+END_OBJECTSET
+
+END_SCRIPT		# この行は絶対消さないこと！

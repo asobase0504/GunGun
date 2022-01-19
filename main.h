@@ -69,6 +69,18 @@ typedef struct
 }VERTEX_LINE;
 
 //------------------------------------
+// 画面(モード)の種類
+//------------------------------------
+typedef enum
+{
+	MODE_TITLE = 0,	// タイトル画面
+	MODE_GAME,		// ゲーム画面
+	MODE_TUTORIAL,	// チュートリアル画面
+	MODE_RANKING,	// ランキング画面
+	MODE_MAX
+}MODE;
+
+//------------------------------------
 // 線分の構造体を定義
 //------------------------------------
 typedef struct
@@ -81,5 +93,7 @@ typedef struct
 // プロトタイプ宣言
 //------------------------------------
 LPDIRECT3DDEVICE9 GetDevice(void);	// デバイスの取得
+void SetMode(MODE mode);
+MODE GetMode(void);
 
 #endif	// !_MAIN_H_

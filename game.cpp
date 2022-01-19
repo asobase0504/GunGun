@@ -78,7 +78,7 @@ void InitGame(void)
 //=========================================
 // I—¹
 //=========================================
-void UnInitGame(void)
+void UninitGame(void)
 {
 	// ƒ|ƒŠƒSƒ“‚ÌI—¹ˆ—
 	UninitPolygon();

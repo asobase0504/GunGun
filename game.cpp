@@ -20,16 +20,27 @@
 #include "mesh_sphere.h"
 #include "mesh_sky.h"
 #include "line.h"
+#include "pause.h"
+
+//------------------------------------
+// スタティック変数
+//------------------------------------
+static bool s_bPause;			//ポーズ中かどうか
+
 
 //=========================================
 // 初期化
 //=========================================
 void InitGame(void)
 {
+	s_bPause = false;
 #ifdef _DEBUG
 	// ラインの初期化処理
 	InitLine();
 #endif // !_DEBUG
+
+	// ポーズの初期化処理
+	InitPause();
 
 	// ポリゴンの初期化処理
 	InitPolygon();
@@ -81,6 +92,9 @@ void InitGame(void)
 //=========================================
 void UninitGame(void)
 {
+	// ポーズの終了処理
+	UninitPause();
+
 	// ポリゴンの終了処理
 	UninitPolygon();
 
@@ -128,45 +142,53 @@ void UninitGame(void)
 //=========================================
 void UpdateGame(void)
 {
-	// モデルの更新
-	UpdateModel();
-
-	// プレイヤーの更新処理
-	UpdatePlayer();
-
-	// カメラの更新
-	UpdateCamera();
-
-	// ライトの更新
-	UpdateLight();
-
-	// ポリゴンの更新
-	UpdatePolygon();
-
-	// 影の更新
-	UpdateShadow();
-
-	// ビルボードの更新
-	UpdateBillboard();
-
-	// メッシュの更新処理
-	UpdateMeshBuild();
-
-	// メッシュ(円柱)の更新処理
-	UpdateMeshCylinder();
-
-	// メッシュ(球)の更新処理
-	UpdateMeshSphere();
-
-	// メッシュ(空)の更新処理
-	UpdateMeshSky();
-
-	// 壁の更新
-	UpdateWall();
-
-	if (GetJoypadPress(JOYKEY_START))
+	if (GetJoypadTrigger(JOYKEY_START))
 	{
+		s_bPause = !s_bPause;
+	}
 
+	if (s_bPause)
+	{
+		// ポーズ
+		UpdatePause();
+	}
+	else
+	{
+		// モデルの更新
+		UpdateModel();
+
+		// プレイヤーの更新処理
+		UpdatePlayer();
+
+		// カメラの更新
+		UpdateCamera();
+
+		// ライトの更新
+		UpdateLight();
+
+		// ポリゴンの更新
+		UpdatePolygon();
+
+		// 影の更新
+		UpdateShadow();
+
+		// ビルボードの更新
+		UpdateBillboard();
+
+		// メッシュの更新処理
+		UpdateMeshBuild();
+
+		// メッシュ(円柱)の更新処理
+		UpdateMeshCylinder();
+
+		// メッシュ(球)の更新処理
+		UpdateMeshSphere();
+
+		// メッシュ(空)の更新処理
+		UpdateMeshSky();
+
+		// 壁の更新
+		UpdateWall();
 	}
 
 #ifdef _DEBUG
@@ -220,4 +242,9 @@ void DrawGame(void)
 	// ラインの描画処理
 	DrawLine();
 #endif // !_DEBUG
+
+	if (s_bPause)
+	{
+		DrawPause();
+	}
 }

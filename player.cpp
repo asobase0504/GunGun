@@ -261,7 +261,7 @@ void MovePlayer()
 	if (IsJoyPadUse(0))
 	{// ジョイパッドの使用
 		move.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
-		move.z = GetJoypadStick(JOYKEY_RIGHT_STICK, 0).y * -1.0f;
+		move.z = GetJoypadStick(JOYKEY_LEFT_STICK, 0).y * -1.0f;
 
 		move_max = fabsf(move.x) + fabsf(move.z);
 		if (move_max >= 1.0f)

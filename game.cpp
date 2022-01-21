@@ -6,6 +6,7 @@
 //=========================================
 #include "game.h"
 #include "main.h"
+#include "input.h"
 #include "polygon.h"
 #include "player.h"
 #include "camera.h"
@@ -162,6 +163,11 @@ void UpdateGame(void)
 
 	// 壁の更新
 	UpdateWall();
+
+	if (GetJoypadPress(JOYKEY_START))
+	{
+
+	}
 
 #ifdef _DEBUG
 	// ラインの更新処理

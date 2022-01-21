@@ -83,15 +83,15 @@ bool GetKeyboardAllPress(void);				// キーボード全キープレス処理
 bool GetKeyboardAllTrigger(void);			// キーボード全キートリガー処理
 
 // プロトタイプ宣言ジョイパット
-bool GetJoypadPress(JOYKEY Key, int nPlayer);					// ジョイパッドプレス処理(プレイヤー指定あり)
+bool GetJoypadPress(void);										// ジョイパッドプレス処理(キー指定なし)
 bool GetJoypadPress(JOYKEY Key);								// ジョイパッドプレス処理(プレイヤー指定なし)
+bool GetJoypadPress(JOYKEY Key, int nPlayer);					// ジョイパッドプレス処理(プレイヤー指定あり)
+bool GetJoypadTrigger(void);									// ジョイパッドトリガー処理(キー指定なし)
+bool GetJoypadTrigger(JOYKEY Key);								// ジョイパッドトリガー処理(プレイヤー指定なし)
 bool GetJoypadTrigger(JOYKEY Key, int nPlayer);					// ジョイパッドトリガー処理(プレイヤー指定あり)
-bool GetJoypadTrigger(JOYKEY Key);							// ジョイパッドトリガー処理(プレイヤー指定なし)
 D3DXVECTOR3 GetJoypadStick(JOYKEY Key, int nPlayer);			// ジョイパッドスティック処理
 int GetJoypadTriggerPedal(JOYKEY Key, int nPlayer);				// ジョイパッドトリガーペダル処理
 void JoypadVibration(int nTime, WORD nStrength, int nPlayer);	// ジョイパッド振動制御
-bool GetJoyPadAllPress(void);
-bool GetJoyPadAllTrigger(void);
 bool IsJoyPadUse(int nPlayer);									// ジョイパッドの使用状況
 
 // プロトタイプ宣言マウス

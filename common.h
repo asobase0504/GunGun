@@ -18,10 +18,10 @@
 // 長方形処理(2D)
 void InitRect(VERTEX_2D *vtx);	// 長方形の初期化
 void InitRectPos(VERTEX_2D *vtx);	// 頂点座標初期化
-void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);	// 中心座標が中心にあった場合の頂点バッファの座標設定
+void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);						// 中心座標が中心にあった場合の頂点バッファの座標設定
 void SetRectCenterRotPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fAngle, float fLength);	// 中心座標が中心にあった場合の頂点バッファの座標設定(角度の変化に対応)
-void SetRectUpLeftPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);	// 中心座標が左上にあった場合の頂点バッファの座標設定
-void SetRectUpRightPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);	// 中心座標が右上にあった場合の頂点バッファの座標設定
+void SetRectUpLeftPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);						// 中心座標が左上にあった場合の頂点バッファの座標設定
+void SetRectUpRightPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);						// 中心座標が右上にあった場合の頂点バッファの座標設定
 
 void InitRectColor(VERTEX_2D *vtx);						// 頂点バッファの色の初期化
 void SetRectColor(VERTEX_2D *vtx, D3DXCOLOR *inColor);	// 頂点バッファの色設定
@@ -32,7 +32,7 @@ void SetRectTex(VERTEX_2D *vtx, float top, float bottom, float left, float right
 void InitRectRhw(VERTEX_2D *vtx);
 
 // モデル系統
-void ModelSize(D3DXVECTOR3 *Min, D3DXVECTOR3 *Max, LPD3DXMESH Mesh);	// モデルのサイズを算出
+void ModelSize(D3DXVECTOR3* minOut, D3DXVECTOR3* maxOut, const LPD3DXMESH mesh);	// モデルのサイズを算出
 
 // 正規化系統
 float NormalizeRot(float rot);	// 角度の正規化

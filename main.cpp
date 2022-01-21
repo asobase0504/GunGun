@@ -449,13 +449,17 @@ LPDIRECT3DDEVICE9 GetDevice(void)
 void DrawFPS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
-	char aStr[12][256];	// 表示文字
+	char aStr[15][256];	// 表示文字
 	D3DXVECTOR3 camerarot = GetRotCamera();
 	Player* player = GetPlayer();
 	Model* model = GetModel();
 	Camera* camera = GetCamera();
 	Shadow* shadow = GetShadow();
 	MODE mode = GetMode();
+
+	D3DXVECTOR3 stickL = GetJoypadStick(JOYKEY_LEFT_STICK, 0);
+	D3DXVECTOR3 stickR = GetJoypadStick(JOYKEY_RIGHT_STICK, 0);
+
 	// 文字列に代入
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
 
@@ -480,9 +484,15 @@ void DrawFPS(void)
 	// 文字列に代入
 	sprintf(&aStr[10][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
 	// 文字列に代入
-	sprintf(&aStr[11][0], "MODE: %d", mode);
+	sprintf(&aStr[11][0], "MODE: %d\n", mode);
+	// 文字列に代入
+	sprintf(&aStr[12][0], "stickL: %.3f|%.3f|%.3f\n", stickL.x, stickL.y, stickL.z);
+	// 文字列に代入
+	sprintf(&aStr[13][0], "stickR: %.3f|%.3f|%.3f\n", stickR.x, stickR.y, stickR.z);
+	// 文字列に代入
+	sprintf(&aStr[14][0], "move: %.3f|%.3f|%.3f\n", player->movevec.x, player->movevec.y, player->movevec.z);
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		// テキストの描画
 		rect = { 0,i * 30,SCREEN_WIDTH,SCREEN_HEIGHT };

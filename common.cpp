@@ -246,51 +246,54 @@ void RectAddDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt
 
 //=========================================
 // モデルのサイズを算出
+// 引数1 minOut	モデルの最小頂点の出力
+// 引数2 maxOut	モデルの最大頂点の出力
+// 引数3 mesh	サイズを計測するモデル
 //=========================================
-void ModelSize(D3DXVECTOR3* Min, D3DXVECTOR3* Max, LPD3DXMESH Mesh)
+void ModelSize(D3DXVECTOR3* minOut, D3DXVECTOR3* maxOut, LPD3DXMESH mesh)
 {
 	int nNumVtx;		// 頂点数
 	DWORD sizeFVF;		// 頂点フォーマットのサイズ
 	BYTE *pVtxBuff;		// 頂点バッファーへのポイント
 
-	nNumVtx = Mesh->GetNumVertices();	// 頂点数の取得
+	nNumVtx = mesh->GetNumVertices();	// 頂点数の取得
 
-	sizeFVF = D3DXGetFVFVertexSize(Mesh->GetFVF());	// 頂点フォーマットのサイズを取得
+	sizeFVF = D3DXGetFVFVertexSize(mesh->GetFVF());	// 頂点フォーマットのサイズを取得
 
 	// 初期化
-	*Min = D3DXVECTOR3(FLT_MAX, FLT_MAX, FLT_MAX);
-	*Max = D3DXVECTOR3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+	*minOut = D3DXVECTOR3(FLT_MAX, FLT_MAX, FLT_MAX);
+	*maxOut = D3DXVECTOR3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
 	// 頂点バッファーのロック
-	Mesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
+	mesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
 
 	for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
 	{
 		D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVtxBuff;
 
-		if (vtx.x < Min->x)
+		if (vtx.x < minOut->x)
 		{
-			Min->x = vtx.x;
+			minOut->x = vtx.x;
 		}
-		if (vtx.y < Min->y)
+		if (vtx.y < minOut->y)
 		{
-			Min->y = vtx.y;
+			minOut->y = vtx.y;
 		}
-		if (vtx.z < Min->z)
+		if (vtx.z < minOut->z)
 		{
-			Min->z = vtx.z;
+			minOut->z = vtx.z;
 		}
-		if (vtx.x > Max->x)
+		if (vtx.x > maxOut->x)
 		{
-			Max->x = vtx.x;
+			maxOut->x = vtx.x;
 		}
-		if (vtx.y > Max->y)
+		if (vtx.y > maxOut->y)
 		{
-			Max->y = vtx.y;
+			maxOut->y = vtx.y;
 		}
-		if (vtx.z > Max->z)
+		if (vtx.z > maxOut->z)
 		{
-			Max->z = vtx.z;
+			maxOut->z = vtx.z;
 		}
 
 		// 頂点フォーマットのサイズ分ポインタを進める
@@ -298,13 +301,13 @@ void ModelSize(D3DXVECTOR3* Min, D3DXVECTOR3* Max, LPD3DXMESH Mesh)
 	}
 
 	// 頂点バッファーのアンロック
-	Mesh->UnlockVertexBuffer();
+	mesh->UnlockVertexBuffer();
 }
 
-////=========================================
-//// 線分同士の当たり判定
-////=========================================
-//bool SegmentColision(Segment seg1, Segment seg2)
+///=========================================
+/// 線分同士の当たり判定
+///=========================================
+///bool SegmentColision(Segment seg1, Segment seg2)
 //{
 //	// ベクトルの始点同士の距離。
 //	D3DXVECTOR3 v = seg2.s - seg1.s;
@@ -338,14 +341,16 @@ void ModelSize(D3DXVECTOR3* Min, D3DXVECTOR3* Max, LPD3DXMESH Mesh)
 //}
 
 //=========================================
-// モデルのサイズを算出(球と球の当たり判定)
+//
+// 球と球の当たり判定
+//
+// 引数1 pos1		対象1の位置
+// 引数2 fLength1	対象1の長さ
+// 引数3 pos2		対象2の位置
+// 引数4 fLength2	対象2の長さ
 //=========================================
 bool SphereColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, float fLength2)
 {
-#if 1
 	D3DXVECTOR3 v = pos1 - pos2;
 	return D3DXVec3LengthSq(&v) <= (fLength1 + fLength2)*(fLength1 + fLength2);
-#else
-	return (pow((pos2.x - pos1.x), 2.0f) + pow((pos2.y - pos1.y), 2.0f) + pow((pos2.z - pos1.z), 2.0f)) <= (pow((fLength1 + fLength2), 2.0f));
-#endif
 }

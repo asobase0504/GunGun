@@ -324,7 +324,7 @@ bool GetJoypadTrigger(JOYKEY Key, int nPlayer)
 }
 
 //ジョイパッドのプレス処理(プレイヤー指定なし)
-bool GetJoypadAPress(JOYKEY Key)
+bool GetJoypadPress(JOYKEY Key)
 {
 	for (int nPlayer = 0; nPlayer < PLAYER_MAX; nPlayer++)
 	{
@@ -350,7 +350,7 @@ bool GetJoypadTrigger(JOYKEY Key)
 }
 
 //ジョイパッドの全キープレス処理
-bool GetJoyPadAllPress(void)
+bool GetJoypadPress(void)
 {
 	for (int nPlayer = 0;nPlayer < PLAYER_MAX;nPlayer++)
 	{
@@ -366,7 +366,7 @@ bool GetJoyPadAllPress(void)
 }
 
 //ジョイパッドの全キートリガー処理
-bool GetJoyPadAllTrigger(void)
+bool GetJoypadTrigger(void)
 {
 	for (int nPlayer = 0; nPlayer < PLAYER_MAX; nPlayer++)
 	{

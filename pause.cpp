@@ -393,7 +393,7 @@ void UpdatePause(void)
 			case PAUSE_MENU_RETRY:		//ゲームをやり直す
 
 				//ゲーム画面に移行
-				SetFade(MODE_GAME);
+				ResetFade(MODE_GAME);
 				break;
 
 			case PAUSE_MENU_QUIT:		//タイトル画面に戻る

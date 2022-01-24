@@ -697,6 +697,7 @@ void LoadPlayerModel(void)
 
 				model->nIdxModelParent = -2;
 				model->bUse = true;
+				model->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
 			}
 			if (strcmp(&read[0], "POS") == 0)
 			{

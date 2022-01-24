@@ -36,6 +36,7 @@
 #define FVF_VERTEX_LINE		(D3DFVF_XYZ | D3DFVF_DIFFUSE)							// 頂点フォーマット[線] 位置・カラー
 
 #define ZERO_VECTOR		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// ゼロベクトル
+#define ZERO_QUATERNION	(D3DXQUATERNION(0.0f,0.0f,0.0f,1.0f))
 
 //------------------------------------
 // 頂点情報[2D]の構造体を定義

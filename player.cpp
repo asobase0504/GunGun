@@ -64,7 +64,7 @@ void InitPlayer(void)
 	s_player.pos.y = -s_player.MinVtx.y;
 	s_player.rot = ZERO_VECTOR;
 	s_player.movevec = ZERO_VECTOR;
-	s_player.aModel[0].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
+	s_player.aModel[0].quaternion = ZERO_QUATERNION;	// クォータニオン
 
 	// プレイヤーにくっつくモデルの配置
 	LoadPlayerModel();
@@ -260,13 +260,22 @@ void MovePlayer()
 
 	if (IsJoyPadUse(0))
 	{// ジョイパッドの使用
-		move.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
-		move.z = GetJoypadStick(JOYKEY_LEFT_STICK, 0).y * -1.0f;
-
-		move_max = fabsf(move.x) + fabsf(move.z);
-		if (move_max >= 1.0f)
+		if (GetJoypadStick(JOYKEY_LEFT_STICK, 0).x != 0.0f || GetJoypadStick(JOYKEY_LEFT_STICK, 0).y != 0.0f)
 		{
-			move_max = 1.0f;
+			float rot;
+			move.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
+			move.z = GetJoypadStick(JOYKEY_LEFT_STICK, 0).y * -1.0f;
+
+			rot = atan2f(move.x, move.z);
+
+			move.x = sinf(rot + CameraRot.y);
+			move.z = cosf(rot + CameraRot.y);
+
+			move_max = fabsf(move.x) + fabsf(move.z);
+			if (move_max >= 1.0f)
+			{
+				move_max = 1.0f;
+			}
 		}
 	}
 	else
@@ -292,6 +301,8 @@ void MovePlayer()
 			move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
 			move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
 		}
+
+		move_max = 1.0f;
 	}
 
 	D3DXVECTOR3 axis;	// 回転軸
@@ -697,7 +708,7 @@ void LoadPlayerModel(void)
 
 				model->nIdxModelParent = -2;
 				model->bUse = true;
-				model->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
+				model->quaternion = ZERO_QUATERNION;
 			}
 			if (strcmp(&read[0], "POS") == 0)
 			{

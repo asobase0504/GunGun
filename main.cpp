@@ -464,7 +464,7 @@ void DrawFPS(void)
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
 
 	// •¶Žš—ñ‚É‘ã“ü
-	sprintf(&aStr[1][0], "rot: %f\n", player->rot.y);
+	sprintf(&aStr[1][0], "rot: %f\n", camera->rot.y);
 	// •¶Žš—ñ‚É‘ã“ü
 	sprintf(&aStr[2][0], "Player.pos     : %.3f|%.3f|%.3f\n", player->pos.x, player->pos.y, player->pos.z);
 	// •¶Žš—ñ‚É‘ã“ü

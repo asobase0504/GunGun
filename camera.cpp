@@ -140,58 +140,76 @@ void InputCamera(void)
 
 	pCamera->vec = ZERO_VECTOR;
 
-	// カメラの移動
-	if (GetKeyboardPress(DIK_W))
-	{
-		pCamera->vec.x += sinf(pCamera->rot.y);
-		pCamera->vec.z += cosf(pCamera->rot.y);
+	if (IsJoyPadUse(0))
+	{// ジョイパッドの使用
+		if (GetJoypadPress(JOYKEY_RIGHT_SHOULDER))
+		{
+			pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
+			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+		}
+		if (GetJoypadPress(JOYKEY_LEFT_SHOULDER))
+		{
+			pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
+			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+		}
 	}
-	if (GetKeyboardPress(DIK_A))
+	else
 	{
-		pCamera->vec.x += sinf(D3DX_PI * -0.5f + pCamera->rot.y);
-		pCamera->vec.z += cosf(D3DX_PI * -0.5f + pCamera->rot.y);
-	}
-	if (GetKeyboardPress(DIK_S))
-	{
-		pCamera->vec.x += sinf(D3DX_PI + pCamera->rot.y);
-		pCamera->vec.z += cosf(D3DX_PI + pCamera->rot.y);
-	}
-	if (GetKeyboardPress(DIK_D))
-	{
-		pCamera->vec.x += sinf(D3DX_PI * 0.5f + pCamera->rot.y);
-		pCamera->vec.z += cosf(D3DX_PI * 0.5f + pCamera->rot.y);
-	}
+		// カメラの移動
+		if (GetKeyboardPress(DIK_W))
+		{
+			pCamera->vec.x += sinf(pCamera->rot.y);
+			pCamera->vec.z += cosf(pCamera->rot.y);
+		}
+		if (GetKeyboardPress(DIK_A))
+		{
+			pCamera->vec.x += sinf(D3DX_PI * -0.5f + pCamera->rot.y);
+			pCamera->vec.z += cosf(D3DX_PI * -0.5f + pCamera->rot.y);
+		}
+		if (GetKeyboardPress(DIK_S))
+		{
+			pCamera->vec.x += sinf(D3DX_PI + pCamera->rot.y);
+			pCamera->vec.z += cosf(D3DX_PI + pCamera->rot.y);
+		}
+		if (GetKeyboardPress(DIK_D))
+		{
+			pCamera->vec.x += sinf(D3DX_PI * 0.5f + pCamera->rot.y);
+			pCamera->vec.z += cosf(D3DX_PI * 0.5f + pCamera->rot.y);
+		}
 
-	// 注視点角度の回転
-	if (GetKeyboardPress(DIK_Z))
-	{
-		pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
-		pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
-		pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
-	}
-	if (GetKeyboardPress(DIK_C))
-	{
-		pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
-		pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
-		pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
-	}
+		// 注視点角度の回転
+		if (GetKeyboardPress(DIK_Z))
+		{
+			pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
+			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+		}
+		if (GetKeyboardPress(DIK_C))
+		{
+			pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
+			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+		}
 
-	// 視点角度の回転
-	if (GetKeyboardPress(DIK_Q))
-	{
-		pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
-	}
-	if (GetKeyboardPress(DIK_E))
-	{
-		pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
-	}
-	if (GetKeyboardPress(DIK_R))
-	{
-		pCamera->rot.x += -(CAMERA_ROT_VOLUME);	// 回転量
-	}
-	if (GetKeyboardPress(DIK_V))
-	{
-		pCamera->rot.x += CAMERA_ROT_VOLUME;	// 回転量
+		// 視点角度の回転
+		if (GetKeyboardPress(DIK_Q))
+		{
+			pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
+		}
+		if (GetKeyboardPress(DIK_E))
+		{
+			pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
+		}
+		if (GetKeyboardPress(DIK_R))
+		{
+			pCamera->rot.x += -(CAMERA_ROT_VOLUME);	// 回転量
+		}
+		if (GetKeyboardPress(DIK_V))
+		{
+			pCamera->rot.x += CAMERA_ROT_VOLUME;	// 回転量
+		}
 	}
 
 	D3DXVec3Normalize(&pCamera->vec, &pCamera->vec);	// 正規化する(大きさ１のベクトルにする)

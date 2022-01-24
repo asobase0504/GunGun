@@ -21,6 +21,7 @@
 #include "mesh_sky.h"
 #include "line.h"
 #include "pause.h"
+#include "timer.h"
 
 //------------------------------------
 // スタティック変数
@@ -37,6 +38,11 @@ void InitGame(void)
 	// ラインの初期化処理
 	InitLine();
 #endif // !_DEBUG
+
+	// タイム
+	InitTimer();
+	StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
+	CountRestartStop(true, 0);
 
 	// ポーズの初期化処理
 	InitPause();
@@ -91,6 +97,10 @@ void InitGame(void)
 //=========================================
 void UninitGame(void)
 {
+	// タイム
+	UninitTimer();
+	BreakTimer(0);	// タイマーの破棄
+
 	// ポーズの終了処理
 	UninitPause();
 
@@ -188,6 +198,9 @@ void UpdateGame(void)
 
 		// 壁の更新
 		UpdateWall();
+
+		// タイム
+		UpdateTimer();
 	}
 
 #ifdef _DEBUG
@@ -236,6 +249,9 @@ void DrawGame(void)
 
 	//// ビルボードの描画処理
 	//DrawBillboard();
+
+	// タイム
+	DrawTimer();
 
 #ifdef _DEBUG
 	// ラインの描画処理

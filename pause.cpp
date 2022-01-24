@@ -387,7 +387,7 @@ void UpdatePause(void)
 			case PAUSE_MENU_CONTINUE:	//ゲームに戻る
 
 				//ポーズ解除
-				//SetEnablePause(false);
+				SetEnablePause(false);
 				break;
 
 			case PAUSE_MENU_RETRY:		//ゲームをやり直す
@@ -403,12 +403,6 @@ void UpdatePause(void)
 				break;
 			}
 		}
-
-		//if (GetJoyPadAllPlayerTrigger(JOYKEY_START))
-		//{
-		//	//ポーズ解除
-		//	SetEnablePause(false);
-		//}
 	}
 }
 
@@ -490,9 +484,4 @@ void DrawPause(void)
 		0,			//描画する最初の頂点インデックス
 		2);						//描画するプリミティブ数
 
-}
-
-bool SetEnablePause(bool bUse)
-{
-	return bUse;
 }

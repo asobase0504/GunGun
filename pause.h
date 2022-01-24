@@ -36,6 +36,5 @@ void InitPause(void);
 void UninitPause(void);
 void UpdatePause(void);
 void DrawPause(void);
-bool SetEnablePause(bool bUse);
 
 #endif

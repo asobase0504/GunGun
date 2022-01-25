@@ -12,6 +12,7 @@
 #include "polygon.h"
 #include "common.h"
 #include "input.h"
+#include "mesh_sky.h"
 
 //------------------------------------
 // マクロ定義
@@ -72,21 +73,11 @@ void InitMeshSky(void)
 
 	s_aMesh[0].IdxCnt = s_aMesh[0].polygonCnt + 2;	// インデックス数
 
-	//別解
-	/*
-	// インデックス数を求める計算
-	s_aMesh[0].IdxCnt
-	= 2 * (s_aMesh[0].nSurfaceWidth + 1) * s_aMesh[0].nSurfaceHeight	// 一行分のインデックス数
-	+ 2 * (s_aMesh[0].nSurfaceHeight - 1);					// 改行時に発生する重複しているインデックス数
-
-	s_aMesh[0].polygonCnt = s_aMesh[0].IdxCnt - 2;	// ポリゴン数
-	*/
-
 	// 初期化処理
 	s_aMesh[0].pos = ZERO_VECTOR;	// 頂点座標
 	s_aMesh[0].rot = ZERO_VECTOR;	// 回転座標
 
-									// テクスチャの読込
+	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		"data/TEXTURE/暗転.jpg",
 		&s_pTexture);
@@ -285,4 +276,11 @@ void DrawMeshSky(void)
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);
+}
+
+//=========================================
+// 設定
+//=========================================
+void SetMeshSky(void)
+{
 }

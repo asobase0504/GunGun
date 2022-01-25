@@ -62,17 +62,17 @@ static int* s_aIdx = {};							// インデックスの配列
 //=========================================
 // 初期化
 //=========================================
-void InitMeshBuild(void)
+void InitMeshField(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh.nSurfaceWidth = 30;								// X軸の面の数
-	s_aMesh.nSurfaceHeight = 30;								// Y軸の面の数
-	s_aMesh.fLineWidth = 50.0f;									// X軸の面の数
-	s_aMesh.fLineHeight = 50.0f;								// Y軸の面の数
+	s_aMesh.nSurfaceWidth = 30;			// X軸の面の数
+	s_aMesh.nSurfaceHeight = 30;		// Y軸の面の数
+	s_aMesh.fLineWidth = 50.0f;			// X軸の面の数
+	s_aMesh.fLineHeight = 50.0f;		// Y軸の面の数
 
-	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);					// X軸の頂点数
+	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);				// X軸の頂点数
 
 	s_aMesh.vertexCnt = nLineVtx * (s_aMesh.nSurfaceHeight + 1);	// 頂点数
 
@@ -93,7 +93,6 @@ void InitMeshBuild(void)
 	s_aMesh.polygonCnt = s_aMesh.IdxCnt - 2;	// ポリゴン数
 */
 
-// 初期化処理
 	s_aMesh.pos = ZERO_VECTOR;	// 頂点座標
 	s_aMesh.rot = ZERO_VECTOR;	// 回転座標
 
@@ -174,7 +173,7 @@ void InitMeshBuild(void)
 //=========================================
 // 終了
 //=========================================
-void UninitMeshBuild(void)
+void UninitMeshField(void)
 {
 	// インデックス数の保存
 	if (s_aIdx != NULL)
@@ -208,14 +207,14 @@ void UninitMeshBuild(void)
 //=========================================
 // 更新
 //=========================================
-void UpdateMeshBuild(void)
+void UpdateMeshField(void)
 {
 }
 
 //=========================================
 // 描画
 //=========================================
-void DrawMeshBuild(void)
+void DrawMeshField(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
@@ -256,7 +255,7 @@ void DrawMeshBuild(void)
 //=========================================
 // メッシュの座標を取得
 //=========================================
-D3DXVECTOR3 GetMeshBuildPos(void)
+D3DXVECTOR3 GetMeshFieldPos(void)
 {
 	return s_aMesh.pos;
 }

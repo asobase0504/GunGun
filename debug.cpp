@@ -26,6 +26,11 @@
 #include <stdio.h>
 
 //------------------------------------
+// マクロ宣言
+//------------------------------------
+#define DEBUG_NUM	(15)
+
+//------------------------------------
 // 静的変数宣言
 //------------------------------------
 static LPD3DXFONT s_pFont = NULL;	// フォントへのポインタ
@@ -61,15 +66,15 @@ void UninitFPS(void)
 //=========================================
 void DrawFPS(void)
 {
-	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
-	char aStr[15][256];	// 表示文字
+	char aStr[DEBUG_NUM][256];	// 表示文字
+
+	// 情報の取得
 	D3DXVECTOR3 camerarot = GetRotCamera();
 	Player* player = GetPlayer();
 	Model* model = GetModel();
 	Camera* camera = GetCamera();
 	Shadow* shadow = GetShadow();
 	MODE mode = GetMode();
-
 	D3DXVECTOR3 stickL = GetJoypadStick(JOYKEY_LEFT_STICK, 0);
 	D3DXVECTOR3 stickR = GetJoypadStick(JOYKEY_RIGHT_STICK, 0);
 
@@ -77,35 +82,25 @@ void DrawFPS(void)
 	wsprintf(&aStr[0][0], "FPS: %d\n", GetFPS());
 
 	// 文字列に代入
-	sprintf(&aStr[1][0], "rot: %f\n", camera->rot.y);
-	// 文字列に代入
-	sprintf(&aStr[2][0], "Player.pos     : %.3f|%.3f|%.3f\n", player->pos.x, player->pos.y, player->pos.z);
-	// 文字列に代入
-	sprintf(&aStr[3][0], "Player.fLength : %.3f\n", player->fLength);
-	// 文字列に代入
-	sprintf(&aStr[4][0], "Player.MinVtx  : %.3f|%.3f|%.3f\n", player->MinVtx.x, player->MinVtx.y, player->MinVtx.z);
-	// 文字列に代入
-	sprintf(&aStr[5][0], "Player.MaxVtx  : %.3f|%.3f|%.3f\n", player->MaxVtx.x, player->MaxVtx.y, player->MaxVtx.z);
-	// 文字列に代入
-	sprintf(&aStr[6][0], "quaternion     : %.3f|%.3f|%.3f|%.3f\n", player->aModel[0].quaternion.x, player->aModel[0].quaternion.y, player->aModel[0].quaternion.z, player->aModel[0].quaternion.w);
-	// 文字列に代入
-	sprintf(&aStr[7][0], "posV: %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
-	// 文字列に代入
-	sprintf(&aStr[8][0], "posR: %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
-	// 文字列に代入
-	sprintf(&aStr[9][0], "posVDest: %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
-	// 文字列に代入
-	sprintf(&aStr[10][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
-	// 文字列に代入
-	sprintf(&aStr[11][0], "MODE: %d\n", mode);
-	// 文字列に代入
-	sprintf(&aStr[12][0], "stickL: %.3f|%.3f|%.3f\n", stickL.x, stickL.y, stickL.z);
-	// 文字列に代入
-	sprintf(&aStr[13][0], "stickR: %.3f|%.3f|%.3f\n", stickR.x, stickR.y, stickR.z);
-	// 文字列に代入
-	sprintf(&aStr[14][0], "move: %.3f|%.3f|%.3f\n", player->movevec.x, player->movevec.y, player->movevec.z);
+	sprintf(&aStr[1][0],	"rot: %f\n", camera->rot.y);
+	sprintf(&aStr[2][0],	"Player.pos     : %.3f|%.3f|%.3f\n", player->pos.x, player->pos.y, player->pos.z);
+	sprintf(&aStr[3][0],	"Player.fLength : %.3f\n", player->fLength);
+	sprintf(&aStr[4][0],	"Player.MinVtx  : %.3f|%.3f|%.3f\n", player->MinVtx.x, player->MinVtx.y, player->MinVtx.z);
+	sprintf(&aStr[5][0],	"Player.MaxVtx  : %.3f|%.3f|%.3f\n", player->MaxVtx.x, player->MaxVtx.y, player->MaxVtx.z);
+	sprintf(&aStr[6][0],	"quaternion     : %.3f|%.3f|%.3f|%.3f\n", player->aModel[0].quaternion.x, player->aModel[0].quaternion.y, player->aModel[0].quaternion.z, player->aModel[0].quaternion.w);
+	sprintf(&aStr[7][0],	"posV : %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
+	sprintf(&aStr[8][0],	"posR : %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
+	sprintf(&aStr[9][0],	"posVDest : %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
+	sprintf(&aStr[10][0],	"posRDest : %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
+	sprintf(&aStr[11][0],	"MODE : %d\n", mode);
+	sprintf(&aStr[12][0],	"stickL : %.3f|%.3f|%.3f\n", stickL.x, stickL.y, stickL.z);
+	sprintf(&aStr[13][0],	"stickR : %.3f|%.3f|%.3f\n", stickR.x, stickR.y, stickR.z);
+	sprintf(&aStr[14][0],	"move : %.3f|%.3f|%.3f\n", player->movevec.x, player->movevec.y, player->movevec.z);
 
-	for (int i = 0; i < 15; i++)
+	// 表示領域の作成
+	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
+
+	for (int i = 0; i < DEBUG_NUM; i++)
 	{
 		// テキストの描画
 		rect = { 0,i * 30,SCREEN_WIDTH,SCREEN_HEIGHT };

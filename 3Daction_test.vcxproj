@@ -171,7 +171,6 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="result.cpp" />
-    <ClCompile Include="result_3D.cpp" />
     <ClCompile Include="result_ui.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="timer.cpp" />
@@ -199,7 +198,6 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="result.h" />
-    <ClInclude Include="result_3D.h" />
     <ClInclude Include="result_ui.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="timer.h" />

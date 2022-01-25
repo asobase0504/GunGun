@@ -29,16 +29,12 @@
 static Model s_model[MODEL_MAX];	// モデルの構造体
 static int s_nShadowCnt;			// 影の割り当て
 
-									//=========================================
-									// 初期化
-									//=========================================
+//=========================================
+// 初期化
+//=========================================
 void InitModel(void)
 {
-	int nNumVtx;		// 頂点数
-	DWORD sizeFVF;		// 頂点フォーマットのサイズ
-	BYTE *pVtxBuff;		// 頂点バッファーへのポイント
-
-						//LoadModel();		// ロード処理
+	ZeroMemory(s_model, sizeof(s_model));
 }
 
 //=========================================
@@ -294,7 +290,7 @@ void LoadModel(void)
 			if (strcmp(&read[0], "ROT") == 0)
 			{
 				D3DXVECTOR3 rot;
-
+	
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
 				model->rot = rot;

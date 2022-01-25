@@ -72,7 +72,7 @@ void InitGame(void)
 	SetBillboard(D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// メッシュの初期化処理
-	InitMeshBuild();
+	InitMeshField();
 
 	// メッシュ(円柱)の初期化処理
 	InitMeshCylinder();
@@ -127,7 +127,7 @@ void UninitGame(void)
 	UninitBillboard();
 
 	// メッシュの終了処理
-	UninitMeshBuild();
+	UninitMeshField();
 
 	// メッシュ(円柱)の終了処理
 	UninitMeshCylinder();
@@ -186,7 +186,7 @@ void UpdateGame(void)
 		UpdateBillboard();
 
 		// メッシュの更新処理
-		UpdateMeshBuild();
+		UpdateMeshField();
 
 		// メッシュ(円柱)の更新処理
 		UpdateMeshCylinder();
@@ -237,7 +237,7 @@ void DrawGame(void)
 	DrawPlayer();
 
 	// メッシュの描画処理
-	DrawMeshBuild();
+	DrawMeshField();
 
 	//// メッシュ(円柱)の描画処理
 	//DrawMeshCylinder();

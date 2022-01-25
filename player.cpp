@@ -43,16 +43,16 @@ void LoadPlayer(void);			// プレイヤーの読み込み処理
 void ColisionPartsModel(void);	// モデルパーツ同士の当たり判定
 void LookUpSizePlayer(void);	// プレイヤーのサイズを調べる
 
-								//------------------------------------
-								// 静的変数
-								//------------------------------------
+//------------------------------------
+// 静的変数
+//------------------------------------
 static Player s_player;			// モデルの構造体
 static MODEL_STATE s_state;		// モデルのステータス
 static int s_nShadowCnt;		// 影の割り当て
 
-								//=========================================
-								// 初期化
-								//=========================================
+//=========================================
+// 初期化
+//=========================================
 void InitPlayer(void)
 {
 
@@ -65,7 +65,7 @@ void InitPlayer(void)
 	s_player.movevec = ZERO_VECTOR;
 	s_player.aModel[0].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
-																			// プレイヤーにくっつくモデルの配置
+	// プレイヤーにくっつくモデルの配置
 	LoadModel();
 
 	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
@@ -84,14 +84,14 @@ void InitPlayer(void)
 
 	D3DXMATRIX /*mtxScale,*/ mtxRot, mtxTrans;	// 計算用マトリックス
 
-												// ワールドマトリックスの初期化
+	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_player.mtxWorld);
 
 	// 向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
 	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-																								// 位置を反映
+	// 位置を反映
 	D3DXMatrixTranslation(&mtxTrans, s_player.pos.x, s_player.pos.y, s_player.pos.z);	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
@@ -116,7 +116,7 @@ void InitPlayer(void)
 		D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);			// クオータニオンによる行列回転
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-																						// 位置を反映
+		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
@@ -157,7 +157,7 @@ void UpdatePlayer(void)
 
 	pPlayer->pos_old = pPlayer->pos;	// プレイヤー位置の保存
 
-										// モデル位置の保存
+	// モデル位置の保存
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
 		Model* model = &(pPlayer->aModel[i]);
@@ -169,7 +169,7 @@ void UpdatePlayer(void)
 
 	// 移動処理
 	MovePlayer();
-
+	
 	// プレイヤーと床の当たり判定
 	CollisionMeshField(&pPlayer->pos);
 
@@ -208,7 +208,7 @@ void UpdatePlayer(void)
 
 	// プレイヤーの球の半径を求める
 	LookUpSizePlayer();
-
+	
 	// プレイヤー位置とモデル回転する軸の位置の調整。
 	//pPlayer->pos.y += s_player.fLength;	// 半径分床の当たり判定を底上げする
 
@@ -227,13 +227,22 @@ void MovePlayer()
 
 	if (IsJoyPadUse(0))
 	{// ジョイパッドの使用
-		move.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
-		move.z = GetJoypadStick(JOYKEY_LEFT_STICK, 0).y * -1.0f;
-
-		move_max = fabsf(move.x) + fabsf(move.z);
-		if (move_max >= 1.0f)
+		if (GetJoypadStick(JOYKEY_LEFT_STICK, 0).x != 0.0f || GetJoypadStick(JOYKEY_LEFT_STICK, 0).y != 0.0f)
 		{
-			move_max = 1.0f;
+			float rot;
+			move.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
+			move.z = GetJoypadStick(JOYKEY_LEFT_STICK, 0).y * -1.0f;
+
+			rot = atan2f(move.x, move.z);
+
+			move.x = sinf(rot + CameraRot.y);
+			move.z = cosf(rot + CameraRot.y);
+
+			move_max = fabsf(move.x) + fabsf(move.z);
+			if (move_max >= 1.0f)
+			{
+				move_max = 1.0f;
+			}
 		}
 	}
 	else
@@ -288,7 +297,7 @@ void MovePlayer()
 //=========================================
 void ColisionPartsModel(void)
 {
-	//	Model* model = &(s_player.aModel[0]);
+//	Model* model = &(s_player.aModel[0]);
 
 	for (int j = 0; j < PARTS_NUM; j++)
 	{
@@ -328,9 +337,9 @@ void ColisionPartsModel(void)
 
 				float fLength = s_player.fLength + model->MaxVtx.x;	// 長さ
 
-																	// 方向ベクトルに長さを掛ける
+				// 方向ベクトルに長さを掛ける
 				vec *= fLength;
-
+				
 				// 速度を0にする
 				s_player.movevec = ZERO_VECTOR;
 
@@ -424,22 +433,22 @@ void DrawPlayer(void)
 	D3DMATERIAL9 matDef;	// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat;		// マテリアルデータへのポインタ
 
-							// ワールドマトリックスの初期化
+	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_player.mtxWorld);
 
 	//// スケールの反映
 	//D3DXMatrixScaling(&mtxScale, 1.0f, 1.0f, 1.0f);
 	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxScale);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-
+	
 	// 向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
 	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-																								// 位置を反映
+	// 位置を反映
 	D3DXMatrixTranslation(&mtxTrans, s_player.pos.x, s_player.pos.y, s_player.pos.z);	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 	D3DXMatrixMultiply(&s_player.mtxWorld, &s_player.mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-																						// ワールドマトリックスの設定
+	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_player.mtxWorld);
 
 	for (int i = 0; i < PARTS_NUM; i++)
@@ -458,7 +467,7 @@ void DrawPlayer(void)
 		D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);			// クオータニオンによる行列回転
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-																						// 位置を反映
+		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 

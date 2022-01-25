@@ -18,7 +18,7 @@
 #define TITLEPRESS_HEIGHT	(100)
 
 #define SELECTBG			"data/TEXTURE/enemy000.png"
-#define TITLE				"data/TEXTURE/タイトル.png"
+#define TITLE				"data/TEXTURE/title.png"
 #define GAMESTART			"data/TEXTURE/GAMESTART.png"
 #define TUTORIAL			"data/TEXTURE/TUTORIAL.png"
 #define EXIT				"data/TEXTURE/EXIT.png"
@@ -147,20 +147,20 @@ void InitTitle(void)
 			break;
 		case OBJ_TITLE:
 			object->pos = D3DXVECTOR3(40.0f, 30.0f, 0.0f);		// 中心座標の設定
-			object->col = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);	// カラーの設定
-			object->Width = 1380.0f;							// 幅の設定
-			object->Height = 415.0f;							// 高さの設定
+			object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// カラーの設定
+			object->Width = 962.0f * 0.5f;								// 幅の設定
+			object->Height = 526.0f * 0.5f;								// 高さの設定
 
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
 			break;
 		case OBJ_SERECTCURSOR:
 		{
-			object->pos = D3DXVECTOR3(1000.0f - 70.0f, 500.0f, 0.0f);	// 中心座標の設定
+			object->pos = D3DXVECTOR3(800.0f - 70.0f, 460.0f, 0.0f);	// 中心座標の設定
 			object->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 中心座標の設定
 			object->col = D3DXCOLOR(0.4f, 0.81f, 0.53f, 1.0f);	// カラーの設定
-			object->Width = 50.0f;								// 幅の設定
-			object->Height = 50.0f;								// 高さの設定
+			object->Width = 25.0f;								// 幅の設定
+			object->Height = 25.0f;								// 高さの設定
 
 			// 中心座標から上の長さを算出する。
 			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height);
@@ -173,28 +173,28 @@ void InitTitle(void)
 		}
 			break;
 		case OBJ_GAMESTART:
-			object->pos = D3DXVECTOR3(1000.0f, 560.0f, 0.0f);	// 中心座標の設定
+			object->pos = D3DXVECTOR3(800.0f, 460.0f, 0.0f);	// 中心座標の設定
 			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			object->Width = 780.0f;								// 幅の設定
-			object->Height = 140.0f;							// 高さの設定
+			object->Width = 780.0f * 0.5f;								// 幅の設定
+			object->Height = 140.0f * 0.5f;							// 高さの設定
 
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
 			break;
 		case OBJ_TUTORIAL:
-			object->pos = D3DXVECTOR3(1000.0f, 720.0f, 0.0f);	// 中心座標の設定
+			object->pos = D3DXVECTOR3(800.0f, 460.0f + 70.0f, 0.0f);	// 中心座標の設定
 			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			object->Width = 615.0f;								// 幅の設定
-			object->Height = 140.0f;							// 高さの設定
+			object->Width = 615.0f * 0.5f;								// 幅の設定
+			object->Height = 140.0f * 0.5f;							// 高さの設定
 
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
 			break;
 		case OBJ_EXIT:
-			object->pos = D3DXVECTOR3(1000.0f, 880.0f, 0.0f);	// 中心座標の設定
+			object->pos = D3DXVECTOR3(800.0f, 460.0f + 140.0f, 0.0f);	// 中心座標の設定
 			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			object->Width = 270.0f;								// 幅の設定
-			object->Height = 140.0f;							// 高さの設定
+			object->Width = 270.0f * 0.5f;								// 幅の設定
+			object->Height = 140.0f * 0.5f;							// 高さの設定
 			
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
@@ -291,7 +291,7 @@ void UpdateTitle(void)
 		{
 			object->rot.z += 0.025f;
 			object->pos.x = s_Object[s_Select].pos.x - 50.0f;
-			object->pos.y = s_Object[s_Select].pos.y + 140.0f / 2.0f;
+			object->pos.y = s_Object[s_Select].pos.y + 70.0f / 2.0f;
 			object->pos.z = s_Object[s_Select].pos.z;
 
 			// 中心座標から上の長さを算出する。
@@ -444,7 +444,7 @@ void DrawTitle(void)
 		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_2D);
 
-		if (s_Object[i].bUse == true)
+		if (s_Object[i].bUse)
 		{
 			// ポリゴン描画
 			// テクスチャの設定

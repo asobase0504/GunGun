@@ -4,6 +4,9 @@
 // Author YudaKaito
 // 
 //=========================================
+//------------------------------------
+// include
+//------------------------------------
 #include "title.h"
 #include "input.h"
 #include "fade.h"
@@ -13,7 +16,9 @@
 
 #include <assert.h>
 
+//------------------------------------
 // マクロ定義
+//------------------------------------
 #define TITLEPRESS_WIDTH	(620)
 #define TITLEPRESS_HEIGHT	(100)
 
@@ -23,7 +28,9 @@
 #define TUTORIAL			"data/TEXTURE/TUTORIAL.png"
 #define EXIT				"data/TEXTURE/EXIT.png"
 
+//------------------------------------
 // プレスエンターの状態の種類
+//------------------------------------
 typedef enum
 {
 	TYPE_NOME,	// 変化なし
@@ -31,7 +38,9 @@ typedef enum
 	TYPE_MAX
 }PRESS_TYPE;
 
+//------------------------------------
 // 配置するオブジェクトの種類
+//------------------------------------
 typedef enum
 {
 	OBJ_BG,				// スクリーン背景
@@ -44,7 +53,9 @@ typedef enum
 	OBJ_MAX				// 
 }OBJ_TYPE;
 
+//------------------------------------
 // 選択されたオブジェクト
+//------------------------------------
 typedef enum
 {
 	SELECT_GAMESTART = OBJ_GAMESTART,
@@ -64,7 +75,9 @@ typedef struct
 	float Width;								// 幅
 }OBJECT;
 
-// グローバル変数
+//------------------------------------
+// 静的変数変数
+//------------------------------------
 static SELECT_MODE s_Select;
 static OBJECT s_Object[OBJ_MAX] = {};
 static bool	s_bFadeCheek;	// フェード処置に移行するかの処理

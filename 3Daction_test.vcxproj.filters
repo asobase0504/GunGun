@@ -93,6 +93,9 @@
     <ClCompile Include="result_3D.cpp">
       <Filter>メインファイル</Filter>
     </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>メインファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="polygon.h">
@@ -168,6 +171,9 @@
       <Filter>メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="result_3D.h">
+      <Filter>メインファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
       <Filter>メインファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -96,5 +96,6 @@ typedef struct
 LPDIRECT3DDEVICE9 GetDevice(void);	// デバイスの取得
 void SetMode(MODE mode);
 MODE GetMode(void);
+int GetFPS(void);
 
 #endif	// !_MAIN_H_

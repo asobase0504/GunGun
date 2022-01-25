@@ -10,22 +10,11 @@
 //-----------------------------------------
 #include "main.h"
 #include "input.h"
-#include "polygon.h"
-#include "player.h"
-#include "camera.h"
-#include "light.h"
-#include "model.h"
-#include "shadow.h"
-#include "wall.h"
-#include "billboard.h"
-#include "mesh_field.h"
-#include "mesh_cylinder.h"
-#include "mesh_sphere.h"
-#include "mesh_sky.h"
 #include "fade.h"
 #include "game.h"
 #include "title.h"
 #include "result.h"
+#include "debug.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -43,7 +32,6 @@ static HRESULT Init(HINSTANCE hInstance, HWND hWmd, BOOL bWindow);
 static void Uninit(void);
 static void Update(void);
 static void Draw(void);
-static void DrawFPS(void);
 static MODE s_mode = MODE_TITLE;
 
 //-----------------------------------------
@@ -295,8 +283,10 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// ポリゴンとテクスチャのアルファ値を混ぜる。テクスチャ指定
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ポリゴンとテクスチャのアルファ値を混ぜる。ポリゴン指定
 
-	// デバッグ表示用フォントの生成
-	D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);
+	InitFPS();
+
+	//// デバッグ表示用フォントの生成
+	//D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);
 
 	// 入力処理の初期化
 	if (FAILED(InitInput(hInstance, hWnd)))
@@ -315,18 +305,20 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=========================================
 void Uninit(void)
 {
-	// デバッグ表示用フォントの破棄
-	if (g_pFont != NULL)
-	{
-		g_pFont->Release();
-		g_pFont = NULL;
-	}
-	// Direct3Dデバイスの破棄
-	if (g_pD3DDevice != NULL)
-	{
-		g_pD3DDevice->Release();
-		g_pD3DDevice = NULL;
-	}
+	UninitFPS();
+
+	//// デバッグ表示用フォントの破棄
+	//if (g_pFont != NULL)
+	//{
+	//	g_pFont->Release();
+	//	g_pFont = NULL;
+	//}
+	//// Direct3Dデバイスの破棄
+	//if (g_pD3DDevice != NULL)
+	//{
+	//	g_pD3DDevice->Release();
+	//	g_pD3DDevice = NULL;
+	//}
 
 	// Direct3Dオブジェクトの破棄
 	if (g_pD3D != NULL)
@@ -444,64 +436,64 @@ LPDIRECT3DDEVICE9 GetDevice(void)
 	return g_pD3DDevice;
 }
 
-//=========================================
-// FPSの表示
-//=========================================
-void DrawFPS(void)
-{
-	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
-	char aStr[15][256];	// 表示文字
-	D3DXVECTOR3 camerarot = GetRotCamera();
-	Player* player = GetPlayer();
-	Model* model = GetModel();
-	Camera* camera = GetCamera();
-	Shadow* shadow = GetShadow();
-	MODE mode = GetMode();
-
-	D3DXVECTOR3 stickL = GetJoypadStick(JOYKEY_LEFT_STICK, 0);
-	D3DXVECTOR3 stickR = GetJoypadStick(JOYKEY_RIGHT_STICK, 0);
-
-	// 文字列に代入
-	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
-
-	// 文字列に代入
-	sprintf(&aStr[1][0], "rot: %f\n", camera->rot.y);
-	// 文字列に代入
-	sprintf(&aStr[2][0], "Player.pos     : %.3f|%.3f|%.3f\n", player->pos.x, player->pos.y, player->pos.z);
-	// 文字列に代入
-	sprintf(&aStr[3][0], "Player.fLength : %.3f\n", player->fLength);
-	// 文字列に代入
-	sprintf(&aStr[4][0], "Player.MinVtx  : %.3f|%.3f|%.3f\n", player->MinVtx.x, player->MinVtx.y, player->MinVtx.z);
-	// 文字列に代入
-	sprintf(&aStr[5][0], "Player.MaxVtx  : %.3f|%.3f|%.3f\n", player->MaxVtx.x, player->MaxVtx.y, player->MaxVtx.z);
-	// 文字列に代入
-	sprintf(&aStr[6][0], "quaternion     : %.3f|%.3f|%.3f|%.3f\n", player->aModel[0].quaternion.x, player->aModel[0].quaternion.y, player->aModel[0].quaternion.z, player->aModel[0].quaternion.w);
-	// 文字列に代入
-	sprintf(&aStr[7][0], "posV: %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
-	// 文字列に代入
-	sprintf(&aStr[8][0], "posR: %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
-	// 文字列に代入
-	sprintf(&aStr[9][0], "posVDest: %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
-	// 文字列に代入
-	sprintf(&aStr[10][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
-	// 文字列に代入
-	sprintf(&aStr[11][0], "MODE: %d\n", mode);
-	// 文字列に代入
-	sprintf(&aStr[12][0], "stickL: %.3f|%.3f|%.3f\n", stickL.x, stickL.y, stickL.z);
-	// 文字列に代入
-	sprintf(&aStr[13][0], "stickR: %.3f|%.3f|%.3f\n", stickR.x, stickR.y, stickR.z);
-	// 文字列に代入
-	sprintf(&aStr[14][0], "move: %.3f|%.3f|%.3f\n", player->movevec.x, player->movevec.y, player->movevec.z);
-
-	for (int i = 0; i < 15; i++)
-	{
-		// テキストの描画
-		rect = { 0,i * 30,SCREEN_WIDTH,SCREEN_HEIGHT };
-
-		g_pFont->DrawText(NULL, &aStr[i][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 255, 255));
-
-	}
-}
+////=========================================
+//// FPSの表示
+////=========================================
+//void DrawFPS(void)
+//{
+//	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
+//	char aStr[15][256];	// 表示文字
+//	D3DXVECTOR3 camerarot = GetRotCamera();
+//	Player* player = GetPlayer();
+//	Model* model = GetModel();
+//	Camera* camera = GetCamera();
+//	Shadow* shadow = GetShadow();
+//	MODE mode = GetMode();
+//
+//	D3DXVECTOR3 stickL = GetJoypadStick(JOYKEY_LEFT_STICK, 0);
+//	D3DXVECTOR3 stickR = GetJoypadStick(JOYKEY_RIGHT_STICK, 0);
+//
+//	// 文字列に代入
+//	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
+//
+//	// 文字列に代入
+//	sprintf(&aStr[1][0], "rot: %f\n", camera->rot.y);
+//	// 文字列に代入
+//	sprintf(&aStr[2][0], "Player.pos     : %.3f|%.3f|%.3f\n", player->pos.x, player->pos.y, player->pos.z);
+//	// 文字列に代入
+//	sprintf(&aStr[3][0], "Player.fLength : %.3f\n", player->fLength);
+//	// 文字列に代入
+//	sprintf(&aStr[4][0], "Player.MinVtx  : %.3f|%.3f|%.3f\n", player->MinVtx.x, player->MinVtx.y, player->MinVtx.z);
+//	// 文字列に代入
+//	sprintf(&aStr[5][0], "Player.MaxVtx  : %.3f|%.3f|%.3f\n", player->MaxVtx.x, player->MaxVtx.y, player->MaxVtx.z);
+//	// 文字列に代入
+//	sprintf(&aStr[6][0], "quaternion     : %.3f|%.3f|%.3f|%.3f\n", player->aModel[0].quaternion.x, player->aModel[0].quaternion.y, player->aModel[0].quaternion.z, player->aModel[0].quaternion.w);
+//	// 文字列に代入
+//	sprintf(&aStr[7][0], "posV: %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
+//	// 文字列に代入
+//	sprintf(&aStr[8][0], "posR: %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
+//	// 文字列に代入
+//	sprintf(&aStr[9][0], "posVDest: %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
+//	// 文字列に代入
+//	sprintf(&aStr[10][0], "posRDest: %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
+//	// 文字列に代入
+//	sprintf(&aStr[11][0], "MODE: %d\n", mode);
+//	// 文字列に代入
+//	sprintf(&aStr[12][0], "stickL: %.3f|%.3f|%.3f\n", stickL.x, stickL.y, stickL.z);
+//	// 文字列に代入
+//	sprintf(&aStr[13][0], "stickR: %.3f|%.3f|%.3f\n", stickR.x, stickR.y, stickR.z);
+//	// 文字列に代入
+//	sprintf(&aStr[14][0], "move: %.3f|%.3f|%.3f\n", player->movevec.x, player->movevec.y, player->movevec.z);
+//
+//	for (int i = 0; i < 15; i++)
+//	{
+//		// テキストの描画
+//		rect = { 0,i * 30,SCREEN_WIDTH,SCREEN_HEIGHT };
+//
+//		g_pFont->DrawText(NULL, &aStr[i][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 255, 255));
+//
+//	}
+//}
 
 //=========================================
 // モードの設定
@@ -558,4 +550,9 @@ void SetMode(MODE mode)
 MODE GetMode(void)
 {
 	return s_mode;
+}
+
+int GetFPS(void)
+{
+	return g_nCountFPS;
 }

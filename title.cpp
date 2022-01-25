@@ -148,8 +148,8 @@ void InitTitle(void)
 		case OBJ_TITLE:
 			object->pos = D3DXVECTOR3(40.0f, 30.0f, 0.0f);		// 中心座標の設定
 			object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// カラーの設定
-			object->Width = 962.0f * 0.5f;								// 幅の設定
-			object->Height = 526.0f * 0.5f;								// 高さの設定
+			object->Width = 962.0f * 0.5f;						// 幅の設定
+			object->Height = 526.0f * 0.5f;						// 高さの設定
 
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
@@ -157,10 +157,10 @@ void InitTitle(void)
 		case OBJ_SERECTCURSOR:
 		{
 			object->pos = D3DXVECTOR3(800.0f - 70.0f, 460.0f, 0.0f);	// 中心座標の設定
-			object->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 中心座標の設定
-			object->col = D3DXCOLOR(0.4f, 0.81f, 0.53f, 1.0f);	// カラーの設定
-			object->Width = 25.0f;								// 幅の設定
-			object->Height = 25.0f;								// 高さの設定
+			object->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 中心座標の設定
+			object->col = D3DXCOLOR(0.4f, 0.81f, 0.53f, 1.0f);			// カラーの設定
+			object->Width = 25.0f;										// 幅の設定
+			object->Height = 25.0f;										// 高さの設定
 
 			// 中心座標から上の長さを算出する。
 			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height);
@@ -175,26 +175,26 @@ void InitTitle(void)
 		case OBJ_GAMESTART:
 			object->pos = D3DXVECTOR3(800.0f, 460.0f, 0.0f);	// 中心座標の設定
 			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			object->Width = 780.0f * 0.5f;								// 幅の設定
-			object->Height = 140.0f * 0.5f;							// 高さの設定
+			object->Width = 780.0f * 0.5f;						// 幅の設定
+			object->Height = 140.0f * 0.5f;						// 高さの設定
 
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
 			break;
 		case OBJ_TUTORIAL:
 			object->pos = D3DXVECTOR3(800.0f, 460.0f + 70.0f, 0.0f);	// 中心座標の設定
-			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);			// カラーの設定
 			object->Width = 615.0f * 0.5f;								// 幅の設定
-			object->Height = 140.0f * 0.5f;							// 高さの設定
+			object->Height = 140.0f * 0.5f;								// 高さの設定
 
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
 			break;
 		case OBJ_EXIT:
 			object->pos = D3DXVECTOR3(800.0f, 460.0f + 140.0f, 0.0f);	// 中心座標の設定
-			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);			// カラーの設定
 			object->Width = 270.0f * 0.5f;								// 幅の設定
-			object->Height = 140.0f * 0.5f;							// 高さの設定
+			object->Height = 140.0f * 0.5f;								// 高さの設定
 			
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
@@ -275,7 +275,7 @@ void UpdateTitle(void)
 		{
 			if (GetKeyboardTrigger(DIK_RETURN))
 			{// EnterキーかパッドのAを押された時
-			 // 決定音の再生
+				// 決定音の再生
 				s_bFadeCheek = true;	// フェード処理に入る
 			}
 		}

@@ -25,6 +25,7 @@
 #include "fade.h"
 #include "game.h"
 #include "title.h"
+#include "result.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -367,8 +368,8 @@ void Update(void)
 		//UpdateTutorial();
 		break;
 
-	case MODE_RANKING:	// ランキング画面
-		//UpdateRanking();
+	case MODE_RESULT:	// ランキング画面
+		UpdateResult();
 		break;
 	}
 
@@ -414,8 +415,8 @@ void Draw(void)
 			//DrawTutorial();
 			break;
 
-		case MODE_RANKING:	// ランキング画面
-			//DrawRanking();
+		case MODE_RESULT:	// ランキング画面
+			DrawResult();
 			break;
 		}
 
@@ -522,8 +523,8 @@ void SetMode(MODE mode)
 //		UninitTutorial();
 		break;
 
-	case MODE_RANKING:	// ランキング画面
-//		UninitRanking();
+	case MODE_RESULT:	// ランキング画面
+		UninitResult();
 		break;
 	}
 
@@ -542,9 +543,8 @@ void SetMode(MODE mode)
 //		InitTutorial();
 		break;
 
-	case MODE_RANKING:	// ランキング画面
-//		InitRanking();
-//		SetRanking(GetScore());
+	case MODE_RESULT:	// ランキング画面
+		InitResult();
 		break;
 	}
 

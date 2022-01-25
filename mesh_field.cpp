@@ -368,14 +368,15 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 		vecModel[1] = *HitPos - pVtx[s_aIdx[i + 1]].pos;
 		vecModel[2] = *HitPos - pVtx[s_aIdx[i + 2]].pos;
 
-		float crs_v1 = D3DXVec2Cross(&vecModel[0], &vecField[0]);
-		float crs_v2 = D3DXVec2Cross(&vecModel[1], &vecField[1]);
-		float crs_v3 = D3DXVec2Cross(&vecModel[2], &vecField[2]);
+		float crs_v[3];
+		crs_v[0] = D3DXVec2Cross(&vecModel[0], &vecField[0]);
+		crs_v[1] = D3DXVec2Cross(&vecModel[1], &vecField[1]);
+		crs_v[2] = D3DXVec2Cross(&vecModel[2], &vecField[2]);
 
 		// 乗ってるメッシュかチェック
 		if (i % 2 == 0)
 		{
-			if (crs_v1 >= 0.0f && crs_v2 >= 0.0f && crs_v3 >= 0.0f)
+			if (crs_v[0] >= 0.0f && crs_v[1] >= 0.0f && crs_v[2] >= 0.0f)
 			{
 				D3DXVECTOR3 N;
 				D3DXVec3Cross(&N, &vecField[0], &vecField[1]);
@@ -398,7 +399,7 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 		}
 		else
 		{
-			if (crs_v1 <= 0.0f && crs_v2 <= 0.0f && crs_v3 <= 0.0f)
+			if (crs_v[0] >= 0.0f && crs_v[1] >= 0.0f && crs_v[2] >= 0.0f)
 			{
 				D3DXVECTOR3 N;
 				D3DXVec3Cross(&N, &vecField[0], &vecField[1]);

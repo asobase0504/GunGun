@@ -22,6 +22,7 @@
 #include "line.h"
 #include "pause.h"
 #include "timer.h"
+#include "fade.h"
 
 //------------------------------------
 // スタティック変数
@@ -207,6 +208,12 @@ void UpdateGame(void)
 	// ラインの更新処理
 	UpdateLine();
 #endif // !_DEBUG
+
+	// 時間が切れたらリザルトに以降
+	if (TimerUp(0) == 0 || GetJoypadTrigger(JOYKEY_X))
+	{
+		SetFade(MODE_RESULT);
+	}
 }
 
 //=========================================
@@ -245,7 +252,7 @@ void DrawGame(void)
 	DrawShadow();
 
 	// モデルの描画処理
-	//		DrawModel();
+	//DrawModel();
 
 	//// ビルボードの描画処理
 	//DrawBillboard();

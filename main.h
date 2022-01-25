@@ -77,7 +77,7 @@ typedef enum
 	MODE_TITLE = 0,	// タイトル画面
 	MODE_GAME,		// ゲーム画面
 	MODE_TUTORIAL,	// チュートリアル画面
-	MODE_RANKING,	// ランキング画面
+	MODE_RESULT,	// ランキング画面
 	MODE_MAX
 }MODE;
 

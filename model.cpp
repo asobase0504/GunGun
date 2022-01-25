@@ -19,7 +19,7 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MODEL_MAX				(1)
+#define MODEL_MAX				(255)
 #define PLAYER_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
 #define MODEL_LOAD_FILE			("data/model.txt")
@@ -29,16 +29,16 @@
 static Model s_model[MODEL_MAX];	// モデルの構造体
 static int s_nShadowCnt;			// 影の割り当て
 
-//=========================================
-// 初期化
-//=========================================
+									//=========================================
+									// 初期化
+									//=========================================
 void InitModel(void)
 {
 	int nNumVtx;		// 頂点数
 	DWORD sizeFVF;		// 頂点フォーマットのサイズ
 	BYTE *pVtxBuff;		// 頂点バッファーへのポイント
 
-	//LoadModel();		// ロード処理
+						//LoadModel();		// ロード処理
 }
 
 //=========================================
@@ -193,7 +193,7 @@ void LoadModel(void)
 	bool isModel = false;
 	char modelFile[255][255] = {};
 	int nModelFileCnt = 0;
-	int nModelCnt = 0;
+	int nModelCnt = 1;
 
 	pFile = fopen(MODEL_LOAD_FILE, "r");
 
@@ -218,8 +218,42 @@ void LoadModel(void)
 		{
 			fscanf(pFile, "%s", &read);
 			fscanf(pFile, "%s", &modelFile[nModelFileCnt][0]);
-			nModelFileCnt++;
 
+			Model* model = &(s_model[nModelFileCnt]);
+
+			// Xファイルの読み込み
+			D3DXLoadMeshFromX(&modelFile[nModelFileCnt][0],
+				D3DXMESH_SYSTEMMEM,
+				pDevice,
+				NULL,
+				&model->pBuffMat,
+				NULL,
+				&model->nNumMat,
+				&model->pMesh);
+
+			// メッシュに使用されているテクスチャ用の配列を用意する
+			model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
+
+			// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+			D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+
+			// 各メッシュのマテリアル情報を取得する
+			for (int i = 0; i < (int)model->nNumMat; i++)
+			{
+				model->pTexture[i] = NULL;
+
+				if (pMat[i].pTextureFilename != NULL)
+				{// マテリアルで設定されているテクスチャ読み込み
+					D3DXCreateTextureFromFileA(pDevice,
+						pMat[i].pTextureFilename,
+						&model->pTexture[i]);
+				}
+			}
+
+			// モデルのサイズ計測
+			ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
+
+			nModelFileCnt++;
 		}
 		if (strcmp(&read[0], "MODELSET") == 0)
 		{
@@ -233,64 +267,37 @@ void LoadModel(void)
 
 		if (isModel)
 		{
+			Model* model = GetPlayerModel();
+			model += nModelCnt;
+
 			if (strcmp(&read[0], "TYPE") == 0)
 			{
 				int nData;
-				Model* model = &(s_model[nModelCnt]);
 
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%d", &nData);
 
-				// Xファイルの読み込み
-				D3DXLoadMeshFromX(&modelFile[nData][0],
-					D3DXMESH_SYSTEMMEM,
-					pDevice,
-					NULL,
-					&model->pBuffMat,
-					NULL,
-					&model->nNumMat,
-					&model->pMesh);
+				*model = s_model[nData];
 
-				// メッシュに使用されているテクスチャ用の配列を用意する
-				model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
-
-				// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
-				D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
-
-				// 各メッシュのマテリアル情報を取得する
-				for (int i = 0; i < (int)model->nNumMat; i++)
-				{
-					model->pTexture[i] = NULL;
-
-					if (pMat[i].pTextureFilename != NULL)
-					{// マテリアルで設定されているテクスチャ読み込み
-						D3DXCreateTextureFromFileA(pDevice,
-							pMat[i].pTextureFilename,
-							&model->pTexture[i]);
-					}
-				}
-
-				// モデルのサイズ計測
-				ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
-
+				model->nIdxModelParent = -2;
+				model->bUse = true;
+				model->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
 			}
 			if (strcmp(&read[0], "POS") == 0)
 			{
 				D3DXVECTOR3 pos;
-				Model* model = &(s_model[nModelCnt]);
+
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
 				model->pos = pos;
-
 			}
 			if (strcmp(&read[0], "ROT") == 0)
 			{
 				D3DXVECTOR3 rot;
-				Model* model = &(s_model[nModelCnt]);
+
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
 				model->rot = rot;
-
 			}
 		}
 	}

@@ -46,4 +46,5 @@ void UpdatePlayer(void);	// プレイヤーの更新処理
 void DrawPlayer(void);		// プレイヤーの更新処理
 void MovePlayer(void);		// プレイヤーの移動
 Player* GetPlayer(void);	// プレイヤーの取得処理
+Model *GetPlayerModel(void);	// プレイヤーモデルの取得処理
 #endif // !_PLAYER_H_

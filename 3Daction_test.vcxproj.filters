@@ -13,7 +13,7 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="メインファイル">
+    <Filter Include="00_メインファイル">
       <UniqueIdentifier>{ee239ec0-2bc8-43af-8325-039955571b5c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -73,25 +73,25 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="result.cpp">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="title.cpp">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="fade.cpp">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="result_ui.cpp">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="debug.cpp">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,25 +150,25 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="result.h">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="title.h">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="result_ui.h">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
-      <Filter>メインファイル</Filter>
+      <Filter>00_メインファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

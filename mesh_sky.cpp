@@ -28,26 +28,26 @@
 //------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 pos;	// 頂点座標
-	D3DXVECTOR3 rot;	// 回転座標
-	int nSurfaceWidth;	// 面の幅数
-	int nSurfaceHeight;	// 面の高さ数
-	float fLineWidth;	// 辺の幅
-	float fLineHeight;	// 辺の高さ
-	int vertexCnt;		// 頂点数
-	int polygonCnt;		// ポリゴン数
-	int IdxCnt;			// インデックス数
-	D3DXMATRIX mtxWorld;// ワールドマトリックス
+	D3DXVECTOR3 pos;		// 頂点座標
+	D3DXVECTOR3 rot;		// 回転座標
+	int nSurfaceWidth;		// 面の幅数
+	int nSurfaceHeight;		// 面の高さ数
+	float fLineWidth;		// 辺の幅
+	float fLineHeight;		// 辺の高さ
+	int vertexCnt;			// 頂点数
+	int polygonCnt;			// ポリゴン数
+	int IdxCnt;				// インデックス数
+	D3DXMATRIX mtxWorld;	// ワールドマトリックス
 } Mesh;
 
 //------------------------------------
 // 静的変数
 //------------------------------------
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};		// 頂点バッファーへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};			// 頂点バッファーへのポインタ
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffCone = {};		// 頂点バッファーへのポインタ
-static LPDIRECT3DTEXTURE9 s_pTexture = {};			// テクスチャへのポインタ
-static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;	// インデックスバッファへのポインタ
-static Mesh s_aMesh[2] = {};						// ポリゴンの構造体
+static LPDIRECT3DTEXTURE9 s_pTexture = {};				// テクスチャへのポインタ
+static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;		// インデックスバッファへのポインタ
+static Mesh s_aMesh[2] = {};							// ポリゴンの構造体
 
 //=========================================
 // 初期化
@@ -57,10 +57,10 @@ void InitMeshSky(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh[0].nSurfaceWidth = 10;					// 横軸の面の数
-	s_aMesh[0].nSurfaceHeight = 5;					// 縦軸の面の数
-	s_aMesh[0].fLineWidth = 10.0f;					// 横軸の辺の長さ　
-	s_aMesh[0].fLineHeight = 10.0f;					// 縦軸の辺の長さ
+	s_aMesh[0].nSurfaceWidth = 10;	// 横軸の面の数
+	s_aMesh[0].nSurfaceHeight = 5;	// 縦軸の面の数
+	s_aMesh[0].fLineWidth = 10.0f;	// 横軸の辺の長さ　
+	s_aMesh[0].fLineHeight = 10.0f;	// 縦軸の辺の長さ
 
 	int nLineVtx = (s_aMesh[0].nSurfaceWidth + 1);	// 横軸の頂点数
 

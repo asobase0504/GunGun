@@ -13,7 +13,7 @@
 #include "common.h"
 #include "fade.h"
 // 2D
-
+#include "result_ui.h"
 // 3D
 #include "camera.h"
 #include "light.h"
@@ -21,19 +21,13 @@
 #include "mesh_sky.h"
 #include "mesh_field.h"
 
-
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define FILENAME	("data/TEXTURE/Result_Hunter.png")
 
 //=========================================
 // 静的変数変数
 //=========================================
-static LPDIRECT3DTEXTURE9 s_pTexture[GAME_MAX] = { NULL,NULL };		// テクスチャへのポインタ
-static LPDIRECT3DTEXTURE9 s_pTextureWinner = NULL;					// テクスチャへのポインタ
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;					// 頂点バッファへのポインタ
-static bool bWin;
 
 //=========================================
 // 初期化
@@ -41,6 +35,7 @@ static bool bWin;
 void InitResult(void)
 {
 	// 初期化処理
+	InitResultUI();		// リザルトUI
 	InitCamera();		// カメラ
 	InitLight();		// ライト
 	InitModel();		// モデル
@@ -54,6 +49,7 @@ void InitResult(void)
 void UninitResult(void)
 {
 	// 終了処理
+	UninitResultUI();	// リザルトUI
 	UninitCamera();		// カメラ
 	UninitLight();		// ライト
 	UninitModel();		// モデル
@@ -67,6 +63,7 @@ void UninitResult(void)
 void UpdateResult(void)
 {
 	// 更新処理
+	UpdateResultUI();	// リザルトUI
 	UpdateCamera();		// カメラ
 	UpdateLight();		// ライト
 	UpdateModel();		// モデル
@@ -85,6 +82,7 @@ void UpdateResult(void)
 void DrawResult(void)
 {
 	// 描画処理
+	DrawResultUI();		// リザルトUI
 	DrawModel();		// モデル
 	DrawMeshSky();		// メッシュ(空)
 	DrawMeshField();	// メッシュ(地面)

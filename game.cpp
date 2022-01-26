@@ -40,51 +40,28 @@ void InitGame(void)
 	InitLine();
 #endif // !_DEBUG
 
-	// タイム
-	InitTimer();
+	// 初期化
+	InitTimer();		// タイム
+	InitPause();		// ポーズ
+	InitCamera();		// カメラ
+	InitLight();		// ライト
+	InitPolygon();		// ポリゴン
+	InitModel();		// モデル
+	InitPlayer();		// プレイヤー
+	InitShadow();		// 影
+	InitBillboard();	// ビルボード
+	InitMeshField();	// メッシュ
+	InitMeshCylinder();	// メッシュ(円柱)
+	InitMeshSphere();	// メッシュ(球)
+	InitMeshSky();		// メッシュ(空)
+	InitWall();			// 壁
+
+	// タイムの設定処理
 	StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
 	CountRestartStop(true, 0);
 
-	// ポーズの初期化処理
-	InitPause();
-
-	// ポリゴンの初期化処理
-	InitPolygon();
-
-	// モデルの初期化処理
-	InitModel();
-
-	// プレイヤーの初期化処理
-	InitPlayer();
-
-	// 影の初期化処理
-	InitShadow();
-
-	// カメラの初期化処理
-	InitCamera();
-
-	// ライトの初期化処理
-	InitLight();
-
-	// ビルボードの初期化処理
-	InitBillboard();
-
+	// ビルボードの設定処理
 	SetBillboard(D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-	// メッシュの初期化処理
-	InitMeshField();
-
-	// メッシュ(円柱)の初期化処理
-	InitMeshCylinder();
-
-	// メッシュ(球)の初期化処理
-	InitMeshSphere();
-
-	// メッシュ(空)の初期化処理
-	InitMeshSky();
-
-	// 壁の初期化処理
-	InitWall();
 
 	//// 壁の設定処理
 	//SetWall(D3DXVECTOR3(0.0f, 0.0f, 50.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -98,53 +75,29 @@ void InitGame(void)
 //=========================================
 void UninitGame(void)
 {
-	// タイム
-	UninitTimer();
-	BreakTimer(0);	// タイマーの破棄
-
-	// ポーズの終了処理
-	UninitPause();
-
-	// ポリゴンの終了処理
-	UninitPolygon();
-
-	// プレイヤーの終了処理
-	UninitPlayer();
-
-	// モデルの終了処理
-	UninitModel();
-
-	// カメラの終了処理
-	UninitCamera();
-
-	// ライトの終了処理
-	UninitLight();
-
-	// 影の終了処理
-	UninitShadow();
-
-	// ビルボードの終了処理
-	UninitBillboard();
-
-	// メッシュの終了処理
-	UninitMeshField();
-
-	// メッシュ(円柱)の終了処理
-	UninitMeshCylinder();
-
-	// メッシュ(球)の終了処理
-	UninitMeshSphere();
-
-	// メッシュ(空)の終了処理
-	UninitMeshSky();
-
-	// 壁の終了処理
-	UninitWall();
+	// 終了
+	UninitTimer();			// タイム
+	UninitModel();			// モデル
+	UninitPlayer();			// プレイヤー
+	UninitPause();			// ポーズ
+	UninitPolygon();		// ポリゴン
+	UninitCamera();			// カメラ
+	UninitLight();			// ライト
+	UninitShadow();			// 影
+	UninitBillboard();		// ビルボード
+	UninitMeshField();		// メッシュ
+	UninitMeshCylinder();	// メッシュ(円柱)
+	UninitMeshSphere();		// メッシュ(球)
+	UninitMeshSky();		// メッシュ(空)
+	UninitWall();			// 壁
 
 #ifdef _DEBUG
-	// ラインの更新処理
+	// ライン
 	UninitLine();
 #endif // !_DEBUG
+
+	// タイマーの破棄
+	BreakTimer(0);
 }
 
 //=========================================
@@ -159,55 +112,28 @@ void UpdateGame(void)
 
 	if (s_bPause)
 	{
-		// ポーズ
-		UpdatePause();
+		UpdatePause();	// ポーズ
 	}
 	else
 	{
-		// モデルの更新
-		UpdateModel();
-
-		// プレイヤーの更新処理
-		UpdatePlayer();
-
-		// カメラの更新
-		UpdateCamera();
-
-		// ライトの更新
-		UpdateLight();
-
-		// ポリゴンの更新
-		UpdatePolygon();
-
-		// 影の更新
-		UpdateShadow();
-
-		// ビルボードの更新
-		UpdateBillboard();
-
-		// メッシュの更新処理
-		UpdateMeshField();
-
-		// メッシュ(円柱)の更新処理
-		UpdateMeshCylinder();
-
-		// メッシュ(球)の更新処理
-		UpdateMeshSphere();
-
-		// メッシュ(空)の更新処理
-		UpdateMeshSky();
-
-		// 壁の更新
-		UpdateWall();
-
-		// タイム
-		UpdateTimer();
-	}
-
+		// 更新
+		UpdateModel();			// モデル
+		UpdatePlayer();			// プレイヤー
+		UpdateCamera();			// カメラ
+		UpdateLight();			// ライト
+		UpdatePolygon();		// ポリゴン
+		UpdateShadow();			// 影
+		UpdateBillboard();		// ビルボード
+		UpdateMeshField();		// メッシュ
+		UpdateMeshCylinder();	// メッシュ(円柱)
+		UpdateMeshSphere();		// メッシュ(球)
+		UpdateMeshSky();		// メッシュ(空)
+		UpdateWall();			// 壁
+		UpdateTimer();			// タイム
 #ifdef _DEBUG
-	// ラインの更新処理
-	UpdateLine();
+		UpdateLine();	// ライン
 #endif // !_DEBUG
+	}
 
 	// 時間が切れたらリザルトに以降
 	if (TimerUp(0) == 0 || GetJoypadTrigger(JOYKEY_X))
@@ -221,48 +147,24 @@ void UpdateGame(void)
 //=========================================
 void DrawGame(void)
 {
-	// カメラの設定処理
-	SetCamera();
-
-	// ポリゴンの描画処理
-	//DrawPolygon();
-
-	// 壁の描画処理
-	DrawWall();
-
-	// モデルの描画処理
-	DrawModel();
-
-	// プレイヤーの描画処理
-	DrawPlayer();
-
-	// メッシュの描画処理
-	DrawMeshField();
-
-	//// メッシュ(円柱)の描画処理
-	//DrawMeshCylinder();
-
-	//// メッシュ(球)の描画処理
-	//DrawMeshSphere();
-
-	//// メッシュ(空)の描画処理
-	//DrawMeshSky();
-
-	// 影の描画処理
-	DrawShadow();
-
-	// モデルの描画処理
-	//DrawModel();
-
-	//// ビルボードの描画処理
-	//DrawBillboard();
+	SetCamera();			// カメラ
+	//DrawPolygon();		// ポリゴン
+	DrawWall();				// 壁
+	DrawModel();			// モデル
+	DrawPlayer();			// プレイヤー
+	DrawMeshField();		// メッシュ
+	//DrawMeshCylinder();	// メッシュ(円柱)
+	//DrawMeshSphere();		// メッシュ(球)
+	//DrawMeshSky();		// メッシュ(空)
+	DrawShadow();			// 影
+	//DrawModel();			// モデル
+	//DrawBillboard();		// ビルボード
 
 	// タイム
 	DrawTimer();
 
 #ifdef _DEBUG
-	// ラインの描画処理
-	DrawLine();
+	DrawLine();	// ライン
 #endif // !_DEBUG
 
 	if (s_bPause)

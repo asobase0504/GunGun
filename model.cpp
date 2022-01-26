@@ -14,8 +14,8 @@
 #include "camera.h"
 #include "shadow.h"
 #include "player.h"
-
 #include <stdio.h>
+
 //------------------------------------
 // マクロ定義
 //------------------------------------
@@ -48,39 +48,6 @@ void UninitModel(void)
 	for (int i = 0; i < MODEL_NUM; i++)
 	{
 		Model* model = &(s_ModelType[i]);
-
-		if (model->pTexture != NULL)
-		{
-			for (int j = 0; j < (int)model->nNumMat; j++)
-			{
-				if (model->pTexture[j] != NULL)
-				{// テクスチャの解放
-					model->pTexture[j]->Release();
-					model->pTexture[j] = NULL;
-				}
-			}
-
-			delete[]model->pTexture;
-			model->pTexture = NULL;
-		}
-
-		// メッシュの解放
-		if (model->pMesh != NULL)
-		{
-			model->pMesh->Release();
-			model->pMesh = NULL;
-		}
-		// マテリアルの解放
-		if (model->pBuffMat != NULL)
-		{
-			model->pBuffMat->Release();
-			model->pBuffMat = NULL;
-		}
-	}
-
-	for (int i = 0; i < MODEL_MAX; i++)
-	{
-		Model* model = &(s_Model[i]);
 
 		if (model->pTexture != NULL)
 		{

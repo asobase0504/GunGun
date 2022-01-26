@@ -55,23 +55,34 @@ static int s_nShadowCnt;		// 影の割り当て
 //=========================================
 void InitPlayer(void)
 {
+	ZeroMemory(&s_player, sizeof(s_player));
+	//for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
+	//{
+	//	Model* model = s_player.aModel[i];
 
+	//	model = &ZeroModel;
+	//}
+
+	// プレイヤーにくっつくモデルの配置
+	LoadModel();
 	// 読み込み処理
-	LoadPlayer();
+	//LoadPlayer();
 
 	s_player.pos = ZERO_VECTOR;
 	s_player.pos.y = -s_player.MinVtx.y;
 	s_player.rot = ZERO_VECTOR;
 	s_player.movevec = ZERO_VECTOR;
-	s_player.aModel[0].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
+	s_player.aModel[0]->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
-	// プレイヤーにくっつくモデルの配置
-	LoadModel();
 
 	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
 	{
-		Model* model = &(s_player.aModel[i]);
+		Model* model = s_player.aModel[i];
 
+		if (model == NULL)
+		{
+			continue;
+		}
 		if (!(model->bUse))
 		{
 			continue;
@@ -99,46 +110,6 @@ void InitPlayer(void)
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_player.mtxWorld);
-
-	for (int i = 0; i < PARTS_NUM; i++)
-	{
-		Model* model = &(s_player.aModel[i]);
-
-		if (!model->bUse)
-		{
-			continue;
-		}
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&model->mtxWorld);
-
-		// クォータニオンの使用した姿勢の設定
-		D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);			// クオータニオンによる行列回転
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-
-		D3DXMATRIX mtxParent;
-		if (model->nIdxModelParent == -1)
-		{
-			mtxParent = s_player.mtxWorld;
-		}
-		else
-		{
-			mtxParent = s_player.aModel[model->nIdxModelParent].mtxWorld;
-		}
-
-		// プレイヤーとくっついている状態のモデルはプレイヤーとの行列計算
-		if (model->nIdxModelParent != -2)
-		{
-			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
-		}
-
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
-	}
 }
 
 //=========================================
@@ -160,7 +131,12 @@ void UpdatePlayer(void)
 	// モデル位置の保存
 	for (int i = 0; i < PARTS_NUM; i++)
 	{
-		Model* model = &(pPlayer->aModel[i]);
+		Model* model = pPlayer->aModel[i];
+
+		if (model == NULL)
+		{
+			continue;
+		}
 		model->pos_old = model->pos;
 		model->quaternion_old = model->quaternion;
 
@@ -282,10 +258,10 @@ void MovePlayer()
 
 	D3DXQuaternionRotationAxis(&quaternion, &axis, MODEL_ROT_ATTENUATION * move_max);	// 回転軸と回転角度を指定
 
-	s_player.aModel[0].quaternion *= quaternion;
+	s_player.aModel[0]->quaternion *= quaternion;
 
 	// クオータニオンのノーマライズ
-	D3DXQuaternionNormalize(&s_player.aModel[0].quaternion, &s_player.aModel[0].quaternion);
+	D3DXQuaternionNormalize(&s_player.aModel[0]->quaternion, &s_player.aModel[0]->quaternion);
 
 	// 方向ベクトル掛ける移動量
 	s_player.movevec = move * PLAYER_MOVE * move_max;
@@ -301,15 +277,19 @@ void ColisionPartsModel(void)
 
 	for (int j = 0; j < PARTS_NUM; j++)
 	{
-		Model* model = &(s_player.aModel[j]);
+		Model* model = s_player.aModel[j];
 
+		if (model == NULL)
+		{
+			continue;
+		}
 		if (!(model->bUse) || model->nIdxModelParent != -2)
 		{
 			continue;
 		}
 
 		// 当たった場合
-		if (SphereColision(s_player.aModel[0].pos_world, s_player.fLength, model->pos_world, model->MaxVtx.x))
+		if (SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, model->MaxVtx.x))
 		{
 			if (s_player.fLength >= model->MaxVtx.x * 1.5f)
 			{	// 取り込めるサイズの場合
@@ -317,7 +297,7 @@ void ColisionPartsModel(void)
 				D3DXVECTOR3 pos_local = model->pos_world - s_player.pos_old;
 				D3DXVECTOR3 v = ZERO_VECTOR;
 
-				D3DXQUATERNION quaternionHit = s_player.aModel[0].quaternion;
+				D3DXQUATERNION quaternionHit = s_player.aModel[0]->quaternion;
 				quaternionHit.w *= -1;
 
 				// クォータニオンの使用した姿勢の設定
@@ -356,8 +336,12 @@ void LookUpSizePlayer(void)
 {
 	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
 	{
-		Model* model = &(s_player.aModel[i]);
+		Model* model = s_player.aModel[i];
 
+		if (model == NULL)
+		{
+			continue;
+		}
 		if (model->nIdxModelParent == -2)
 		{
 			continue;
@@ -419,7 +403,7 @@ void LookUpSizePlayer(void)
 	}
 
 	D3DXVECTOR3 v = s_player.MaxVtx - s_player.MinVtx;
-	s_player.fLength = sqrtf((v.x + v.y + v.z) / 6.0f - s_player.aModel[0].MaxVtx.x) + s_player.aModel[0].MaxVtx.x;
+	s_player.fLength = sqrtf((v.x + v.y + v.z) / 6.0f - s_player.aModel[0]->MaxVtx.x) + s_player.aModel[0]->MaxVtx.x;
 	s_player.pos.y += s_player.fLength;	// プレイヤーの位置を底上げ。
 }
 
@@ -450,68 +434,6 @@ void DrawPlayer(void)
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_player.mtxWorld);
-
-	for (int i = 0; i < PARTS_NUM; i++)
-	{
-		Model* model = &(s_player.aModel[i]);
-
-		if (!model->bUse)
-		{
-			continue;
-		}
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&model->mtxWorld);
-
-		// クォータニオンの使用した姿勢の設定
-		D3DXMatrixRotationQuaternion(&mtxRot, &s_player.aModel[i].quaternion);			// クオータニオンによる行列回転
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-
-		D3DXMATRIX mtxParent;
-		if (model->nIdxModelParent == -1)
-		{
-			mtxParent = s_player.mtxWorld;
-		}
-		else
-		{
-			mtxParent = s_player.aModel[model->nIdxModelParent].mtxWorld;
-		}
-
-		// プレイヤーとくっついている状態のモデルはプレイヤーとの行列計算
-		if (model->nIdxModelParent != -2)
-		{
-			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
-
-		}
-
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
-
-		// 現在のマテリアルを保持
-		pDevice->GetMaterial(&matDef);
-
-		// マテリアルデータへのポインタを取得
-		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
-
-		for (int j = 0; j < (int)model->nNumMat; j++)
-		{
-			// マテリアルの設定
-			pDevice->SetMaterial(&pMat[j].MatD3D);
-
-			// テクスチャの設定
-			pDevice->SetTexture(0, model->pTexture[j]);
-
-			// モデルパーツの描写
-			model->pMesh->DrawSubset(j);
-		}
-
-		// 保持していたマテリアルを戻す
-		pDevice->SetMaterial(&matDef);
-	}
 }
 
 
@@ -537,7 +459,7 @@ void LoadPlayer(void)
 	read[0] = *modelFile;
 
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	Model* model = &(s_player.aModel[0]);
+	Model* model = s_player.aModel[0];
 
 	// Xファイルの読み込み
 	D3DXLoadMeshFromX(modelFile,
@@ -573,11 +495,11 @@ void LoadPlayer(void)
 		}
 	}
 
-	s_player.aModel[0].pos = ZERO_VECTOR;
+	s_player.aModel[0]->pos = ZERO_VECTOR;
 	//s_player.aModel[0].pos.y = -s_player.MinVtx.y;
-	s_player.aModel[0].rot = ZERO_VECTOR;
-	s_player.aModel[0].nIdxModelParent = -1;
-	s_player.aModel[0].bUse = true;
+	s_player.aModel[0]->rot = ZERO_VECTOR;
+	s_player.aModel[0]->nIdxModelParent = -1;
+	s_player.aModel[0]->bUse = true;
 
 }
 
@@ -592,7 +514,7 @@ Player *GetPlayer(void)
 //--------------------------------------------------
 // モデル取得
 //--------------------------------------------------
-Model *GetPlayerModel(void)
+Model** GetPlayerModel(void)
 {
 	return s_player.aModel;
 }

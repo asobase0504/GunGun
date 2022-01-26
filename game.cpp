@@ -51,14 +51,14 @@ void InitGame(void)
 	// ポリゴンの初期化処理
 	InitPolygon();
 
+	// モデルの初期化処理
+	InitModel();
+
 	// プレイヤーの初期化処理
 	InitPlayer();
 
 	// 影の初期化処理
 	InitShadow();
-
-	// モデルの初期化処理
-	InitModel();
 
 	// カメラの初期化処理
 	InitCamera();

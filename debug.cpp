@@ -87,7 +87,7 @@ void DrawFPS(void)
 	sprintf(&aStr[3][0],	"Player.fLength : %.3f\n", player->fLength);
 	sprintf(&aStr[4][0],	"Player.MinVtx  : %.3f|%.3f|%.3f\n", player->MinVtx.x, player->MinVtx.y, player->MinVtx.z);
 	sprintf(&aStr[5][0],	"Player.MaxVtx  : %.3f|%.3f|%.3f\n", player->MaxVtx.x, player->MaxVtx.y, player->MaxVtx.z);
-	sprintf(&aStr[6][0],	"quaternion     : %.3f|%.3f|%.3f|%.3f\n", player->aModel[0].quaternion.x, player->aModel[0].quaternion.y, player->aModel[0].quaternion.z, player->aModel[0].quaternion.w);
+	sprintf(&aStr[6][0],	"quaternion     : %.3f|%.3f|%.3f|%.3f\n", player->aModel[0]->quaternion.x, player->aModel[0]->quaternion.y, player->aModel[0]->quaternion.z, player->aModel[0]->quaternion.w);
 	sprintf(&aStr[7][0],	"posV : %.3f|%.3f|%.3f\n", camera->posV.x, camera->posV.y, camera->posV.z);
 	sprintf(&aStr[8][0],	"posR : %.3f|%.3f|%.3f\n", camera->posR.x, camera->posR.y, camera->posR.z);
 	sprintf(&aStr[9][0],	"posVDest : %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);

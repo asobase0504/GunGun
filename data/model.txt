@@ -15,8 +15,14 @@ NUM_MODEL = 15
 # モデルファイル名
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/MODEL/gabyou.x			# [1]画鋲(小)
-MODEL_FILENAME = data/MODEL/bee_head.x			# [0]蜂(小)
-MODEL_FILENAME = data/MODEL/desk.x				# [1]机(小)
+MODEL_FILENAME = data/MODEL/bee_head.x			# [2]蜂(小)
+MODEL_FILENAME = data/MODEL/desk.x				# [3]机(小)
+MODEL_FILENAME = data/MODEL/player.x			# [0]プレイヤー
+
+PLAYERSET
+	TYPE = 3
+	POS = 0 0 0
+END_PLAYERSET
 
 MODELSET
 	TYPE = 0
@@ -252,13 +258,5 @@ MODELSET
 	POS = 350 0 300
 	ROT = 0 0 0
 END_MODELSET
-#------------------------------------------------------------------------------
-# プレイヤー情報
-#------------------------------------------------------------------------------
-PLAYERSET
-	MOTION_FILENAME = data/motion_bee.txt
-	POS = 0 0 0
-	ROT = 0 0 0
-END_PLAYERSET
 
 END_SCRIPT		# この行は絶対消さないこと！

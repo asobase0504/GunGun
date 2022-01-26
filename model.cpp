@@ -19,6 +19,7 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
+#define MODEL_NUM				(25)
 #define MODEL_MAX				(255)
 #define PLAYER_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
@@ -26,15 +27,17 @@
 //------------------------------------
 // 静的変数
 //------------------------------------
-static Model s_model[MODEL_MAX];	// モデルの構造体
-static int s_nShadowCnt;			// 影の割り当て
+static Model s_ModelType[MODEL_NUM];	// モデルの種類を保管
+static Model s_Model[MODEL_MAX];		// モデルの構造体
+static int s_nShadowCnt;				// 影の割り当て
 
 //=========================================
 // 初期化
 //=========================================
 void InitModel(void)
 {
-	ZeroMemory(s_model, sizeof(s_model));
+	ZeroMemory(s_ModelType, sizeof(s_ModelType));
+	ZeroMemory(s_Model, sizeof(s_Model));
 }
 
 //=========================================
@@ -42,9 +45,42 @@ void InitModel(void)
 //=========================================
 void UninitModel(void)
 {
+	for (int i = 0; i < MODEL_NUM; i++)
+	{
+		Model* model = &(s_ModelType[i]);
+
+		if (model->pTexture != NULL)
+		{
+			for (int j = 0; j < (int)model->nNumMat; j++)
+			{
+				if (model->pTexture[j] != NULL)
+				{// テクスチャの解放
+					model->pTexture[j]->Release();
+					model->pTexture[j] = NULL;
+				}
+			}
+
+			delete[]model->pTexture;
+			model->pTexture = NULL;
+		}
+
+		// メッシュの解放
+		if (model->pMesh != NULL)
+		{
+			model->pMesh->Release();
+			model->pMesh = NULL;
+		}
+		// マテリアルの解放
+		if (model->pBuffMat != NULL)
+		{
+			model->pBuffMat->Release();
+			model->pBuffMat = NULL;
+		}
+	}
+
 	for (int i = 0; i < MODEL_MAX; i++)
 	{
-		Model* model = &(s_model[i]);
+		Model* model = &(s_Model[i]);
 
 		if (model->pTexture != NULL)
 		{
@@ -88,49 +124,81 @@ void UpdateModel(void)
 //=========================================
 void DrawModel(void)
 {
-	//LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	//D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
-	//D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
-	//D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
+	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
 
-	//for (int i = 0; i < MODEL_MAX; i++)
-	//{
-	//	Model* model = &(s_model[i]);
+	for (int i = 0; i < MODEL_MAX; i++)
+	{
+		Model* model = &(s_Model[i]);
 
-	//	// ワールドマトリックスの初期化
-	//	D3DXMatrixIdentity(&model->mtxWorld);
+		if (!model->bUse)
+		{
+			continue;
+		}
 
-	//	// 向きを反映
-	//	D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	//	D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&model->mtxWorld);
 
-	//	// 位置を反映
-	//	D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-	//	D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		// 角度の反映
+		if (model->isQuaternion)
+		{
+			// クォータニオンの使用した姿勢の設定
+			D3DXMatrixRotationQuaternion(&mtxRot, &model->quaternion);			// クオータニオンによる行列回転
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);	// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		}
+		else
+		{
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		}
 
-	//	// ワールドマトリックスの設定
-	//	pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);;
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-	//	// 現在のマテリアルを保持
-	//	pDevice->GetMaterial(&matDef);
+		D3DXMATRIX mtxParent;
+		if (model->nIdxModelParent == -1)
+		{
+			mtxParent = GetPlayer()->mtxWorld;
+		}
+		else
+		{
+			mtxParent = s_Model[model->nIdxModelParent].mtxWorld;
+		}
 
-	//	// マテリアルデータへのポインタを取得
-	//	pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+		// プレイヤーとくっついている状態のモデルはプレイヤーとの行列計算
+		if (model->nIdxModelParent != -2)
+		{
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
 
-	//	for (int j = 0; j < (int)model->nNumMat; j++)
-	//	{
-	//		// マテリアルの設定
-	//		pDevice->SetMaterial(&pMat[j].MatD3D);
+		}
 
-	//		// テクスチャの設定
-	//		pDevice->SetTexture(0, model->pTexture[j]);
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);;
 
-	//		// モデルパーツの描写
-	//		model->pMesh->DrawSubset(j);
-	//	}
-	//	// 保持していたマテリアルを戻す
-	//	pDevice->SetMaterial(&matDef);
-	//}
+		// 現在のマテリアルを保持
+		pDevice->GetMaterial(&matDef);
+
+		// マテリアルデータへのポインタを取得
+		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+
+		for (int j = 0; j < (int)model->nNumMat; j++)
+		{
+			// マテリアルの設定
+			pDevice->SetMaterial(&pMat[j].MatD3D);
+
+			// テクスチャの設定
+			pDevice->SetTexture(0, model->pTexture[j]);
+
+			// モデルパーツの描写
+			model->pMesh->DrawSubset(j);
+		}
+		// 保持していたマテリアルを戻す
+		pDevice->SetMaterial(&matDef);
+	}
 }
 
 //=========================================
@@ -138,9 +206,9 @@ void DrawModel(void)
 //=========================================
 void CollisionModel(D3DXVECTOR3* pos, D3DXVECTOR3* pos_old, D3DXVECTOR3 min, D3DXVECTOR3 max)
 {
-	for (int i = 0; i < MODEL_MAX; i++)
+	for (int i = 0; i < MODEL_NUM; i++)
 	{
-		Model* model = &(s_model[i]);
+		Model* model = &(s_ModelType[i]);
 
 		if (pos->x + max.x > model->pos.x + model->MinVtx.x && pos->x + min.x < model->pos.x + model->MaxVtx.x)
 		{
@@ -176,7 +244,7 @@ void CollisionModel(D3DXVECTOR3* pos, D3DXVECTOR3* pos_old, D3DXVECTOR3 min, D3D
 //=========================================
 Model *GetModel(void)
 {
-	return s_model;
+	return s_ModelType;
 }
 
 //=========================================
@@ -187,9 +255,11 @@ void LoadModel(void)
 	FILE* pFile;
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	bool isModel = false;
+	bool isPlayer = false;
 	char modelFile[255][255] = {};
 	int nModelFileCnt = 0;
 	int nModelCnt = 1;
+	int nModelData;
 
 	pFile = fopen(MODEL_LOAD_FILE, "r");
 
@@ -215,57 +285,83 @@ void LoadModel(void)
 			fscanf(pFile, "%s", &read);
 			fscanf(pFile, "%s", &modelFile[nModelFileCnt][0]);
 
-			Model* model = &(s_model[nModelFileCnt]);
+			Model* modelType = &(s_ModelType[nModelFileCnt]);
 
 			// Xファイルの読み込み
 			D3DXLoadMeshFromX(&modelFile[nModelFileCnt][0],
 				D3DXMESH_SYSTEMMEM,
 				pDevice,
 				NULL,
-				&model->pBuffMat,
+				&modelType->pBuffMat,
 				NULL,
-				&model->nNumMat,
-				&model->pMesh);
+				&modelType->nNumMat,
+				&modelType->pMesh);
 
 			// メッシュに使用されているテクスチャ用の配列を用意する
-			model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
+			modelType->pTexture = new LPDIRECT3DTEXTURE9[modelType->nNumMat];
 
 			// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
-			D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+			D3DXMATERIAL *pMat = (D3DXMATERIAL*)modelType->pBuffMat->GetBufferPointer();
 
 			// 各メッシュのマテリアル情報を取得する
-			for (int i = 0; i < (int)model->nNumMat; i++)
+			for (int i = 0; i < (int)modelType->nNumMat; i++)
 			{
-				model->pTexture[i] = NULL;
+				modelType->pTexture[i] = NULL;
 
 				if (pMat[i].pTextureFilename != NULL)
 				{// マテリアルで設定されているテクスチャ読み込み
 					D3DXCreateTextureFromFileA(pDevice,
 						pMat[i].pTextureFilename,
-						&model->pTexture[i]);
+						&modelType->pTexture[i]);
 				}
 			}
 
 			// モデルのサイズ計測
-			ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
+			ModelSize(&modelType->MinVtx, &modelType->MaxVtx, modelType->pMesh);
 
 			nModelFileCnt++;
 		}
+
 		if (strcmp(&read[0], "MODELSET") == 0)
 		{
+			for (nModelData = 0; nModelData < MODEL_MAX; nModelData++)
+			{
+				if (!s_Model[nModelData].bUse)
+				{
+					break;
+				}
+			}
 			isModel = true;
 		}
-		else if (strcmp(&read[0], "END_MODELSET") == 0)
+		else if (strcmp(&read[0], "PLAYERSET") == 0)
 		{
+			for (nModelData = 0; nModelData < MODEL_MAX; nModelData++)
+			{
+				if (!s_Model[nModelData].bUse)
+				{
+					break;
+				}
+			}
+			isPlayer = true;
+		}
+		
+		if (strcmp(&read[0], "END_MODELSET") == 0)
+		{
+			Model** parts = GetPlayerModel();
+			parts += nModelCnt;
+			*parts = &s_Model[nModelData];
 			nModelCnt++;
 			isModel = false;
+		}
+		else if (strcmp(&read[0], "END_PLAYERSET") == 0)
+		{
+			Model** player = GetPlayerModel();
+			*player = &s_Model[nModelData];
+			isPlayer = false;
 		}
 
 		if (isModel)
 		{
-			Model* model = GetPlayerModel();
-			model += nModelCnt;
-
 			if (strcmp(&read[0], "TYPE") == 0)
 			{
 				int nData;
@@ -273,11 +369,12 @@ void LoadModel(void)
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%d", &nData);
 
-				*model = s_model[nData];
+				s_Model[nModelData] = s_ModelType[nData];
 
-				model->nIdxModelParent = -2;
-				model->bUse = true;
-				model->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
+				s_Model[nModelData].nIdxModelParent = -2;
+				s_Model[nModelData].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
+				s_Model[nModelData].isQuaternion = true;
+				s_Model[nModelData].bUse = true;
 			}
 			if (strcmp(&read[0], "POS") == 0)
 			{
@@ -285,7 +382,7 @@ void LoadModel(void)
 
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
-				model->pos = pos;
+				s_Model[nModelData].pos = pos;
 			}
 			if (strcmp(&read[0], "ROT") == 0)
 			{
@@ -293,8 +390,34 @@ void LoadModel(void)
 	
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
-				model->rot = rot;
+				s_Model[nModelData].rot = rot;
 			}
+		}
+		if (isPlayer)
+		{
+			if (strcmp(&read[0], "TYPE") == 0)
+			{
+				int nData;
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%d", &nData);
+
+				s_Model[nModelData] = s_ModelType[nData];
+
+				s_Model[nModelData].nIdxModelParent = -1;
+				s_Model[nModelData].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
+				s_Model[nModelData].isQuaternion = true;
+				s_Model[nModelData].bUse = true;
+			}
+			if (strcmp(&read[0], "POS") == 0)
+			{
+				D3DXVECTOR3 pos;
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+				s_Model[nModelData].pos = pos;
+			}
+
 		}
 	}
 }

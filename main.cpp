@@ -401,6 +401,10 @@ void Draw(void)
 
 		case MODE_GAME:		// ゲーム画面
 			DrawGame();
+#ifdef _DEBUG
+			// FPSの表示
+			DrawFPS();
+#endif // _DEBUG
 			break;
 
 		case MODE_TUTORIAL:	// チュートリアル画面
@@ -414,11 +418,6 @@ void Draw(void)
 
 		// フェード処理
 		DrawFade();
-
-#ifdef _DEBUG
-		// FPSの表示
-		DrawFPS();
-#endif // _DEBUG
 
 		// 描画終了
 		g_pD3DDevice->EndScene();

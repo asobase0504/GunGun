@@ -100,7 +100,8 @@ void DrawModel(void)
 	{
 		Model* model = &(s_Model[i]);
 
-		if (!model->bUse)
+		if (
+			!model->bUse)
 		{
 			continue;
 		}
@@ -390,9 +391,19 @@ void LoadModel(void)
 }
 
 //=========================================
-// ì«Ç›çûÇ›èàóù
+// ê›íË
 //=========================================
-void SaveModel(void)
+void SetModel(Model* model)
 {
+	for (int i = 0; i < MODEL_MAX; i++)
+	{
+		Model* pModel = &(s_Model[i]);
 
+		if (!pModel->bUse)
+		{
+			continue;
+		}
+
+		pModel = model;
+	}
 }

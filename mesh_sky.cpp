@@ -151,9 +151,9 @@ void InitMeshSky(void)
 		else
 		{
 			float fRotWidth = 2.0f * D3DX_PI / s_aMesh[0].nSurfaceWidth * i;
-			pVtx[i].pos.x = cosf(fRotWidth) * cosf(0 + (D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
+			pVtx[i].pos.x = cosf(fRotWidth) * cosf((D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
 			pVtx[i].pos.y = cosf(0) * s_aMesh[0].fLineHeight;
-			pVtx[i].pos.z = sinf(fRotWidth) * cosf(0 + (D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
+			pVtx[i].pos.z = sinf(fRotWidth) * cosf((D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
 		}
 		pVtx[i].pos.x += -25.0f;
 		pVtx[i].pos.y += 50.0f;

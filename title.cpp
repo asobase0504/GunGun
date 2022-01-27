@@ -9,6 +9,7 @@
 //------------------------------------
 #include "title.h"
 #include "input.h"
+#include "key_config.h"
 #include "fade.h"
 #include "common.h"
 
@@ -274,23 +275,9 @@ void UpdateTitle(void)
 		// 選択処理
 		SelectTitle();
 
-		// ジョイパッドの使用情報の取得
-		bool bUseJoyPad = IsJoyPadUse(0);
-		if (bUseJoyPad)
+		if (DecisionKey())
 		{
-			if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B))
-			{// EnterキーかパッドのAを押された時
-			 // 決定音の再生
-				s_bFadeCheek = true;	// フェード処理に入る
-			}
-		}
-		else
-		{
-			if (GetKeyboardTrigger(DIK_RETURN))
-			{// EnterキーかパッドのAを押された時
-				// 決定音の再生
-				s_bFadeCheek = true;	// フェード処理に入る
-			}
+			s_bFadeCheek = true;	// フェード処理に入る
 		}
 	}
 

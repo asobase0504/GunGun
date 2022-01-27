@@ -76,9 +76,9 @@ void InitGame(void)
 void UninitGame(void)
 {
 	// 終了
+	//UninitModel();			// モデル
+	//UninitPlayer();			// プレイヤー
 	UninitTimer();			// タイム
-	UninitModel();			// モデル
-	UninitPlayer();			// プレイヤー
 	UninitPause();			// ポーズ
 	UninitPolygon();		// ポリゴン
 	UninitCamera();			// カメラ
@@ -119,7 +119,7 @@ void UpdateGame(void)
 		// 更新
 		UpdateModel();			// モデル
 		UpdatePlayer();			// プレイヤー
-		UpdateCamera();			// カメラ
+		UpdateGameCamera();		// カメラ
 		UpdateLight();			// ライト
 		UpdatePolygon();		// ポリゴン
 		UpdateShadow();			// 影

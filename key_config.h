@@ -7,8 +7,9 @@
 #ifndef _KYE_CONGIF_H_
 #define _KYE_CONGIF_H_
 
-typedef enum
-{
-};
+//------------------------------------
+// プロトタイプ宣言
+//------------------------------------
+bool DecisionKey(void);	// 決定キー
 
 #endif // !_KYE_CONGIF_H_

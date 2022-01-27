@@ -33,6 +33,8 @@ static void InputCamera(void);	// カメラの入力処理
 //=========================================
 void InitCamera(void)
 {
+	ZeroMemory(&s_camera, sizeof(s_camera));
+
 	// 視点・注視点・上方向を設定する
 	s_camera.posV = D3DXVECTOR3(0.0f,50.0f,-40.0f);	// 視点
 	s_camera.posR = D3DXVECTOR3(0.0f,0.0f,0.0f);	// 注視点
@@ -58,6 +60,14 @@ void UninitCamera(void)
 //=========================================
 void UpdateCamera(void)
 {
+
+}
+
+//=========================================
+// ゲーム中の更新
+//=========================================
+void UpdateGameCamera(void)
+{
 	Camera* pCamera = &(s_camera);
 
 	InputCamera();
@@ -71,10 +81,10 @@ void UpdateCamera(void)
 	{
 		pCamera->rot.y += D3DX_PI * 2;
 	}
-	
+
 	// 追従処理
 	Player *player = GetPlayer();
-	
+
 	// カメラの追従処理
 	pCamera->posRDest.x = player->pos.x + sinf(player->movevec.x) * 40.0f;
 	pCamera->posRDest.y = player->pos.y;
@@ -94,11 +104,40 @@ void UpdateCamera(void)
 	{
 		pCamera->fDistance--;
 	}
-	// 時間経過のカメラの回り込み
-	//pCamera->rot.x = sinf(player->movevec.x);
-	//pCamera->rot.y = 
-	//pCamera->rot.z = sinf(player->movevec.z);
+}
 
+//=========================================
+// リザルト中の更新
+//=========================================
+void UpdateResultCamera(void)
+{
+	Camera* pCamera = &(s_camera);
+
+	Player *player = GetPlayer();
+
+	// カメラの追従処理
+	pCamera->posR.x += (player->pos.x - pCamera->posR.x) * 0.05f;
+	pCamera->posR.z += (player->pos.z - pCamera->posR.z) * 0.05f;
+
+	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
+	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+
+	pCamera->posR.y = player->pos.y;
+	//// 徐々に上に上がる
+	//if (pCamera->posR.y <= 75.0f)
+	//{
+	//	pCamera->posR.y += 0.5f;	// 注視点
+	//}
+
+	// 角度の正規化
+	if (pCamera->rot.y > D3DX_PI)
+	{
+		pCamera->rot.y -= D3DX_PI * 2;
+	}
+	if (pCamera->rot.y < -D3DX_PI)
+	{
+		pCamera->rot.y += D3DX_PI * 2;
+	}
 }
 
 //=========================================

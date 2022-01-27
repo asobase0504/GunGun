@@ -117,38 +117,6 @@ void InitPlayer(void)
 //=========================================
 void UninitPlayer(void)
 {
-	//for (int i = 0; i < PARTS_NUM; i++)
-	//{
-	//	Model* model = s_player.aModel[i];
-
-	//	if (model->pTexture != NULL)
-	//	{
-	//		for (int j = 0; j < (int)model->nNumMat; j++)
-	//		{
-	//			if (model->pTexture[j] != NULL)
-	//			{// テクスチャの解放
-	//				model->pTexture[j]->Release();
-	//				model->pTexture[j] = NULL;
-	//			}
-	//		}
-
-	//		delete[]model->pTexture;
-	//		model->pTexture = NULL;
-	//	}
-
-	//	// メッシュの解放
-	//	if (model->pMesh != NULL)
-	//	{
-	//		model->pMesh->Release();
-	//		model->pMesh = NULL;
-	//	}
-	//	// マテリアルの解放
-	//	if (model->pBuffMat != NULL)
-	//	{
-	//		model->pBuffMat->Release();
-	//		model->pBuffMat = NULL;
-	//	}
-	//}
 }
 
 //=========================================
@@ -341,6 +309,8 @@ void ColisionPartsModel(void)
 
 				model->quaternion = quaternionHit;
 				model->nIdxModelParent = 0;
+
+				s_player.nModelCnt++;
 			}
 			else
 			{	// 取り込めないサイズの場合

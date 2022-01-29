@@ -186,7 +186,6 @@ int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		s_aShadow[i].rot = rot;
 		s_aShadow[i].bUse = true;
 
-		VERTEX_3D* pVtx;
 		break;
 	}
 	return i;

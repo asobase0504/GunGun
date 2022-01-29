@@ -34,6 +34,7 @@ typedef struct
 	Model*		aModel[PARTS_NUM];	// モデル
 	float		moverot;			// 移動時の回転量
 	float		fLength;			// 大きさ
+	float		fLengthLand;		// 目標の大地までの距離
 	int			nModelCnt;			// くっついているモデル数
 }Player;
 

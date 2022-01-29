@@ -149,35 +149,6 @@ void UpdatePlayer(void)
 	// プレイヤーと床の当たり判定
 	CollisionMeshField(&pPlayer->pos);
 
-	/// 球の凸凹を表現するための当たり判定
-	//for (int i = 0; i < PARTS_NUM; i++)
-	//{
-	//	Model* model = &(pPlayer->aModel[i]);
-	//
-	//	if (!model->bUse || model->nIdxModelParent != 0)
-	//	{
-	//		continue;
-	//	}
-	//
-	//	if (model->pos_world.x + model->MinVtx.x <= s_player.fLength ||
-	//		model->pos_world.y + model->MinVtx.y <= s_player.fLength ||
-	//		model->pos_world.z + model->MinVtx.z <= s_player.fLength)
-	//	{
-	//		// モデルパーツと床の当たり判定
-	//		CollisionMeshField(&pPlayer->pos, &(model->pos_world + model->MinVtx));
-	//	}
-	//	if (model->pos.x + model->MaxVtx.x == s_player.MaxVtx.x ||
-	//		model->pos.y + model->MaxVtx.y == s_player.MaxVtx.y ||
-	//		model->pos.z + model->MaxVtx.z == s_player.MaxVtx.z)
-	//	{
-	//		// モデルパーツと床の当たり判定
-	//		CollisionMeshField(&pPlayer->pos, &(model->pos_world + model->MaxVtx));
-	//	}
-	//
-	//}
-
-	//// プレイヤーとモデルの当たり判定
-	//CollisionModel(&pPlayer->pos, &pPlayer->pos_old, pPlayer->MinVtx, pPlayer->MaxVtx);
 
 	// モデルパーツごとの当たり判定
 	ColisionPartsModel();
@@ -185,8 +156,28 @@ void UpdatePlayer(void)
 	// プレイヤーの球の半径を求める
 	LookUpSizePlayer();
 	
-	// プレイヤー位置とモデル回転する軸の位置の調整。
-	//pPlayer->pos.y += s_player.fLength;	// 半径分床の当たり判定を底上げする
+	/// 球の凸凹を表現するための当たり判定
+	//float fData = 0.0f;
+	//for (int i = 0; i < PARTS_NUM; i++)
+	//{
+	//	Model* model = pPlayer->aModel[i];
+
+	//	if (model == NULL || !model->bUse || model->nIdxModelParent != 0)
+	//	{
+	//		continue;
+	//	}
+
+	//	if (model->pos_world.y + pPlayer->fLengthLand * 2.0f < fData)
+	//	{
+	//		fData = model->pos_world.y + pPlayer->fLengthLand * 2.0f;
+	//	}
+	//}
+	//pPlayer->fLengthLand = fData;
+
+	pPlayer->pos.y =  pPlayer->fLength;	// プレイヤーの位置を底上げ。
+	
+	//// 大地までの話す距離
+	//pPlayer->pos.y = pPlayer->fLengthLand;
 
 	// 角度の正規化
 	NormalizeRot(pPlayer->rot.y);
@@ -289,7 +280,7 @@ void ColisionPartsModel(void)
 		}
 
 		// 当たった場合
-		if (SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, model->MaxVtx.x))
+		if (SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, (model->MaxVtx.x + model->MaxVtx.y + model->MaxVtx.z) / 3.0f))
 		{
 			if (s_player.fLength >= model->MaxVtx.x * 1.5f)
 			{	// 取り込めるサイズの場合
@@ -305,7 +296,6 @@ void ColisionPartsModel(void)
 				D3DXVec3TransformCoord(&model->pos, &pos_local, &mtxRot);
 
 				D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
-				SetLine(&v, &quaternion, model->pos_world, s_player.pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 				model->quaternion = quaternionHit;
 				model->nIdxModelParent = 0;
@@ -406,25 +396,22 @@ void LookUpSizePlayer(void)
 
 	D3DXVECTOR3 v = s_player.MaxVtx - s_player.MinVtx;
 	s_player.fLength = sqrtf((v.x + v.y + v.z) / 6.0f - s_player.aModel[0]->MaxVtx.x) + s_player.aModel[0]->MaxVtx.x;
-	s_player.pos.y += s_player.fLength;	// プレイヤーの位置を底上げ。
 }
 
-//=========================================r
+//=========================================
 // 描画
 //=========================================
 void DrawPlayer(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX /*mtxScale,*/ mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DMATERIAL9 matDef;	// 現在のマテリアル保存用
-	D3DXMATERIAL *pMat;		// マテリアルデータへのポインタ
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_player.mtxWorld);
 
 	//// スケールの反映
 	//D3DXMatrixScaling(&mtxScale, 1.0f, 1.0f, 1.0f);
-	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxScale);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxScale);		// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 	
 	// 向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)

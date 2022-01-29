@@ -44,10 +44,10 @@ static Object scoreModel;
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-static void InitObject(Object *object);		// 初期化
+//static void InitObject(Object *object);		// 初期化
 static void UninitObject(Object *object);	// 終了
-static void UpdateObject(Object *object);	// 更新
-static void DrawObject(Object *object);		// 描画
+//static void UpdateObject(Object *object);	// 更新
+//static void DrawObject(Object *object);		// 描画
 
 //=========================================
 // 初期化
@@ -216,8 +216,6 @@ void UninitResultUI(void)
 //=========================================
 void UpdateResultUI(void)
 {
-	float aTex[8];
-
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
 	// 長さの結果UIの更新
@@ -282,44 +280,44 @@ void DrawResultUI(void)
 	}
 }
 
-//=========================================
-// オブジェクトの初期化
-//=========================================
-static void InitObject(Object * object)
-{
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
-
-	D3DXCreateTextureFromFile(pDevice, SELECTBG, &object->tex);	// テクスチャの読込
-
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&object->vtxBuff,
-		NULL);
-
-	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
-	
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	{
-		float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
-		float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
-
-		SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
-		SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
-		InitRectRhw(pVtx);														// rhwの設定
-		InitRectTex(pVtx);														// テクスチャ座標の設定
-
-	}
-	// 頂点バッファをアンロックする
-	object->vtxBuff->Unlock();
-
-	// 使用に切り替え
-	object->bUse = true;
-}
-
+////=========================================
+//// オブジェクトの初期化
+////=========================================
+//static void InitObject(Object * object)
+//{
+//	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
+//
+//	D3DXCreateTextureFromFile(pDevice, SELECTBG, &object->tex);	// テクスチャの読込
+//
+//	// 頂点バッファの生成
+//	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+//		D3DUSAGE_WRITEONLY,
+//		FVF_VERTEX_2D,
+//		D3DPOOL_MANAGED,
+//		&object->vtxBuff,
+//		NULL);
+//
+//	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
+//	
+//	// 頂点バッファをロックし、頂点情報へのポインタを取得
+//	object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+//	{
+//		float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+//		float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+//
+//		SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+//		SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+//		InitRectRhw(pVtx);														// rhwの設定
+//		InitRectTex(pVtx);														// テクスチャ座標の設定
+//
+//	}
+//	// 頂点バッファをアンロックする
+//	object->vtxBuff->Unlock();
+//
+//	// 使用に切り替え
+//	object->bUse = true;
+//}
+//
 //=========================================
 // オブジェクトの終了
 //=========================================
@@ -339,33 +337,33 @@ void UninitObject(Object * object)
 		object->vtxBuff = NULL;
 	}
 }
-
-//=========================================
-// オブジェクトの更新
-//=========================================
-void UpdateObject(Object * object)
-{
-
-}
-
-//=========================================
-// オブジェクトの描画
-//=========================================
-void DrawObject(Object * object)
-{
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-	// 頂点バッファをデータストリーム設定
-	pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
-
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-	if (object->bUse)
-	{
-		// ポリゴン描画
-		// テクスチャの設定
-		RectDraw(pDevice, object->tex, 0);
-	}
-}
+//
+////=========================================
+//// オブジェクトの更新
+////=========================================
+//void UpdateObject(Object * object)
+//{
+//
+//}
+//
+////=========================================
+//// オブジェクトの描画
+////=========================================
+//void DrawObject(Object * object)
+//{
+//	// デバイスの取得
+//	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+//
+//	// 頂点バッファをデータストリーム設定
+//	pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
+//
+//	// 頂点フォーマットの設定
+//	pDevice->SetFVF(FVF_VERTEX_2D);
+//
+//	if (object->bUse)
+//	{
+//		// ポリゴン描画
+//		// テクスチャの設定
+//		RectDraw(pDevice, object->tex, 0);
+//	}
+//}

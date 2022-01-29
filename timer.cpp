@@ -267,17 +267,21 @@ void StartTimer(int nSecond, int nDigit, float fWidth, float fHeight, D3DXVECTOR
 }
 
 //=========================================
-//タイムのカントが０になったかどうか
+//タイムのカウントが指定の値になったかどうか
 //=========================================
-int TimerUp(int nNumber)
+bool TimerUp(int nNumber)
 {
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
 		if (g_Timer[nCnt].bUse && g_Timer[nCnt].nNumber == nNumber)
 		{
-			return g_Timer[nCnt].nSecond;
+			if (g_Timer[nCnt].nSecond <= 0)
+			{
+				return true;
+			}
 		}
 	}
+	return false;
 }
 
 //=========================================

@@ -22,7 +22,7 @@
 // 静的変数
 //-----------------------------------------
 static Camera s_camera;	// カメラ情報
-
+static int i;
 //-----------------------------------------
 // プロトタイプ宣言
 //-----------------------------------------
@@ -36,7 +36,7 @@ void InitCamera(void)
 	ZeroMemory(&s_camera, sizeof(s_camera));
 
 	// 視点・注視点・上方向を設定する
-	s_camera.posV = D3DXVECTOR3(0.0f,50.0f,-40.0f);	// 視点
+	s_camera.posV = D3DXVECTOR3(0.0f,50.0f,-60.0f);	// 視点
 	s_camera.posR = D3DXVECTOR3(0.0f,0.0f,0.0f);	// 注視点
 	s_camera.vecU = D3DXVECTOR3(0.0f,1.0f,0.0f);	// 上方向ベクトル
 	s_camera.rot = ZERO_VECTOR;	// 向き
@@ -46,6 +46,8 @@ void InitCamera(void)
 
 	D3DXVECTOR3 vec = s_camera.posV - s_camera.posR;
 	s_camera.fDistance = D3DXVec3Length(&vec);
+
+	i = 1;
 }
 
 //=========================================
@@ -162,9 +164,9 @@ void SetCamera(void)
 
 	// プロジェクションマトリックスの作成
 	D3DXMatrixPerspectiveFovLH(&camara->mtxProjection,
-		D3DXToRadian(45.0f),						// 視野角
+		D3DXToRadian(60.0f),						// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
-		10.0f,400.0f);								// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
+		10.0f,400.0f * camara->fDistance / 60.0f);								// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &camara->mtxProjection);

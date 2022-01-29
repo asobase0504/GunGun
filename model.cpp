@@ -100,8 +100,7 @@ void DrawModel(void)
 	{
 		Model* model = &(s_Model[i]);
 
-		if (
-			!model->bUse)
+		if (!model->bUse)
 		{
 			continue;
 		}

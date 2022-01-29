@@ -106,9 +106,12 @@ void UpdateResult(void)
 
 		break;
 	case RESULT_1:
-		upSpead += 0.01f;
 
-		s_player->pos.y += upSpead * upSpead;
+		if (s_player->pos.y <= 500.0f)
+		{
+			upSpead += 0.01f;	// ‘¬“xã¸
+			s_player->pos.y += upSpead * upSpead;
+		}
 
 		if (GetFade() == FADE_NONE && DecisionKey())
 		{

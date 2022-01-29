@@ -27,7 +27,8 @@
 //------------------------------------
 // スタティック変数
 //------------------------------------
-static bool s_bPause;			//ポーズ中かどうか
+static bool s_bPause;			// ポーズ中かどうか
+static int	s_nSizeCnt;			// 大きさの区切り回数
 
 //=========================================
 // 初期化
@@ -35,6 +36,7 @@ static bool s_bPause;			//ポーズ中かどうか
 void InitGame(void)
 {
 	s_bPause = false;
+	s_nSizeCnt = 1;
 #ifdef _DEBUG
 	// ラインの初期化処理
 	InitLine();
@@ -76,8 +78,8 @@ void InitGame(void)
 void UninitGame(void)
 {
 	// 終了
-	//UninitModel();			// モデル
-	//UninitPlayer();			// プレイヤー
+	//UninitModel();		// モデル
+	//UninitPlayer();		// プレイヤー
 	UninitTimer();			// タイム
 	UninitPause();			// ポーズ
 	UninitPolygon();		// ポリゴン
@@ -135,8 +137,14 @@ void UpdateGame(void)
 #endif // !_DEBUG
 	}
 
+	if ((int)GetPlayer()->fLength / 14 == s_nSizeCnt)
+	{
+		GetCamera()->fDistance *= 1.5f;
+		s_nSizeCnt++;
+	}
+
 	// 時間が切れたらリザルトに以降
-	if (TimerUp(0) == 0 || GetJoypadTrigger(JOYKEY_X))
+	if (TimerUp(0) || GetJoypadTrigger(JOYKEY_X))
 	{
 		SetFade(MODE_RESULT);
 	}

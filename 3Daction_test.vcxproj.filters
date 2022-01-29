@@ -16,20 +16,14 @@
     <Filter Include="00_メインファイル">
       <UniqueIdentifier>{ee239ec0-2bc8-43af-8325-039955571b5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02_3DStage">
+      <UniqueIdentifier>{9fa22a27-dcdf-4b3d-b6c6-53cb52724400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Setem">
+      <UniqueIdentifier>{2841e225-c3ba-4c36-8870-53312dada8cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="polygon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -39,34 +33,10 @@
     <ClCompile Include="wall.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="billboard.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh_field.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh_cylinder.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh_sphere.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh_sky.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="common.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="line.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="key_config.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="pause.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="timer.cpp">
@@ -90,7 +60,43 @@
     <ClCompile Include="result_ui.cpp">
       <Filter>00_メインファイル</Filter>
     </ClCompile>
+    <ClCompile Include="billboard.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_cylinder.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_field.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_sky.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_sphere.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
+    <ClCompile Include="polygon.cpp">
+      <Filter>02_3DStage</Filter>
+    </ClCompile>
     <ClCompile Include="debug.cpp">
+      <Filter>01_Setem</Filter>
+    </ClCompile>
+    <ClCompile Include="common.cpp">
+      <Filter>01_Setem</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>01_Setem</Filter>
+    </ClCompile>
+    <ClCompile Include="key_config.cpp">
+      <Filter>01_Setem</Filter>
+    </ClCompile>
+    <ClCompile Include="pause.cpp">
       <Filter>00_メインファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -102,9 +108,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="model.h">
@@ -119,31 +122,10 @@
     <ClInclude Include="billboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_field.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh_cylinder.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh_sphere.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh_sky.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="line.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="key_config.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="pause.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
@@ -168,7 +150,31 @@
       <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
+      <Filter>01_Setem</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>01_Setem</Filter>
+    </ClInclude>
+    <ClInclude Include="key_config.h">
+      <Filter>01_Setem</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>01_Setem</Filter>
+    </ClInclude>
+    <ClInclude Include="pause.h">
       <Filter>00_メインファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_sphere.h">
+      <Filter>02_3DStage</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_cylinder.h">
+      <Filter>02_3DStage</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_field.h">
+      <Filter>02_3DStage</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_sky.h">
+      <Filter>02_3DStage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

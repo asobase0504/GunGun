@@ -392,8 +392,7 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 				float fLength;
 				fLength = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
 
-				//pos->y = -fLength;
-				pos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
+				pos->y = -HitPos->y;
 			}
 		}
 		else
@@ -415,8 +414,7 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 				float fLength;
 				fLength = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
 
-				//pos->y = -fLength;
-				HitPos->y = pVtx[s_aIdx[i]].pos.y - 1.0f / N.y * (N.x * (HitPos->x - pVtx[s_aIdx[i]].pos.x) + N.z * (HitPos->z - pVtx[s_aIdx[i]].pos.z));
+				pos->y = -HitPos->y;
 			}
 		}
 	}

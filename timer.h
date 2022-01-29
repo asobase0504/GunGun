@@ -10,7 +10,7 @@ void UpdateTimer(void);
 void DrawTimer(void);
 
 void StartTimer(int nSecond, int nDigit, float fWidth, float fHeight, D3DXVECTOR3 pos , int nPatn);
-int TimerUp(int nNumber);
+bool TimerUp(int nNumber);
 void BreakTimer(int nNumber);
 void CountRestartStop(bool bCount, int nNumber);
 

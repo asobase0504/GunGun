@@ -180,7 +180,7 @@ void UpdatePlayer(void)
 	//pPlayer->pos.y = pPlayer->fLengthLand;
 
 	// Šp“x‚Ì³‹K‰»
-	NormalizeRot(pPlayer->rot.y);
+	NormalizeRot(&pPlayer->rot.y);
 }
 
 //=========================================

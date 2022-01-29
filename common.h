@@ -35,7 +35,7 @@ void InitRectRhw(VERTEX_2D *vtx);
 void ModelSize(D3DXVECTOR3* minOut, D3DXVECTOR3* maxOut, const LPD3DXMESH mesh);	// モデルのサイズを算出
 
 // 正規化系統
-float NormalizeRot(float rot);	// 角度の正規化
+float NormalizeRot(float* rot);	// 角度の正規化
 
 // 描画系統
 void InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff);		// 描写前の処理

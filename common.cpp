@@ -188,18 +188,18 @@ void InitRectRhw(VERTEX_2D * vtx)
 //=========================================
 // Šp“x‚Ì³‹K‰»
 //=========================================
-float NormalizeRot(float rot)
+float NormalizeRot(float* rot)
 {
-	if (rot > D3DX_PI)
+	if (*rot > D3DX_PI)
 	{
-		rot -= D3DX_PI * 2;
+		*rot -= D3DX_PI * 2;
 	}
-	if (rot < -D3DX_PI)
+	if (*rot < -D3DX_PI)
 	{
-		rot += D3DX_PI * 2;
+		*rot += D3DX_PI * 2;
 	}
 
-	return rot;
+	return *rot;
 }
 
 //=========================================

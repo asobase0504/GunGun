@@ -1,253 +1,125 @@
-//=========================================
+//==================================================
 // 
-// メッシュ(球)の作成
-// Author YudaKaito
+// 3Dゲーム制作 ( mesh_sky.cpp )
+// Author  : katsuki mizuki
 // 
-//=========================================
-//------------------------------------
-// include
-//------------------------------------
-#include "main.h"
-#include "mesh_sphere.h"
-#include "polygon.h"
-#include "common.h"
+//==================================================
+
+//--------------------------------------------------
+// インクルード
+//--------------------------------------------------
 #include "input.h"
+#include "main.h"
 #include "mesh_sky.h"
+#include "common.h"
+#include "wall.h"
 
-//------------------------------------
+//--------------------------------------------------
 // マクロ定義
-//------------------------------------
-#define SIZE	(50.0f)
+//--------------------------------------------------
+#define MAX_SIZE				(400.0f)		// サイズの最大値
+#define START_HORIZONTAL		(10)			// 横の最初の値
+#define START_VERTICAL			(10)			// 縦の最初の値
 
-//------------------------------------
-// ポリゴンの種類の列挙型
-//------------------------------------
+//--------------------------------------------------
+// スタティック変数
+//--------------------------------------------------
+static LPDIRECT3DTEXTURE9			s_pTexture = NULL;			// テクスチャへのポインタ
+static LPDIRECT3DVERTEXBUFFER9		s_pVtxBuff = NULL;			// 頂点バッファへのポインタ
+static LPDIRECT3DVERTEXBUFFER9		s_pVtxBuffCone = NULL;		// 円錐の頂点バッファへのポインタ
+static LPDIRECT3DINDEXBUFFER9		s_pIdxBuff = NULL;			// インデックスバッファへのポインタ
+static MeshSky						s_meshSky;					// メッシュ空の情報
+static MeshSkyNumber				s_Number;					// メッシュ空の数系の情報
 
-//------------------------------------
-// メッシュの構造体を定義
-//------------------------------------
-typedef struct
-{
-	D3DXVECTOR3 pos;		// 頂点座標
-	D3DXVECTOR3 rot;		// 回転座標
-	int nSurfaceWidth;		// 面の幅数
-	int nSurfaceHeight;		// 面の高さ数
-	float fLineWidth;		// 辺の幅
-	float fLineHeight;		// 辺の高さ
-	int vertexCnt;			// 頂点数
-	int polygonCnt;			// ポリゴン数
-	int IdxCnt;				// インデックス数
-	D3DXMATRIX mtxWorld;	// ワールドマトリックス
-} Mesh;
+//--------------------------------------------------
+// プロトタイプ宣言
+//--------------------------------------------------
+static void ResetBuff(void);
 
-//------------------------------------
-// 静的変数
-//------------------------------------
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};			// 頂点バッファーへのポインタ
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffCone = {};		// 頂点バッファーへのポインタ
-static LPDIRECT3DTEXTURE9 s_pTexture = {};				// テクスチャへのポインタ
-static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;		// インデックスバッファへのポインタ
-static Mesh s_aMesh[2] = {};							// ポリゴンの構造体
-
-//=========================================
+//--------------------------------------------------
 // 初期化
-//=========================================
+//--------------------------------------------------
 void InitMeshSky(void)
 {
+	// デバイスへのポインタの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh[0].nSurfaceWidth = 10;	// 横軸の面の数
-	s_aMesh[0].nSurfaceHeight = 5;	// 縦軸の面の数
-	s_aMesh[0].fLineWidth = 10.0f;	// 横軸の辺の長さ　
-	s_aMesh[0].fLineHeight = 10.0f;	// 縦軸の辺の長さ
-
-	int nLineVtx = (s_aMesh[0].nSurfaceWidth + 1);	// 横軸の頂点数
-
-	s_aMesh[0].vertexCnt = nLineVtx * (s_aMesh[0].nSurfaceHeight + 1);	// 頂点数
-
-	// ポリゴン数を求める計算
-	s_aMesh[0].polygonCnt
-		= 2 * s_aMesh[0].nSurfaceWidth * s_aMesh[0].nSurfaceHeight		// 一行分のポリゴン数
-		+ 4 * (s_aMesh[0].nSurfaceHeight - 1);							// 縮退ポリゴン数
-
-	s_aMesh[0].IdxCnt = s_aMesh[0].polygonCnt + 2;	// インデックス数
-
-	// 初期化処理
-	s_aMesh[0].pos = ZERO_VECTOR;	// 頂点座標
-	s_aMesh[0].rot = ZERO_VECTOR;	// 回転座標
-
-	// テクスチャの読込
-	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/暗転.jpg",
+	// テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		"data\\TEXTURE\\sky.png",
 		&s_pTexture);
 
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * s_aMesh[0].polygonCnt,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,
-		D3DPOOL_MANAGED,
-		&s_pVtxBuff,
-		NULL);
+	// メモリのクリア
+	memset(&s_meshSky, NULL, sizeof(s_meshSky));
+	memset(&s_Number, NULL, sizeof(s_Number));
 
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * (nLineVtx + 1),
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,
-		D3DPOOL_MANAGED,
-		&s_pVtxBuffCone,
-		NULL);
-
-	// インデックスバッファの生成
-	pDevice->CreateIndexBuffer(sizeof(WORD) * (s_aMesh[0].IdxCnt + nLineVtx),
-		D3DUSAGE_WRITEONLY,
-		D3DFMT_INDEX16,
-		D3DPOOL_MANAGED,
-		&s_pIdxBuff,
-		NULL);
-
-	VERTEX_3D* pVtx = NULL;
-
-	// 頂点座標をロック
-	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	// 頂点座標の設定
-	for (int nHeight = 0; nHeight <= s_aMesh[0].nSurfaceHeight; nHeight++)
-	{
-		float fRotHeight = ((D3DX_PI * 0.25f) / s_aMesh[0].nSurfaceHeight) * nHeight;
-		float fWidth = cosf(fRotHeight) * s_aMesh[0].fLineHeight;
-		for (int nWidth = 0; nWidth <= s_aMesh[0].nSurfaceWidth; nWidth++)
-		{
-			float fRotWidth = 2.0f * D3DX_PI / s_aMesh[0].nSurfaceWidth * nWidth;
-			NormalizeRot(fRotWidth);
-
-			pVtx[nWidth + nHeight * nLineVtx].pos.x = sinf(fRotWidth) * sinf(fRotHeight + (D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
-			pVtx[nWidth + nHeight * nLineVtx].pos.y = fWidth;
-			pVtx[nWidth + nHeight * nLineVtx].pos.z = cosf(fRotWidth) * sinf(fRotHeight + (D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
-
-			pVtx[nWidth + nHeight * nLineVtx].pos.x += -25.0f;
-			pVtx[nWidth + nHeight * nLineVtx].pos.y += 50.0f;
-
-			pVtx[nWidth + nHeight * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-			pVtx[nWidth + nHeight * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[nWidth + nHeight * nLineVtx].tex = D3DXVECTOR2((float)nWidth, (float)nHeight);
-		}
-	}
-
-	// 頂点座標をアンロック
-	s_pVtxBuff->Unlock();
-
-	pVtx = NULL;
-
-	// 頂点座標をロック
-	s_pVtxBuffCone->Lock(0, 0, (void**)&pVtx, 0);
-
-	for (int i = 0; i < (nLineVtx + 1);i++)
-	{
-		if (i == 0)
-		{
-			pVtx[i].pos = D3DXVECTOR3(0.0f, cosf(0) * s_aMesh[0].fLineHeight + 10.0f,0.0f);
-		}
-		else
-		{
-			float fRotWidth = 2.0f * D3DX_PI / s_aMesh[0].nSurfaceWidth * i;
-			pVtx[i].pos.x = cosf(fRotWidth) * cosf((D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
-			pVtx[i].pos.y = cosf(0) * s_aMesh[0].fLineHeight;
-			pVtx[i].pos.z = sinf(fRotWidth) * cosf((D3DX_PI * 0.25f)) * s_aMesh[0].fLineHeight;
-		}
-		pVtx[i].pos.x += -25.0f;
-		pVtx[i].pos.y += 50.0f;
-
-		pVtx[i].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		pVtx[i].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[i].tex = D3DXVECTOR2(1.0f, 1.0f);
-	}
-
-	// 頂点座標をアンロック
-	s_pVtxBuffCone->Unlock();
-
-	WORD* pIdx;
-	// インデックスのロック
-	s_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
-
-	// インデックスを求める
-	for (int Y = 0; Y < s_aMesh[0].nSurfaceHeight; Y++)
-	{
-		int nlineTop = Y * (nLineVtx * 2 + 2);
-		for (int X = 0; X <= s_aMesh[0].nSurfaceWidth; X++)
-		{
-			int nIdxData = X * 2 + nlineTop;
-			pIdx[nIdxData + 1] = (WORD)(X + nLineVtx * Y);
-			pIdx[nIdxData] = pIdx[nIdxData + 1] + (WORD)nLineVtx;
-		}
-
-		if (Y < s_aMesh[0].nSurfaceHeight - 1)
-		{
-			pIdx[nLineVtx * 2 + 0 + nlineTop] = (WORD)(s_aMesh[0].nSurfaceWidth + nLineVtx * Y);
-			pIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)(nLineVtx * 2 + nLineVtx * Y);
-		}
-	}
-	// インデックスのアンロック
-	s_pIdxBuff->Unlock();
+	// 横・縦の初期化
+	s_Number.nHorizontal = START_HORIZONTAL;
+	s_Number.nVertical = START_VERTICAL;
 }
 
-//=========================================
+//--------------------------------------------------
 // 終了
-//=========================================
+//--------------------------------------------------
 void UninitMeshSky(void)
 {
-	// テクスチャの破棄
 	if (s_pTexture != NULL)
-	{
+	{// テクスチャの解放
 		s_pTexture->Release();
 		s_pTexture = NULL;
 	}
 
-	// 頂点バッファーの破棄
 	if (s_pVtxBuff != NULL)
-	{
+	{// 頂点バッファの解放
 		s_pVtxBuff->Release();
 		s_pVtxBuff = NULL;
 	}
 
-	// インデックスバッファの破棄
+	if (s_pVtxBuffCone != NULL)
+	{// 円錐の頂点バッファの解放
+		s_pVtxBuffCone->Release();
+		s_pVtxBuffCone = NULL;
+	}
+
 	if (s_pIdxBuff != NULL)
-	{
+	{// インデックスバッファの解放
 		s_pIdxBuff->Release();
 		s_pIdxBuff = NULL;
 	}
 }
 
-//=========================================
+//--------------------------------------------------
 // 更新
-//=========================================
+//--------------------------------------------------
 void UpdateMeshSky(void)
 {
 }
 
-//=========================================
+//--------------------------------------------------
 // 描画
-//=========================================
+//--------------------------------------------------
 void DrawMeshSky(void)
 {
+	// デバイスへのポインタの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans;		// 計算用マトリックス
 
 	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&s_aMesh[0].mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
+	D3DXMatrixIdentity(&s_meshSky.mtxWorld);
 
 	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_aMesh[0].rot.y, s_aMesh[0].rot.x, s_aMesh[0].rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-	D3DXMatrixMultiply(&s_aMesh[0].mtxWorld, &s_aMesh[0].mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_meshSky.rot.y, s_meshSky.rot.x, s_meshSky.rot.z);
+	D3DXMatrixMultiply(&s_meshSky.mtxWorld, &s_meshSky.mtxWorld, &mtxRot);
 
 	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, s_aMesh[0].pos.x, s_aMesh[0].pos.y, s_aMesh[0].pos.z);			// 行列移動関数(第１引数にnWidth,Y,nHeight方向の移動行列を作成)
-	D3DXMatrixMultiply(&s_aMesh[0].mtxWorld, &s_aMesh[0].mtxWorld, &mtxTrans);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+	D3DXMatrixTranslation(&mtxTrans, s_meshSky.pos.x, s_meshSky.pos.y, s_meshSky.pos.z);
+	D3DXMatrixMultiply(&s_meshSky.mtxWorld, &s_meshSky.mtxWorld, &mtxTrans);
 
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &s_aMesh[0].mtxWorld);	// ワールド座標行列の設定
+	pDevice->SetTransform(D3DTS_WORLD, &s_meshSky.mtxWorld);
 
-	// 頂点バッファをデバイスのデータストリームに設定
+	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_3D));
 
 	// インデックスバッファをデータストリームに設定
@@ -262,25 +134,254 @@ void DrawMeshSky(void)
 	// ライトを無効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, false);
 
-	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, s_aMesh[0].vertexCnt, 0, s_aMesh[0].polygonCnt);
-
-	// 頂点バッファをデバイスのデータストリームに設定
-	pDevice->SetStreamSource(0, s_pVtxBuffCone, 0, sizeof(VERTEX_3D));
-
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, s_aMesh[0].nSurfaceWidth);
-
-	// ライトを有効にする
-	pDevice->SetRenderState(D3DRS_LIGHTING, true);
+	// ポリゴン描画
+	pDevice->DrawIndexedPrimitive(
+		D3DPT_TRIANGLESTRIP,		// プリミティブの種類
+		0,							// 描画する最初の頂点バッファ
+		0,							// インデックスの最小値
+		s_Number.nVtx,				// 頂点数
+		0,							// 描画する最初の頂点インデックス
+		s_Number.nPolygon);			// プリミティブ(ポリゴン)数
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);
+
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, s_pVtxBuffCone, 0, sizeof(VERTEX_3D));
+
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(
+		D3DPT_TRIANGLEFAN,			// プリミティブの種類
+		0,							// 描画する最初の頂点インデックス
+		s_Number.nHorizontal);		// プリミティブ(ポリゴン)数
+
+	// ライトを有効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, true);
 }
 
-//=========================================
+//--------------------------------------------------
 // 設定
-//=========================================
+//--------------------------------------------------
 void SetMeshSky(void)
 {
+	// デバイスへのポインタの取得
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	int nXLine = s_Number.nHorizontal + 1;
+	int nYLine = s_Number.nVertical + 1;
+
+	// 頂点数を計算
+	s_Number.nVtx = nXLine * nYLine;
+
+	// インデックス数を計算
+	s_Number.nIdx = ((nXLine * 2) * s_Number.nVertical) + ((s_Number.nVertical - 1) * 2);
+
+	// ポリゴン数を計算
+	s_Number.nPolygon = (s_Number.nHorizontal * s_Number.nVertical * 2) + ((s_Number.nVertical - 1) * 4);
+
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(
+		sizeof(VERTEX_3D) * s_Number.nVtx,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
+		&s_pVtxBuff,
+		NULL);
+
+	// メモリのクリア
+	memset(&s_meshSky, NULL, sizeof(s_meshSky));
+
+	VERTEX_3D *pVtx = NULL;		// 頂点情報へのポインタ
+
+	// 頂点情報をロックし、頂点情報へのポインタを取得
+	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int y = 0; y < nYLine; y++)
+	{
+		float fYRot = (((D3DX_PI * 0.25f) / s_Number.nVertical) * y) + (D3DX_PI * 0.25f);
+
+		float fYPos = cosf(fYRot) * MAX_SIZE;
+
+		for (int x = 0; x < nXLine; x++)
+		{
+			float fRot = ((D3DX_PI * 2.0f) / s_Number.nHorizontal) * x;
+
+			// 角度の正規化
+			NormalizeRot(&fRot);
+
+			float fXPos = sinf(fRot) * sinf(fYRot) * MAX_SIZE;
+			float fZPos = cosf(fRot) * sinf(fYRot) * MAX_SIZE;
+			D3DXVECTOR3 pos = D3DXVECTOR3(fXPos, fYPos, fZPos);
+
+			// 頂点座標の設定
+			pVtx[x + (y * nXLine)].pos = pos;
+
+			D3DXVECTOR3 vec;
+
+			// 正規化する ( 大きさ 1 のベクトルにする )
+			D3DXVec3Normalize(&vec, &pos);
+
+			// 各頂点の法線の設定
+			pVtx[x + (y * nXLine)].nor = vec;
+
+			// 頂点カラーの設定
+			pVtx[x + (y * nXLine)].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+			float fUTex = (float)((x + (y * nXLine)) % nXLine);
+			float fVTex = (1.0f / s_Number.nVertical) * y;
+
+			// テクスチャ座標の設定
+			pVtx[x + (y * nXLine)].tex = D3DXVECTOR2((float)x, fVTex);
+		}
+	}
+
+	// 頂点バッファをアンロックする
+	s_pVtxBuff->Unlock();
+
+	// インデックスバッファの生成
+	pDevice->CreateIndexBuffer(
+		sizeof(VERTEX_3D) * s_Number.nIdx,
+		D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16,
+		D3DPOOL_MANAGED,
+		&s_pIdxBuff,
+		NULL);
+
+	WORD *pIdx = NULL;		// インデックス情報へのポインタ
+			
+	// インデックスバッファをロック
+	s_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+	// インデックスの設定
+	for (int x = 0, y = 0; y < s_Number.nVertical; x++, y++)
+	{
+		for (; x < (nXLine * (y + 1)) + y; x++)
+		{
+			pIdx[x * 2] = (WORD)(x - y + nXLine);
+			pIdx[(x * 2) + 1] = (WORD)(x - y);
+			x = x;
+		}
+
+		if (y < s_Number.nVertical - 1)
+		{// これで終わりじゃないなら
+			pIdx[x * 2] = (WORD)(x - (y + 1));
+			pIdx[(x * 2) + 1] = (WORD)((x * 2) - (y * (s_Number.nHorizontal + 3)));
+			x = x;
+		}
+	}
+
+	// インデックスバッファをアンロックする
+	s_pIdxBuff->Unlock();
+
+	// 円錐の頂点バッファの生成
+	pDevice->CreateVertexBuffer(
+		sizeof(VERTEX_3D) * (s_Number.nHorizontal + 2),
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
+		&s_pVtxBuffCone,
+		NULL);
+
+	// 頂点情報をロックし、頂点情報へのポインタを取得
+	s_pVtxBuffCone->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int i = 0; i < nXLine; i++)
+	{
+		float fYRot = D3DX_PI * 0.25f;
+		float fRot = ((D3DX_PI * 2.0f) / s_Number.nHorizontal) * i;
+
+		// 角度の正規化
+		NormalizeRot(&fRot);
+
+		float fXPos = sinf(-fRot) * sinf(fYRot) * MAX_SIZE;
+		float fYPos = cosf(fYRot) * MAX_SIZE;
+		float fZPos = cosf(-fRot) * sinf(fYRot) * MAX_SIZE;
+		D3DXVECTOR3 pos = D3DXVECTOR3(fXPos, fYPos, fZPos);
+
+		// 頂点座標の設定
+		pVtx[i + 1].pos = pos;
+
+		D3DXVECTOR3 vec;
+
+		// 正規化する ( 大きさ 1 のベクトルにする )
+		D3DXVec3Normalize(&vec, &pos);
+
+		// 各頂点の法線の設定
+		pVtx[i + 1].nor = vec;
+
+		// 頂点カラーの設定
+		pVtx[i + 1].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+
+		// テクスチャ座標の設定
+		pVtx[i + 1].tex = D3DXVECTOR2(0.0f, 0.0f);
+	}
+
+	float fYRot = ((D3DX_PI * 0.25f) / s_Number.nVertical);
+
+	float fYPos = cosf(fYRot) * MAX_SIZE;
+
+	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, fYPos, 0.0f);
+
+	// 頂点座標の設定
+	pVtx[0].pos = pos;
+
+	D3DXVECTOR3 vec;
+
+	// 正規化する ( 大きさ 1 のベクトルにする )
+	D3DXVec3Normalize(&vec, &pos);
+
+	// 各頂点の法線の設定
+	pVtx[0].nor = vec;
+
+	// 頂点カラーの設定
+	pVtx[0].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+
+	// テクスチャ座標の設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+
+	// 頂点バッファをアンロックする
+	s_pVtxBuffCone->Unlock();
+}
+
+//--------------------------------------------------
+// 取得
+//--------------------------------------------------
+MeshSky *GetMeshSky(void)
+{
+	return &s_meshSky;
+}
+
+//--------------------------------------------------
+// 数系の取得
+//--------------------------------------------------
+MeshSkyNumber *GetMeshSkyNumber(void)
+{
+	return &s_Number;
+}
+
+//--------------------------------------------------
+// バッファのリセット
+//--------------------------------------------------
+static void ResetBuff(void)
+{
+	if (s_pVtxBuff != NULL)
+	{// 頂点バッファの解放
+		s_pVtxBuff->Release();
+		s_pVtxBuff = NULL;
+	}
+
+	if (s_pIdxBuff != NULL)
+	{// インデックスバッファの解放
+		s_pIdxBuff->Release();
+		s_pIdxBuff = NULL;
+	}
+
+	if (s_pVtxBuffCone != NULL)
+	{// 円錐の頂点バッファの解放
+		s_pVtxBuffCone->Release();
+		s_pVtxBuffCone = NULL;
+	}
 }

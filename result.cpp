@@ -45,6 +45,8 @@ void InitResult(void)
 	InitCamera();		// カメラ
 	InitLight();		// ライト
 	InitMeshSky();		// メッシュ(空)
+	SetMeshSky();		// メッシュ(空)の設定
+
 
 	// プレイヤーのゲット
 	s_player = GetPlayer();

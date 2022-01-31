@@ -301,6 +301,8 @@ void ColisionPartsModel(void)
 				model->nIdxModelParent = 0;
 
 				s_player.nModelCnt++;
+
+				SetModelUI(model);
 			}
 			else
 			{	// æ‚è‚ß‚È‚¢ƒTƒCƒY‚Ìê‡

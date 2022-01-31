@@ -51,5 +51,7 @@ void CollisionModel(D3DXVECTOR3* pos, D3DXVECTOR3* pos_old,D3DXVECTOR3 min, D3DX
 Model* GetModel(void);		// モデルの取得処理
 void LoadModel(void);		// モデルの読み込み処理
 void SetModel(Model* model);		// モデルの設定処理
+void DrawModelUI(void);				// モデルUIの描画
+void SetModelUI(Model* model);		// モデルUIの設定
 
 #endif // !_MODEL_H_

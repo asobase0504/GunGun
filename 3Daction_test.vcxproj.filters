@@ -99,6 +99,9 @@
     <ClCompile Include="pause.cpp">
       <Filter>00_メインファイル</Filter>
     </ClCompile>
+    <ClCompile Include="title_ui.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="polygon.h">
@@ -175,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="mesh_sky.h">
       <Filter>02_3DStage</Filter>
+    </ClInclude>
+    <ClInclude Include="title_ui.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

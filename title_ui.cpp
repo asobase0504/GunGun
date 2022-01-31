@@ -1,6 +1,6 @@
 //=========================================
 // 
-// リザルトのUI処理
+// タイトルのUI処理
 // Author YudaKaito
 // 
 //=========================================
@@ -8,9 +8,10 @@
 // include
 //------------------------------------
 #include "main.h"
-#include "result_ui.h"
-#include "result.h"
+#include "title_ui.h"
+#include "title.h"
 #include "common.h"
+#include "player.h"
 
 //------------------------------------
 // マクロ定義
@@ -52,7 +53,7 @@ static void UninitObject(Object *object);	// 終了
 //=========================================
 // 初期化
 //=========================================
-void InitResultUI(void)
+void InitTitleUI(void)
 {
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 	Object* object;
@@ -201,7 +202,7 @@ void InitResultUI(void)
 //=========================================
 // 終了
 //=========================================
-void UninitResultUI(void)
+void UninitTitleUI(void)
 {
 	UninitObject(&nextButton);
 	UninitObject(&scoreLength);
@@ -211,7 +212,7 @@ void UninitResultUI(void)
 //=========================================
 // 更新
 //=========================================
-void UpdateResultUI(void)
+void UpdateTitleUI(void)
 {
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
@@ -226,7 +227,7 @@ void UpdateResultUI(void)
 //=========================================
 // 描画
 //=========================================
-void DrawResultUI(void)
+void DrawTitleUI(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();

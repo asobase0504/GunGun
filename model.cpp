@@ -29,6 +29,7 @@
 //------------------------------------
 static Model s_ModelType[MODEL_NUM];	// モデルの種類を保管
 static Model s_Model[MODEL_MAX];		// モデルの構造体
+static Model s_ModelUI;					// モデルUIの構造体
 static int s_nShadowCnt;				// 影の割り当て
 
 //=========================================
@@ -405,4 +406,80 @@ void SetModel(Model* model)
 
 		pModel = model;
 	}
+}
+
+//=========================================
+// モデルUIの描画
+// ローカル座標のみで描画位置を決定する
+//=========================================
+void DrawModelUI(void)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
+	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
+	D3DXVECTOR3 cameraPos = GetCamera()->posV;
+
+	Model* model = &(s_ModelUI);
+
+	model->rot.y += 0.05f;
+
+	if (model == NULL && model->bUse)
+	{
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&model->mtxWorld);
+
+		// 向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, cameraPos.x, cameraPos.y, (cameraPos.z + 25.0f));	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+		D3DXMATRIX mtxParent;
+
+		if (model->nIdxModelParent == -1)
+		{
+			mtxParent = GetPlayer()->mtxWorld;
+		}
+		else
+		{
+			mtxParent = s_Model[model->nIdxModelParent].mtxWorld;
+		}
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
+
+		// 現在のマテリアルを保持
+		pDevice->GetMaterial(&matDef);
+
+		// マテリアルデータへのポインタを取得
+		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+
+		for (int j = 0; j < (int)model->nNumMat; j++)
+		{
+			// マテリアルの設定
+			pDevice->SetMaterial(&pMat[j].MatD3D);
+
+			// テクスチャの設定
+			pDevice->SetTexture(0, model->pTexture[j]);
+
+			// モデルパーツの描写
+			model->pMesh->DrawSubset(j);
+		}
+
+		// 保持していたマテリアルを戻す
+		pDevice->SetMaterial(&matDef);
+	}
+}
+
+//=========================================
+// モデルUIの設定
+// ローカル座標のみで描画位置を決定する
+//=========================================
+void SetModelUI(Model * model)
+{
+	s_ModelUI = *model;
 }

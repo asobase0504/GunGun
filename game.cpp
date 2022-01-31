@@ -45,25 +45,18 @@ void InitGame(void)
 	// 初期化
 	InitTimer();		// タイム
 	InitPause();		// ポーズ
+	InitPolygon();		// ポリゴン
 	InitCamera();		// カメラ
 	InitLight();		// ライト
-	InitPolygon();		// ポリゴン
 	InitModel();		// モデル
 	InitPlayer();		// プレイヤー
 	InitShadow();		// 影
-	InitBillboard();	// ビルボード
 	InitMeshField();	// メッシュ
-	InitMeshCylinder();	// メッシュ(円柱)
-	InitMeshSphere();	// メッシュ(球)
-	InitMeshSky();		// メッシュ(空)
 	InitWall();			// 壁
 
 	// タイムの設定処理
 	StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
 	CountRestartStop(true, 0);
-
-	// ビルボードの設定処理
-	SetBillboard(D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	//// 壁の設定処理
 	//SetWall(D3DXVECTOR3(0.0f, 0.0f, 50.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -78,19 +71,13 @@ void InitGame(void)
 void UninitGame(void)
 {
 	// 終了
-	//UninitModel();		// モデル
-	//UninitPlayer();		// プレイヤー
 	UninitTimer();			// タイム
 	UninitPause();			// ポーズ
 	UninitPolygon();		// ポリゴン
 	UninitCamera();			// カメラ
 	UninitLight();			// ライト
 	UninitShadow();			// 影
-	UninitBillboard();		// ビルボード
 	UninitMeshField();		// メッシュ
-	UninitMeshCylinder();	// メッシュ(円柱)
-	UninitMeshSphere();		// メッシュ(球)
-	UninitMeshSky();		// メッシュ(空)
 	UninitWall();			// 壁
 
 #ifdef _DEBUG
@@ -125,11 +112,7 @@ void UpdateGame(void)
 		UpdateLight();			// ライト
 		UpdatePolygon();		// ポリゴン
 		UpdateShadow();			// 影
-		UpdateBillboard();		// ビルボード
 		UpdateMeshField();		// メッシュ
-		UpdateMeshCylinder();	// メッシュ(円柱)
-		UpdateMeshSphere();		// メッシュ(球)
-		UpdateMeshSky();		// メッシュ(空)
 		UpdateWall();			// 壁
 		UpdateTimer();			// タイム
 #ifdef _DEBUG
@@ -156,17 +139,12 @@ void UpdateGame(void)
 void DrawGame(void)
 {
 	SetCamera();			// カメラ
-	//DrawPolygon();		// ポリゴン
 	DrawWall();				// 壁
 	DrawModel();			// モデル
 	DrawPlayer();			// プレイヤー
 	DrawMeshField();		// メッシュ
-	//DrawMeshCylinder();	// メッシュ(円柱)
-	//DrawMeshSphere();		// メッシュ(球)
-	//DrawMeshSky();		// メッシュ(空)
 	DrawShadow();			// 影
-	//DrawModel();			// モデル
-	//DrawBillboard();		// ビルボード
+	DrawModelUI();			// モデルUI
 
 	// タイム
 	DrawTimer();

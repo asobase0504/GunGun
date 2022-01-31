@@ -48,7 +48,7 @@ typedef struct
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-float D3DXVec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2);
+float Vec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2);
 
 //------------------------------------
 // 静的変数
@@ -289,9 +289,9 @@ void CollisionMeshField(D3DXVECTOR3 * pos)
 		vecModel[1] = *pos - pVtx[s_aIdx[i + 1]].pos;
 		vecModel[2] = *pos - pVtx[s_aIdx[i + 2]].pos;
 
-		float crs_v1 = D3DXVec2Cross(&vecModel[0], &vecField[0]);
-		float crs_v2 = D3DXVec2Cross(&vecModel[1], &vecField[1]);
-		float crs_v3 = D3DXVec2Cross(&vecModel[2], &vecField[2]);
+		float crs_v1 = Vec2Cross(&vecModel[0], &vecField[0]);
+		float crs_v2 = Vec2Cross(&vecModel[1], &vecField[1]);
+		float crs_v3 = Vec2Cross(&vecModel[2], &vecField[2]);
 
 		// 乗ってるメッシュかチェック
 		if (i % 2 == 0)
@@ -368,9 +368,9 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 		vecModel[2] = *HitPos - pVtx[s_aIdx[i + 2]].pos;
 
 		float crs_v[3];
-		crs_v[0] = D3DXVec2Cross(&vecModel[0], &vecField[0]);
-		crs_v[1] = D3DXVec2Cross(&vecModel[1], &vecField[1]);
-		crs_v[2] = D3DXVec2Cross(&vecModel[2], &vecField[2]);
+		crs_v[0] = Vec2Cross(&vecModel[0], &vecField[0]);
+		crs_v[1] = Vec2Cross(&vecModel[1], &vecField[1]);
+		crs_v[2] = Vec2Cross(&vecModel[2], &vecField[2]);
 
 		// 乗ってるメッシュかチェック
 		if (i % 2 == 0)
@@ -427,7 +427,7 @@ void CollisionMeshField(D3DXVECTOR3* pos, D3DXVECTOR3* HitPos)
 //=========================================
 // 2Dベクトルの外積
 //=========================================
-float D3DXVec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2)
+float Vec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2)
 {
 	return v1->x * v2->z - v1->z * v2->x;
 }

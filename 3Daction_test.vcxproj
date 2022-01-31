@@ -175,6 +175,7 @@
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="title_ui.cpp" />
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +203,7 @@
     <ClInclude Include="shadow.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="title_ui.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

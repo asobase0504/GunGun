@@ -21,8 +21,8 @@
 //-----------------------------------------
 // 静的変数
 //-----------------------------------------
-static Camera s_camera;	// カメラ情報
-static int i;
+static Camera s_camera[2];	// カメラ情報
+
 //-----------------------------------------
 // プロトタイプ宣言
 //-----------------------------------------
@@ -36,18 +36,38 @@ void InitCamera(void)
 	ZeroMemory(&s_camera, sizeof(s_camera));
 
 	// 視点・注視点・上方向を設定する
-	s_camera.posV = D3DXVECTOR3(0.0f,50.0f,-60.0f);	// 視点
-	s_camera.posR = D3DXVECTOR3(0.0f,0.0f,0.0f);	// 注視点
-	s_camera.vecU = D3DXVECTOR3(0.0f,1.0f,0.0f);	// 上方向ベクトル
-	s_camera.rot = ZERO_VECTOR;	// 向き
+	s_camera[0].posV = D3DXVECTOR3(0.0f,50.0f,-60.0f);	// 視点
+	s_camera[0].posR = D3DXVECTOR3(0.0f,0.0f,0.0f);	// 注視点
+	s_camera[0].vecU = D3DXVECTOR3(0.0f,1.0f,0.0f);	// 上方向ベクトル
+	s_camera[0].rot = ZERO_VECTOR;	// 向き
 
-	s_camera.rot.y = atan2f((s_camera.posR.x - s_camera.posV.x),(s_camera.posR.z - s_camera.posV.z));
-	s_camera.rot.x = atan2f((s_camera.posR.z - s_camera.posV.z),(s_camera.posR.y - s_camera.posV.y));
+	s_camera[0].rot.y = atan2f((s_camera[0].posR.x - s_camera[0].posV.x), (s_camera[0].posR.z - s_camera[0].posV.z));
+	s_camera[0].rot.x = atan2f((s_camera[0].posR.z - s_camera[0].posV.z), (s_camera[0].posR.y - s_camera[0].posV.y));
 
-	D3DXVECTOR3 vec = s_camera.posV - s_camera.posR;
-	s_camera.fDistance = D3DXVec3Length(&vec);
+	D3DXVECTOR3 vec = s_camera[0].posV - s_camera[0].posR;
+	s_camera[0].fDistance = D3DXVec3Length(&vec);
 
-	i = 1;
+	s_camera[0].viewport.X = (DWORD)0.0f;
+	s_camera[0].viewport.Y = (DWORD)0.0f;
+	s_camera[0].viewport.Width = SCREEN_WIDTH;
+	s_camera[0].viewport.Height = SCREEN_HEIGHT;
+
+	s_camera[1].posV = D3DXVECTOR3(0.0f, -200.0f, -60.0f);	// 視点
+	s_camera[1].posR = D3DXVECTOR3(0.0f, -200.0f, 0.0f);	// 注視点
+	s_camera[1].vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向ベクトル
+	s_camera[1].rot = ZERO_VECTOR;	// 向き
+			 
+	s_camera[1].rot.y = atan2f((s_camera[1].posR.x - s_camera[1].posV.x), (s_camera[1].posR.z - s_camera[1].posV.z));
+	s_camera[1].rot.x = atan2f((s_camera[1].posR.z - s_camera[1].posV.z), (s_camera[1].posR.y - s_camera[1].posV.y));
+
+	vec = s_camera[1].posV - s_camera[1].posR;
+	s_camera[1].fDistance = D3DXVec3Length(&vec);
+
+	s_camera[1].viewport.X = (DWORD)0.0f;
+	s_camera[1].viewport.Y = (DWORD)0.0f;
+	s_camera[1].viewport.Width = (DWORD)500.0f;
+	s_camera[1].viewport.Height = (DWORD)500.0f;
+
 }
 
 //=========================================
@@ -70,7 +90,7 @@ void UpdateCamera(void)
 //=========================================
 void UpdateGameCamera(void)
 {
-	Camera* pCamera = &(s_camera);
+	Camera* pCamera = &(s_camera[0]);
 
 	InputCamera();
 
@@ -113,7 +133,7 @@ void UpdateGameCamera(void)
 //=========================================
 void UpdateResultCamera(void)
 {
-	Camera* pCamera = &(s_camera);
+	Camera* pCamera = &(s_camera[0]);
 
 	Player *player = GetPlayer();
 
@@ -145,10 +165,10 @@ void UpdateResultCamera(void)
 //=========================================
 // 設定
 //=========================================
-void SetCamera(void)
+void SetCamera(int nData)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	Camera* camara = &(s_camera);
+	Camera* camara = &(s_camera[nData]);
 
 	// ビューマトリックスの初期化
 	D3DXMatrixIdentity(&camara->mtxView);
@@ -177,7 +197,7 @@ void SetCamera(void)
 //=========================================
 void InputCamera(void)
 {
-	Camera* pCamera = &(s_camera);
+	Camera* pCamera = &(s_camera[0]);
 
 	pCamera->vec = ZERO_VECTOR;
 
@@ -265,9 +285,9 @@ void InputCamera(void)
 //=========================================
 // カメラの情報取得
 //=========================================
-Camera* GetCamera(void)
+Camera* GetCamera(int nData)
 {
-	return &(s_camera);
+	return &s_camera[nData];
 }
 
 //=========================================
@@ -275,5 +295,5 @@ Camera* GetCamera(void)
 //=========================================
 D3DXVECTOR3 GetRotCamera(void)
 {
-	return s_camera.rot;
+	return s_camera[0].rot;
 }

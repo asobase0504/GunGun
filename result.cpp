@@ -129,14 +129,17 @@ void UpdateResult(void)
 //=========================================
 // リザルトの描画処理
 //=========================================
-void DrawResult(void)
+void DrawResult(int cameraData)
 {
-	// 描画処理
-	SetCamera();		// カメラ
-	DrawModel();		// モデル
-	DrawPlayer();		// プレイヤー
-	DrawMeshSky();		// メッシュ(空)
-	DrawResultUI();		// リザルトUI
+	if (cameraData == 0)
+	{
+		// 描画処理
+		SetCamera(cameraData);		// カメラ
+		DrawModel();		// モデル
+		DrawPlayer();		// プレイヤー
+		DrawMeshSky();		// メッシュ(空)
+		DrawResultUI();		// リザルトUI
+	}
 }
 
 //=========================================

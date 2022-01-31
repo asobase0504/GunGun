@@ -13,7 +13,7 @@
 void InitGame(void);	// 初期化処理
 void UninitGame(void);	// 終了処理
 void UpdateGame(void);	// 更新処理
-void DrawGame(void);	// 描画処理
+void DrawGame(int cameraData);	// 描画処理
 void SetEnablePause(bool bUse);	// ポーズの状態を設定する
 bool GetPause(void);			// ポーズの状態取得
 

@@ -26,7 +26,7 @@ typedef enum
 void InitResult(void);					// 初期化
 void UninitResult(void);				// 終了
 void UpdateResult(void);				// 更新
-void DrawResult(void);					// 描画
+void DrawResult(int cameraData);		// 描画
 RESULT_MODE* GetResult(void);			// モードの取得
 void SetResultPlayer(Player player);	// リザルト用のプレイヤーデータの取得
 

@@ -215,11 +215,11 @@ void SelectTitle(void)
 //=========================================
 // 描画処理
 //=========================================
-void DrawTitle(void)
+void DrawTitle(int cameraData)
 {
-	SetCamera();		// カメラ
-	DrawPolygon();		// ポリゴン
-	DrawMeshField();	// メッシュフィールド
+	SetCamera(cameraData);		// カメラ
+	DrawPolygon();				// ポリゴン
+	DrawMeshField();			// メッシュフィールド
 }
 
 //=========================================

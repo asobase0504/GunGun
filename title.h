@@ -19,7 +19,7 @@ void InitTitle(void);
 void UninitTitle(void);
 void UpdateTitle(void);
 void SelectTitle(void);
-void DrawTitle(void);
+void DrawTitle(int cameraData);
 bool GetExit(void);
 
 #endif // !_POLYGON_H_

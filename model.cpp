@@ -418,7 +418,6 @@ void DrawModelUI(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
-	D3DXVECTOR3 cameraPos = GetCamera()->posV;
 
 	Model* model = &(s_ModelUI);
 
@@ -435,7 +434,7 @@ void DrawModelUI(void)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxRot);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, cameraPos.x, cameraPos.y, (cameraPos.z + 25.0f));	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 		D3DXMATRIX mtxParent;
@@ -482,4 +481,5 @@ void DrawModelUI(void)
 void SetModelUI(Model * model)
 {
 	s_ModelUI = *model;
+	s_ModelUI.pos = D3DXVECTOR3(0.0f, -200.0f, 0.0f);
 }

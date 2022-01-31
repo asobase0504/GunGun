@@ -17,6 +17,7 @@
 #include "debug.h"
 #include <stdio.h>
 #include "player.h"
+#include "camera.h"
 
 //-----------------------------------------
 // マクロ定義
@@ -33,7 +34,7 @@ static HRESULT Init(HINSTANCE hInstance, HWND hWmd, BOOL bWindow);
 static void Uninit(void);
 static void Update(void);
 static void Draw(void);
-static MODE s_mode = MODE_TITLE;
+static MODE s_mode = MODE_GAME;
 
 //-----------------------------------------
 // グローバル変数
@@ -389,43 +390,46 @@ void Update(void)
 //=========================================
 void Draw(void)
 {
-	// 画面クリア(バックバッファ＆Zバッファのクリア)
-	g_pD3DDevice->Clear(0, NULL,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
 
-	// 描画開始
-	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
-	{// 	描画開始が成功した場合
+	for (int i = 0; i <= 2; i++)
+	{
+		// ビューボードのクリア
+		pDevice->SetViewport(&GetCamera(i)->viewport);
 
-		switch (s_mode)
-		{
-		case MODE_TITLE:	// タイトル画面
-			DrawTitle();
-			break;
+		// 画面クリア(バックバッファ＆Zバッファのクリア)
+		pDevice->Clear(0, NULL,
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
-		case MODE_GAME:		// ゲーム画面
-			DrawGame();
-#ifdef _DEBUG
-			// FPSの表示
-			DrawFPS();
-#endif // _DEBUG
-			break;
+		// 描画開始
+		if (SUCCEEDED(g_pD3DDevice->BeginScene()))
+		{// 	描画開始が成功した場合
+			switch (s_mode)
+			{
+			case MODE_TITLE:	// タイトル画面
+				DrawTitle(i);
+				break;
 
-		case MODE_TUTORIAL:	// チュートリアル画面
-			//DrawTutorial();
-			break;
+			case MODE_GAME:		// ゲーム画面
+				DrawGame(i);
+				break;
 
-		case MODE_RESULT:	// ランキング画面
-			DrawResult();
-			break;
+			case MODE_TUTORIAL:	// チュートリアル画面
+				//DrawTutorial();
+				break;
+
+			case MODE_RESULT:	// ランキング画面
+				DrawResult(i);
+				break;
+			}
+
+			// フェード処理
+			DrawFade();
+
+			// 描画終了
+			g_pD3DDevice->EndScene();
 		}
-
-		// フェード処理
-		DrawFade();
-
-		// 描画終了
-		g_pD3DDevice->EndScene();
 	}
 	// バックバッファとフロントバッファの入れ替え
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);

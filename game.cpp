@@ -23,6 +23,7 @@
 #include "pause.h"
 #include "timer.h"
 #include "fade.h"
+#include "debug.h"
 
 //------------------------------------
 // スタティック変数
@@ -55,14 +56,11 @@ void InitGame(void)
 	InitWall();			// 壁
 
 	// タイムの設定処理
-	StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
+	StartTimer(990, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
 	CountRestartStop(true, 0);
 
-	//// 壁の設定処理
-	//SetWall(D3DXVECTOR3(0.0f, 0.0f, 50.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	//SetWall(D3DXVECTOR3(0.0f, 0.0f, -50.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
-	//SetWall(D3DXVECTOR3(50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));
-	//SetWall(D3DXVECTOR3(-50.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f));
+	// ポリゴンの設定処理
+	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f),NULL);
 }
 
 //=========================================
@@ -122,7 +120,7 @@ void UpdateGame(void)
 
 	if ((int)GetPlayer()->fLength / 14 == s_nSizeCnt)
 	{
-		GetCamera()->fDistance *= 1.5f;
+		GetCamera(0)->fDistance *= 1.5f;
 		s_nSizeCnt++;
 	}
 
@@ -136,26 +134,35 @@ void UpdateGame(void)
 //=========================================
 // 描画
 //=========================================
-void DrawGame(void)
+void DrawGame(int cameraData)
 {
-	SetCamera();			// カメラ
-	DrawWall();				// 壁
-	DrawModel();			// モデル
-	DrawPlayer();			// プレイヤー
-	DrawMeshField();		// メッシュ
-	DrawShadow();			// 影
-	DrawModelUI();			// モデルUI
+	SetCamera(cameraData);			// カメラ
 
-	// タイム
-	DrawTimer();
-
-#ifdef _DEBUG
-	DrawLine();	// ライン
-#endif // !_DEBUG
-
-	if (s_bPause)
+	switch (cameraData)
 	{
-		DrawPause();
+	case 0:
+		DrawWall();			// 壁
+		DrawModel();		// モデル
+		DrawPlayer();		// プレイヤー
+		DrawMeshField();	// メッシュ
+		DrawShadow();		// 影
+		DrawTimer();		// タイム
+
+		if (s_bPause)
+		{
+			DrawPause();
+		}
+#ifdef _DEBUG
+	DrawLine();		// ライン
+	DrawFPS();		// FPSの表示
+#endif // !_DEBUG
+		break;
+	case 1:
+		DrawModelUI();			// モデルUI
+		DrawPolygon();
+		break;
+	default:
+		break;
 	}
 }
 

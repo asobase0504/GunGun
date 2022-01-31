@@ -11,6 +11,7 @@
 #include "main.h"
 #include "fade.h"
 #include "common.h"
+#include "camera.h"
 
 //------------------------------------
 // グローバル変数
@@ -127,10 +128,7 @@ void UpdateFade(void)
 //====================================
 void DrawFade(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポイント
-
-	// デバイスの取得
-	pDevice = GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
 
 	// 描画処理
 	InitDraw(pDevice, s_pVtxBuff);

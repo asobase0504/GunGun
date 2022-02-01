@@ -131,6 +131,8 @@ void UpdateResult(void)
 //=========================================
 void DrawResult(int cameraData)
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
+
 	if (cameraData == 0)
 	{
 		// 描画処理

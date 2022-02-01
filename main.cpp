@@ -34,7 +34,7 @@ static HRESULT Init(HINSTANCE hInstance, HWND hWmd, BOOL bWindow);
 static void Uninit(void);
 static void Update(void);
 static void Draw(void);
-static MODE s_mode = MODE_GAME;
+static MODE s_mode = MODE_TITLE;
 
 //-----------------------------------------
 // グローバル変数
@@ -392,7 +392,7 @@ void Draw(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
 
-	for (int i = 0; i <= 2; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		// ビューボードのクリア
 		pDevice->SetViewport(&GetCamera(i)->viewport);

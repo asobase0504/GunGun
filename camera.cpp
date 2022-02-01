@@ -51,6 +51,8 @@ void InitCamera(void)
 	s_camera[0].viewport.Y = (DWORD)0.0f;
 	s_camera[0].viewport.Width = SCREEN_WIDTH;
 	s_camera[0].viewport.Height = SCREEN_HEIGHT;
+	s_camera[0].viewport.MinZ = 0.0f;
+	s_camera[0].viewport.MaxZ = 1.0f;
 
 	s_camera[1].posV = D3DXVECTOR3(0.0f, -200.0f, -60.0f);	// éãì_
 	s_camera[1].posR = D3DXVECTOR3(0.0f, -200.0f, 0.0f);	// íçéãì_
@@ -67,6 +69,8 @@ void InitCamera(void)
 	s_camera[1].viewport.Y = (DWORD)(SCREEN_HEIGHT - (80.0f * 4.0f));
 	s_camera[1].viewport.Width = (DWORD)(80.0f * 4.0f);
 	s_camera[1].viewport.Height = (DWORD)(80.0f * 2.25f);
+	s_camera[1].viewport.MinZ = 0.0f;
+	s_camera[1].viewport.MaxZ = 1.0f;
 
 }
 

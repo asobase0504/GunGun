@@ -217,9 +217,14 @@ void SelectTitle(void)
 //=========================================
 void DrawTitle(int cameraData)
 {
-	SetCamera(cameraData);		// カメラ
-	DrawPolygon();				// ポリゴン
-	DrawMeshField();			// メッシュフィールド
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
+
+	if (cameraData == 0)
+	{
+		SetCamera(cameraData);		// カメラ
+		DrawPolygon();				// ポリゴン
+		DrawMeshField();			// メッシュフィールド
+	}
 }
 
 //=========================================

@@ -136,6 +136,8 @@ void UpdateGame(void)
 //=========================================
 void DrawGame(int cameraData)
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
+												
 	SetCamera(cameraData);			// カメラ
 
 	switch (cameraData)
@@ -159,7 +161,7 @@ void DrawGame(int cameraData)
 		break;
 	case 1:
 		DrawModelUI();			// モデルUI
-		//DrawPolygon();
+		DrawPolygon();
 		break;
 	default:
 		break;

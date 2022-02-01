@@ -64,9 +64,9 @@ void InitCamera(void)
 	s_camera[1].fDistance = D3DXVec3Length(&vec);
 
 	s_camera[1].viewport.X = (DWORD)0.0f;
-	s_camera[1].viewport.Y = (DWORD)0.0f;
-	s_camera[1].viewport.Width = (DWORD)(80.0f * 8.0f);
-	s_camera[1].viewport.Height = (DWORD)(80.0f * 4.5f);
+	s_camera[1].viewport.Y = (DWORD)(SCREEN_HEIGHT - (80.0f * 4.0f));
+	s_camera[1].viewport.Width = (DWORD)(80.0f * 4.0f);
+	s_camera[1].viewport.Height = (DWORD)(80.0f * 2.25f);
 
 }
 

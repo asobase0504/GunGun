@@ -38,6 +38,7 @@ static int s_nShadowCnt;				// 影の割り当て
 void InitModel(void)
 {
 	ZeroMemory(s_ModelType, sizeof(s_ModelType));
+	ZeroMemory(&s_ModelUI, sizeof(s_ModelUI));
 	ZeroMemory(s_Model, sizeof(s_Model));
 }
 
@@ -423,9 +424,8 @@ void DrawModelUI(void)
 
 	model->rot.y += 0.05f;
 
-	if (model == NULL && model->bUse)
+	if (model != NULL && model->bUse)
 	{
-
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&model->mtxWorld);
 

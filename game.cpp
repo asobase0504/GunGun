@@ -159,7 +159,7 @@ void DrawGame(int cameraData)
 		break;
 	case 1:
 		DrawModelUI();			// ƒ‚ƒfƒ‹UI
-		DrawPolygon();
+		//DrawPolygon();
 		break;
 	default:
 		break;

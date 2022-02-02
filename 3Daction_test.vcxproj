@@ -157,6 +157,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="game_ui.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="key_config.cpp" />
     <ClCompile Include="light.cpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="title_ui.cpp" />
+    <ClCompile Include="ui.cpp" />
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +187,7 @@
     <ClInclude Include="debug.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="game_ui.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="key_config.h" />
     <ClInclude Include="light.h" />
@@ -204,6 +207,7 @@
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="title_ui.h" />
+    <ClInclude Include="ui.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

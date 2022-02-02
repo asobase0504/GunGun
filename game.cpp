@@ -27,6 +27,7 @@
 #include "timer.h"
 #include "fade.h"
 #include "debug.h"
+#include "game_ui.h"
 
 //------------------------------------
 // マクロ定義
@@ -62,6 +63,7 @@ void InitGame(void)
 	InitShadow();		// 影
 	InitMeshField();	// メッシュ
 	InitWall();			// 壁
+	InitGameUI();		// UI
 
 	// タイムの設定処理
 	StartTimer(990, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
@@ -96,6 +98,7 @@ void UninitGame(void)
 	UninitShadow();			// 影
 	UninitMeshField();		// メッシュ
 	UninitWall();			// 壁
+	UninitGameUI();			// UI
 
 #ifdef _DEBUG
 	// ライン
@@ -135,6 +138,24 @@ void UpdateGame(void)
 #ifdef _DEBUG
 		UpdateLine();	// ライン
 #endif // !_DEBUG
+		UpdateGameUI();			// UI
+
+		if (GetKeyboardTrigger(DIK_T))
+		{
+			SetGameUITex("data/TEXTURE/WORD/mm.png");
+		}
+		if (GetKeyboardTrigger(DIK_Y))
+		{
+			SetGameUITex("data/TEXTURE/WORD/cm.png");
+		}
+		if (GetKeyboardTrigger(DIK_U))
+		{
+			SetGameUITex("data/TEXTURE/WORD/m.png");
+		}
+		if (GetKeyboardTrigger(DIK_I))
+		{
+			SetGameUITex("data/TEXTURE/WORD/km.png");
+		}
 	}
 
 	if ((int)GetPlayer()->fLength / 14 == s_nSizeCnt)
@@ -185,7 +206,8 @@ void DrawGame(int cameraData)
 	DrawLine();		// ライン
 	DrawFPS();		// FPSの表示
 #endif // !_DEBUG
-		break;
+		DrawGameUI();			// UI
+	break;
 	case 1:
 		DrawModelUI();			// モデルUI
 		DrawPolygon();

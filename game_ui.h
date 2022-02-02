@@ -4,8 +4,8 @@
 // Author YudaKaito
 // 
 //=========================================
-#ifndef _RESULT_UI_H_
-#define _RESULT_UI_H_
+#ifndef _GAME_UI_H_
+#define _GAME_UI_H_
 
 //------------------------------------
 // include
@@ -15,9 +15,10 @@
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-void InitResultUI(void);	// 初期化処理
-void UninitResultUI(void);	// 終了処理
-void UpdateResultUI(void);	// 更新処理
-void DrawResultUI(void);	// 描画処理
+void InitGameUI(void);		// ゲームUIの初期化処理
+void UninitGameUI(void);	// ゲームUIの終了処理
+void UpdateGameUI(void);	// ゲームUIの更新処理
+void DrawGameUI(void);		// ゲームUIの描画処理
+void SetGameUITex(char* file);		// ゲームUIのテクスチャの変更処理
 
-#endif // !_RESULT_UI_H_
+#endif // !_GAME_UI_H_

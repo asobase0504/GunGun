@@ -139,6 +139,7 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
+	// プレイヤーが指定されたポリゴンに乗っていたらカウントを進める
 	if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < 50)
 	{
 		s_Select = SELECT_GAMESTART;
@@ -154,6 +155,7 @@ void UpdateTitle(void)
 		s_nCnt = 0;
 	}
 
+	// 一定以上の値になったら乗っていた項目に以降する
 	if (s_nCnt >= 50)
 	{
 		switch (s_Select)
@@ -179,6 +181,25 @@ void UpdateTitle(void)
 		UpdateMeshField();	// メッシュフィールド
 		UpdateModel();		// モデル
 		UpdatePlayer();		// プレイヤー
+
+		// プレイヤーの移動制限
+		Player* player = GetPlayer();
+		if (player->pos.x < -130.0f)
+		{
+			player->pos.x = 120.0f;
+		}
+		else if (player->pos.x > 130.0f)
+		{
+			player->pos.x = -120.0f;
+		}
+		if (player->pos.z < -80.0f)
+		{
+			player->pos.z = 70.0f;
+		}
+		else if (player->pos.z > 80.0f)
+		{
+			player->pos.z = -70.0f;
+		}
 	}
 }
 

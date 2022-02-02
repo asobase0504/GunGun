@@ -103,6 +103,22 @@ void InitTitle(void)
 	// ポリゴンの設定処理
 	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Exit.jpg","exit");
 	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Start.jpg", "start");
+
+	// プレイヤーの設定処理
+	Player* player = GetPlayer();
+	player->pos = D3DXVECTOR3(0.0f, 0.0f, -25.0f);
+
+	// メッシュフィールドの設定処理
+	SetMesh setMesh;
+	setMesh.file = NULL;
+	setMesh.fLineHeight = 50.0f;
+	setMesh.fLineWidth = 50.0f;
+	setMesh.nSurfaceHeight = 30;
+	setMesh.nSurfaceWidth = 30;
+	setMesh.pos = ZERO_VECTOR;
+	setMesh.rot = ZERO_VECTOR;
+	SetMeshField(&setMesh);
+
 }
 
 //=========================================
@@ -123,24 +139,17 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
-	UpdateCamera();		// カメラ
-	UpdateLight();		// ライト
-	UpdatePolygon();	// ポリゴン
-	UpdateMeshField();	// メッシュフィールド
-	UpdateModel();		// モデル
-	UpdatePlayer();		// プレイヤー
-
-	if (CollisionPolygon(&GetPlayer()->pos, "start"))
+	if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < 50)
 	{
 		s_Select = SELECT_GAMESTART;
 		s_nCnt++;
 	}
-	else if (CollisionPolygon(&GetPlayer()->pos, "exit"))
+	else if (CollisionPolygon(&GetPlayer()->pos, "exit") && s_nCnt < 50)
 	{
 		s_Select = SELECT_EXIT;
 		s_nCnt++;
 	}
-	else
+	else if(s_nCnt < 50)
 	{
 		s_nCnt = 0;
 	}
@@ -161,6 +170,15 @@ void UpdateTitle(void)
 		default:
 			break;
 		}
+	}
+	else
+	{
+		UpdateCamera();		// カメラ
+		UpdateLight();		// ライト
+		UpdatePolygon();	// ポリゴン
+		UpdateMeshField();	// メッシュフィールド
+		UpdateModel();		// モデル
+		UpdatePlayer();		// プレイヤー
 	}
 }
 

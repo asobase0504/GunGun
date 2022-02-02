@@ -4,6 +4,9 @@
 // Author YudaKaito
 // 
 //=========================================
+//------------------------------------
+// include
+//------------------------------------
 #include "game.h"
 #include "main.h"
 #include "input.h"
@@ -24,6 +27,11 @@
 #include "timer.h"
 #include "fade.h"
 #include "debug.h"
+
+//------------------------------------
+// マクロ定義
+//------------------------------------
+#define MESH_FIELD	"data/TEXTURE/bee_tex.jpg"
 
 //------------------------------------
 // スタティック変数
@@ -61,6 +69,17 @@ void InitGame(void)
 
 	// ポリゴンの設定処理
 	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f),NULL,"floar");
+	
+	// メッシュフィールドの設定処理
+	SetMesh setMesh;
+	setMesh.file = "data/TEXTURE/bg001.jpg";
+	setMesh.fLineHeight = 50.0f;
+	setMesh.fLineWidth = 50.0f;
+	setMesh.nSurfaceHeight = 30;
+	setMesh.nSurfaceWidth = 30;
+	setMesh.pos = ZERO_VECTOR;
+	setMesh.rot = ZERO_VECTOR;
+	SetMeshField(&setMesh);
 }
 
 //=========================================

@@ -64,110 +64,9 @@ static int* s_aIdx = {};							// インデックスの配列
 //=========================================
 void InitMeshField(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	ZeroMemory(&s_aMesh, sizeof(s_aMesh));
 
 	// nSurfaceWidth × nSurfaceHeight
-	s_aMesh.nSurfaceWidth = 30;			// X軸の面の数
-	s_aMesh.nSurfaceHeight = 30;		// Y軸の面の数
-	s_aMesh.fLineWidth = 50.0f;			// X軸の面の数
-	s_aMesh.fLineHeight = 50.0f;		// Y軸の面の数
-
-	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);				// X軸の頂点数
-
-	s_aMesh.vertexCnt = nLineVtx * (s_aMesh.nSurfaceHeight + 1);	// 頂点数
-
-	// ポリゴン数を求める計算
-	s_aMesh.polygonCnt
-		= 2 * s_aMesh.nSurfaceWidth * s_aMesh.nSurfaceHeight		// 一行分のポリゴン数
-		+ 4 * (s_aMesh.nSurfaceHeight - 1);				// 縮退ポリゴン数
-
-	s_aMesh.IdxCnt = s_aMesh.polygonCnt + 2;	// インデックス数
-
-//別解
-/*
-	// インデックス数を求める計算
-	s_aMesh.IdxCnt
-	= 2 * (s_aMesh.nSurfaceWidth + 1) * s_aMesh.nSurfaceHeight	// 一行分のインデックス数
-	+ 2 * (s_aMesh.nSurfaceHeight - 1);					// 改行時に発生する重複しているインデックス数
-
-	s_aMesh.polygonCnt = s_aMesh.IdxCnt - 2;	// ポリゴン数
-*/
-
-	s_aMesh.pos = ZERO_VECTOR;	// 頂点座標
-	s_aMesh.rot = ZERO_VECTOR;	// 回転座標
-
-	// テクスチャの読込
-	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/暗転.jpg",
-		&s_pTexture);
-
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * s_aMesh.polygonCnt,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,
-		D3DPOOL_MANAGED,
-		&s_pVtxBuff,
-		NULL);
-
-	// インデックスバッファの生成
-	pDevice->CreateIndexBuffer(sizeof(WORD) * s_aMesh.IdxCnt,
-		D3DUSAGE_WRITEONLY,
-		D3DFMT_INDEX16,
-		D3DPOOL_MANAGED,
-		&s_pIdxBuff,
-		NULL);
-
-	VERTEX_3D* pVtx = NULL;
-
-	// 頂点座標をロック
-	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	// 頂点座標の設定
-	for (int Z = 0; Z <= s_aMesh.nSurfaceHeight;Z++)
-	{
-		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
-		{
-			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh.nSurfaceWidth * 0.5f) *  s_aMesh.fLineWidth, 0.0f, (Z - s_aMesh.nSurfaceHeight * 0.5f) * -s_aMesh.fLineHeight);
-
-			pVtx[X + Z * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-			pVtx[X + Z * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[X + Z * nLineVtx].tex = D3DXVECTOR2((float)X, (float)Z);
-		}
-	}
-
-	// 頂点座標をアンロック
-	s_pVtxBuff->Unlock();
-
-	// メッシュに使用されているテクスチャ用の配列を用意する
-	s_aIdx = new int[s_aMesh.IdxCnt];
-
-	WORD* pIdx;
-	s_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
-
-	// インデックスを求める
-	for (int Y = 0; Y < s_aMesh.nSurfaceHeight; Y++)
-	{
-		int nlineTop = Y * (nLineVtx * 2 + 2);
-		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
-		{
-			int nIdxData = X * 2 + nlineTop;
-			pIdx[nIdxData + 1] = (WORD)(X + nLineVtx * Y);
-			pIdx[nIdxData] = (WORD)(pIdx[nIdxData + 1] + nLineVtx);
-			s_aIdx[nIdxData + 1] = (WORD)pIdx[nIdxData + 1];
-			s_aIdx[nIdxData] = (WORD)pIdx[nIdxData];
-		}
-
-		if (Y < s_aMesh.nSurfaceHeight - 1)
-		{
-			pIdx[nLineVtx * 2 + nlineTop] = (WORD)(s_aMesh.nSurfaceWidth + nLineVtx * Y);
-			pIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)(nLineVtx * 2 + nLineVtx * Y);
-			s_aIdx[nLineVtx * 2 + nlineTop] = (WORD)pIdx[nLineVtx * 2 + nlineTop];
-			s_aIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)pIdx[nLineVtx * 2 + 1 + nlineTop];
-
-		}
-	}
-
-	s_pIdxBuff->Unlock();
 }
 
 //=========================================
@@ -250,6 +149,101 @@ void DrawMeshField(void)
 
 	// テクスチャの解除
 	pDevice->SetTexture(0, NULL);
+}
+
+//=========================================
+// 設定
+//=========================================
+void SetMeshField(SetMesh* mesh)
+{
+	s_aMesh.nSurfaceWidth = mesh->nSurfaceWidth;	// X軸の面の数
+	s_aMesh.nSurfaceHeight = mesh->nSurfaceHeight;	// Y軸の面の数
+	s_aMesh.fLineWidth = mesh->fLineWidth;			// X軸の面の数
+	s_aMesh.fLineHeight = mesh->fLineHeight;		// Y軸の面の数
+
+	int nLineVtx = (s_aMesh.nSurfaceWidth + 1);		// X軸の頂点数
+
+	s_aMesh.vertexCnt = nLineVtx * (s_aMesh.nSurfaceHeight + 1);	// 頂点数
+
+	// ポリゴン数を求める計算
+	s_aMesh.polygonCnt
+		= 2 * s_aMesh.nSurfaceWidth * s_aMesh.nSurfaceHeight		// 一行分のポリゴン数
+		+ 4 * (s_aMesh.nSurfaceHeight - 1);				// 縮退ポリゴン数
+
+	s_aMesh.IdxCnt = s_aMesh.polygonCnt + 2;	// インデックス数
+
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice, mesh->file,&s_pTexture);
+
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * s_aMesh.polygonCnt,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
+		&s_pVtxBuff,
+		NULL);
+
+	// インデックスバッファの生成
+	pDevice->CreateIndexBuffer(sizeof(WORD) * s_aMesh.IdxCnt,
+		D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16,
+		D3DPOOL_MANAGED,
+		&s_pIdxBuff,
+		NULL);
+
+	VERTEX_3D* pVtx = NULL;
+
+	// 頂点座標をロック
+	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 頂点座標の設定
+	for (int Z = 0; Z <= s_aMesh.nSurfaceHeight; Z++)
+	{
+		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
+		{
+			pVtx[X + Z * nLineVtx].pos = D3DXVECTOR3((X - s_aMesh.nSurfaceWidth * 0.5f) *  s_aMesh.fLineWidth, 0.0f, (Z - s_aMesh.nSurfaceHeight * 0.5f) * -s_aMesh.fLineHeight);
+
+			pVtx[X + Z * nLineVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			pVtx[X + Z * nLineVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[X + Z * nLineVtx].tex = D3DXVECTOR2((float)X, (float)Z);
+		}
+	}
+
+	// 頂点座標をアンロック
+	s_pVtxBuff->Unlock();
+
+	// メッシュに使用されているテクスチャ用の配列を用意する
+	s_aIdx = new int[s_aMesh.IdxCnt];
+
+	WORD* pIdx;
+	s_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+	// インデックスを求める
+	for (int Y = 0; Y < s_aMesh.nSurfaceHeight; Y++)
+	{
+		int nlineTop = Y * (nLineVtx * 2 + 2);
+		for (int X = 0; X <= s_aMesh.nSurfaceWidth; X++)
+		{
+			int nIdxData = X * 2 + nlineTop;
+			pIdx[nIdxData + 1] = (WORD)(X + nLineVtx * Y);
+			pIdx[nIdxData] = (WORD)(pIdx[nIdxData + 1] + nLineVtx);
+			s_aIdx[nIdxData + 1] = (WORD)pIdx[nIdxData + 1];
+			s_aIdx[nIdxData] = (WORD)pIdx[nIdxData];
+		}
+
+		if (Y < s_aMesh.nSurfaceHeight - 1)
+		{
+			pIdx[nLineVtx * 2 + nlineTop] = (WORD)(s_aMesh.nSurfaceWidth + nLineVtx * Y);
+			pIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)(nLineVtx * 2 + nLineVtx * Y);
+			s_aIdx[nLineVtx * 2 + nlineTop] = (WORD)pIdx[nLineVtx * 2 + nlineTop];
+			s_aIdx[nLineVtx * 2 + 1 + nlineTop] = (WORD)pIdx[nLineVtx * 2 + 1 + nlineTop];
+
+		}
+	}
+
+	s_pIdxBuff->Unlock();
 }
 
 //=========================================

@@ -21,9 +21,11 @@
 //------------------------------------
 typedef struct
 {
+	char* name;
 	LPDIRECT3DVERTEXBUFFER9	VtxBuff;	// 頂点バッファーへのポインタ
 	LPDIRECT3DTEXTURE9		Tex;		// テクスチャへのポインタ
 	D3DXVECTOR3				pos;		// 頂点座標
+	D3DXVECTOR3				size;		// 頂点座標
 	D3DXVECTOR3				rot;		// 回転座標
 	D3DXMATRIX				mtxWorld;	// ワールドマトリックス
 	bool					bUse;		// 使用しているか
@@ -124,7 +126,7 @@ void DrawPolygon(void)
 //=========================================
 // 設定
 //=========================================
-void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3 size, char* texFile)
+void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3 size, char* texFile, char* name)
 {
 	for (int i = 0; i <= MAX_POLYGON; i++)
 	{
@@ -135,7 +137,9 @@ void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3 size, char* texF
 			continue;
 		}
 
+		polygon->name = name;
 		polygon->pos = *pos;
+		polygon->size = size;
 		polygon->rot = *rot;
 		polygon->bUse = true;
 
@@ -186,6 +190,33 @@ void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3 size, char* texF
 
 		break;
 	}
+}
+
+//=========================================
+// ポリゴンの当たり判定
+//=========================================
+bool CollisionPolygon(D3DXVECTOR3* pos, char* name)
+{
+
+	for (int i = 0; i < MAX_POLYGON; i++)
+	{
+		ObjectPolygon* polygon = &s_aPolygon[i];
+
+		if (s_aPolygon[i].name == NULL)
+		{
+			continue;
+		}
+
+		if(strcmp(s_aPolygon[i].name, name) == 0 && polygon->bUse)
+		{
+			if (((polygon->pos.z - polygon->size.z) < pos->z) && ((polygon->pos.z + polygon->size.z) >  pos->z) &&
+				((polygon->pos.x - polygon->size.x) < pos->x) && ((polygon->pos.x + polygon->size.x) > pos->x))
+			{//(PL手前側 < モデル奥側) かつ (PL奥側 > モデル手前側)
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 //=========================================

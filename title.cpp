@@ -80,6 +80,7 @@ typedef struct
 //------------------------------------
 static SELECT_MODE s_Select;
 static OBJECT s_Object[OBJ_MAX] = {};
+static int	s_nCnt;
 static bool	s_bFadeCheek;	// フェード処置に移行するかの処理
 static int	s_nFadeCnt;		// フェード処理に行くまでの間隔
 static bool s_bExit;		// Exitのフラグ
@@ -89,16 +90,19 @@ static bool s_bExit;		// Exitのフラグ
 //=========================================
 void InitTitle(void)
 {
+	s_nCnt = 0;
+
 	InitCamera();		// カメラ
 	InitLight();		// ライト
 	InitPolygon();		// ポリゴン
 	InitMeshField();	// メッシュフィールド
 	InitModel();		// モデル
 	InitPlayer();		// プレイヤー
+	DeleteModel();		// プレイヤー以外のモデルの消失
 
 	// ポリゴンの設定処理
-	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Exit.jpg");
-	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Start.jpg");
+	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Exit.jpg","exit");
+	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Start.jpg", "start");
 }
 
 //=========================================
@@ -125,6 +129,39 @@ void UpdateTitle(void)
 	UpdateMeshField();	// メッシュフィールド
 	UpdateModel();		// モデル
 	UpdatePlayer();		// プレイヤー
+
+	if (CollisionPolygon(&GetPlayer()->pos, "start"))
+	{
+		s_Select = SELECT_GAMESTART;
+		s_nCnt++;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "exit"))
+	{
+		s_Select = SELECT_EXIT;
+		s_nCnt++;
+	}
+	else
+	{
+		s_nCnt = 0;
+	}
+
+	if (s_nCnt >= 50)
+	{
+		switch (s_Select)
+		{
+		case SELECT_GAMESTART:
+			SetFade(MODE_GAME);	// ゲームモードに移行
+			break;
+		case SELECT_TUTORIAL:
+			SetFade(MODE_TUTORIAL);	// チュートリアル画面に移行
+			break;
+		case SELECT_EXIT:
+			s_bExit = true;
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 //=========================================
@@ -132,86 +169,7 @@ void UpdateTitle(void)
 //=========================================
 void SelectTitle(void)
 {
-	// ジョイパッドの使用情報の取得
-	bool bUseJoyPad = IsJoyPadUse(0);
 
-	switch (s_Select)
-	{
-	case SELECT_GAMESTART:
-		if (bUseJoyPad)
-		{
-			if (GetJoypadTrigger(JOYKEY_UP))
-			{
-				s_Select = SELECT_EXIT;
-			}
-			if (GetJoypadTrigger(JOYKEY_DOWN))
-			{
-				s_Select = SELECT_TUTORIAL;
-			}
-		}
-		else
-		{
-			if (GetKeyboardTrigger(DIK_W))
-			{
-				s_Select = SELECT_EXIT;
-			}
-			if (GetKeyboardTrigger(DIK_S))
-			{
-				s_Select = SELECT_TUTORIAL;
-			}
-		}
-		break;
-	case SELECT_TUTORIAL:
-		if (bUseJoyPad)
-		{
-			if (GetJoypadTrigger(JOYKEY_UP))
-			{
-				s_Select = SELECT_GAMESTART;
-			}
-			if (GetJoypadTrigger(JOYKEY_DOWN))
-			{
-				s_Select = SELECT_EXIT;
-			}
-		}
-		else
-		{
-			if (GetKeyboardTrigger(DIK_W))
-			{
-				s_Select = SELECT_GAMESTART;
-			}
-			if (GetKeyboardTrigger(DIK_S))
-			{
-				s_Select = SELECT_EXIT;
-			}
-		}
-		break;
-	case SELECT_EXIT:
-		if (bUseJoyPad)
-		{
-			if (GetJoypadTrigger(JOYKEY_UP))
-			{
-				s_Select = SELECT_TUTORIAL;
-			}
-			if (GetJoypadTrigger(JOYKEY_DOWN))
-			{
-				s_Select = SELECT_GAMESTART;
-			}
-		}
-		else
-		{
-			if (GetKeyboardTrigger(DIK_W))
-			{
-				s_Select = SELECT_TUTORIAL;
-			}
-			if (GetKeyboardTrigger(DIK_S))
-			{
-				s_Select = SELECT_GAMESTART;
-			}
-		}
-		break;
-	default:
-		break;
-	}
 }
 
 //=========================================

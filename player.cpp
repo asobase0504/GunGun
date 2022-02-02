@@ -56,12 +56,6 @@ static int s_nShadowCnt;		// 影の割り当て
 void InitPlayer(void)
 {
 	ZeroMemory(&s_player, sizeof(s_player));
-	//for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
-	//{
-	//	Model* model = s_player.aModel[i];
-
-	//	model = &ZeroModel;
-	//}
 
 	// プレイヤーにくっつくモデルの配置
 	LoadModel();
@@ -73,7 +67,6 @@ void InitPlayer(void)
 	s_player.rot = ZERO_VECTOR;
 	s_player.movevec = ZERO_VECTOR;
 	s_player.aModel[0]->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
-
 
 	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
 	{
@@ -89,11 +82,9 @@ void InitPlayer(void)
 		}
 
 		model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
-		// 線の設定
-		//SetModelLine(&model->pos_world, &model->quaternion, model->MaxVtx, model->MinVtx, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
-	D3DXMATRIX /*mtxScale,*/ mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_player.mtxWorld);
@@ -257,6 +248,27 @@ void MovePlayer()
 	// 方向ベクトル掛ける移動量
 	s_player.movevec = move * PLAYER_MOVE * move_max;
 	s_player.pos += s_player.movevec;
+}
+
+//=========================================
+// モデルパーツの消失
+//=========================================
+void DeleteModel(void)
+{
+	for (int j = 0; j < PARTS_NUM; j++)
+	{
+		Model* model = s_player.aModel[j];
+
+		if (model == NULL)
+		{
+			continue;
+		}
+
+		if (model->nIdxModelParent == -2)
+		{
+			model->bUse = false;
+		}
+	}
 }
 
 //=========================================

@@ -16,7 +16,8 @@ void InitPolygon(void);		// ポリゴンの初期化処理
 void UninitPolygon(void);	// ポリゴンの終了処理
 void UpdatePolygon(void);	// ポリゴンの更新処理
 void DrawPolygon(void);		// ポリゴンの描画処理
-void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3 size, char* texFile);		// ポリゴンの設定処理
+void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3 size, char* texFile, char* name);		// ポリゴンの設定処理
+bool CollisionPolygon(D3DXVECTOR3* pos, char* name);		// ポリゴンの設定処理
 D3DXVECTOR3 GetPolygonPos(void);		// ポリゴンの取得処理
 
 #endif // !_POLYGON_H_

@@ -60,7 +60,7 @@ void InitGame(void)
 	CountRestartStop(true, 0);
 
 	// É|ÉäÉSÉìÇÃê›íËèàóù
-	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f),NULL);
+	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f),NULL,"floar");
 }
 
 //=========================================

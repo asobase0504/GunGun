@@ -138,6 +138,14 @@ void DrawGame(int cameraData)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
 												
+	// ビューボードのクリア
+	pDevice->SetViewport(&GetCamera(cameraData)->viewport);
+
+	// 画面クリア(バックバッファ＆Zバッファのクリア)
+	pDevice->Clear(0, NULL,
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
 	SetCamera(cameraData);			// カメラ
 
 	switch (cameraData)

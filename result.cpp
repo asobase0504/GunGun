@@ -135,6 +135,14 @@ void DrawResult(int cameraData)
 
 	if (cameraData == 0)
 	{
+		// ビューボードのクリア
+		pDevice->SetViewport(&GetCamera(cameraData)->viewport);
+
+		// 画面クリア(バックバッファ＆Zバッファのクリア)
+		pDevice->Clear(0, NULL,
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+		
 		// 描画処理
 		SetCamera(cameraData);		// カメラ
 		DrawModel();		// モデル

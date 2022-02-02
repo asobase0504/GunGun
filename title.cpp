@@ -12,12 +12,13 @@
 #include "key_config.h"
 #include "fade.h"
 #include "common.h"
-
 #include "camera.h"
 #include "light.h"
 #include "model.h"
 #include "polygon.h"
 #include "mesh_field.h"
+#include "player.h"
+#include "model.h"
 
 #include <assert.h>
 
@@ -26,12 +27,6 @@
 //------------------------------------
 #define TITLEPRESS_WIDTH	(620)
 #define TITLEPRESS_HEIGHT	(100)
-
-#define SELECTBG			"data/TEXTURE/enemy000.png"
-#define TITLE				"data/TEXTURE/title.png"
-#define GAMESTART			"data/TEXTURE/GAMESTART.png"
-#define TUTORIAL			"data/TEXTURE/TUTORIAL.png"
-#define EXIT				"data/TEXTURE/EXIT.png"
 
 //------------------------------------
 // プレスエンターの状態の種類
@@ -98,6 +93,8 @@ void InitTitle(void)
 	InitLight();		// ライト
 	InitPolygon();		// ポリゴン
 	InitMeshField();	// メッシュフィールド
+	InitModel();		// モデル
+	InitPlayer();		// プレイヤー
 
 	// ポリゴンの設定処理
 	SetPolygon(&ZERO_VECTOR, &ZERO_VECTOR, D3DXVECTOR3(50.0f, 1.0f, 50.0f), "data/TEXTURE/07.彼方への君に捧ぐ.png");
@@ -112,6 +109,8 @@ void UninitTitle(void)
 	UninitLight();		// ライト
 	UninitPolygon();	// ポリゴン
 	UninitMeshField();	// メッシュフィールド
+	UninitModel();		// モデル
+	UninitPlayer();		// プレイヤー
 }
 
 //=========================================
@@ -123,6 +122,8 @@ void UpdateTitle(void)
 	UpdateLight();		// ライト
 	UpdatePolygon();	// ポリゴン
 	UpdateMeshField();	// メッシュフィールド
+	UpdateModel();		// モデル
+	UpdatePlayer();		// プレイヤー
 }
 
 //=========================================
@@ -221,9 +222,19 @@ void DrawTitle(int cameraData)
 
 	if (cameraData == 0)
 	{
-		SetCamera(cameraData);		// カメラ
-		DrawPolygon();				// ポリゴン
-		DrawMeshField();			// メッシュフィールド
+		// ビューボードのクリア
+		pDevice->SetViewport(&GetCamera(cameraData)->viewport);
+
+		// 画面クリア(バックバッファ＆Zバッファのクリア)
+		pDevice->Clear(0, NULL,
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
+		SetCamera(cameraData);	// カメラ
+		DrawPolygon();			// ポリゴン
+		DrawMeshField();		// メッシュフィールド
+		DrawModel();		// モデル
+		DrawPlayer();			// プレイヤー
 	}
 }
 

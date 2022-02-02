@@ -86,7 +86,12 @@ void UninitCamera(void)
 //=========================================
 void UpdateCamera(void)
 {
+	s_camera[0].posV = D3DXVECTOR3(0.0f, 100.0f, -30.0f);	// 視点
+	s_camera[0].posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 注視点
+	s_camera[0].vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 上方向ベクトル
 
+	D3DXVECTOR3 vec = s_camera[0].posV - s_camera[0].posR;
+	s_camera[1].fDistance = D3DXVec3Length(&vec);
 }
 
 //=========================================

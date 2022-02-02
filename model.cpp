@@ -410,6 +410,61 @@ void SetModel(Model* model)
 }
 
 //=========================================
+// 設定
+//=========================================
+Model* SetModel(char* file)
+{
+	for (int i = 0; i < MODEL_MAX; i++)
+	{
+		Model* pModel = &(s_Model[i]);
+
+		if (pModel->bUse)
+		{
+			continue;
+		}
+
+		LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+		// Xファイルの読み込み
+		D3DXLoadMeshFromX(file,
+			D3DXMESH_SYSTEMMEM,
+			pDevice,
+			NULL,
+			&pModel->pBuffMat,
+			NULL,
+			&pModel->nNumMat,
+			&pModel->pMesh);
+
+		// メッシュに使用されているテクスチャ用の配列を用意する
+		pModel->pTexture = new LPDIRECT3DTEXTURE9[pModel->nNumMat];
+
+		// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+		D3DXMATERIAL *pMat = (D3DXMATERIAL*)pModel->pBuffMat->GetBufferPointer();
+
+		// 各メッシュのマテリアル情報を取得する
+		for (int i = 0; i < (int)pModel->nNumMat; i++)
+		{
+			pModel->pTexture[i] = NULL;
+
+			if (pMat[i].pTextureFilename != NULL)
+			{// マテリアルで設定されているテクスチャ読み込み
+				D3DXCreateTextureFromFileA(pDevice,
+					pMat[i].pTextureFilename,
+					&pModel->pTexture[i]);
+			}
+		}
+
+		// モデルのサイズ計測
+		ModelSize(&pModel->MinVtx, &pModel->MaxVtx, pModel->pMesh);
+
+		pModel->bUse = true;
+
+		return pModel;
+	}
+	return NULL;
+}
+
+//=========================================
 // モデルUIの描画
 // ローカル座標のみで描画位置を決定する
 //=========================================

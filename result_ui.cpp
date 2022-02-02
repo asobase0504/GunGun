@@ -15,7 +15,7 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define SELECTBG			"data/TEXTURE/number002.png"
+#define SELECTBG			"data/TEXTURE/WORD/Number.png"
 #define MODELCOUNT_MAX		(3)	// モデル数のスコアの最大桁数
 #define SCORELENGTH_MAX		(3)	// 長さスコアの最大桁数
 

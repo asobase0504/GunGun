@@ -97,7 +97,8 @@ void InitTitle(void)
 	InitPlayer();		// プレイヤー
 
 	// ポリゴンの設定処理
-	SetPolygon(&ZERO_VECTOR, &ZERO_VECTOR, D3DXVECTOR3(50.0f, 1.0f, 50.0f), "data/TEXTURE/07.彼方への君に捧ぐ.png");
+	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Exit.jpg");
+	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Start.jpg");
 }
 
 //=========================================

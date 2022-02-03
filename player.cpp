@@ -39,7 +39,7 @@ typedef enum
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-void LoadPlayer(void);			// プレイヤーの読み込み処理
+//void LoadPlayer(void);			// プレイヤーの読み込み処理
 void ColisionPartsModel(void);	// モデルパーツ同士の当たり判定
 void LookUpSizePlayer(void);	// プレイヤーのサイズを調べる
 
@@ -141,7 +141,6 @@ void UpdatePlayer(void)
 	// プレイヤーと床の当たり判定
 	CollisionMeshField(&pPlayer->pos);
 
-
 	// モデルパーツごとの当たり判定
 	ColisionPartsModel();
 
@@ -182,74 +181,88 @@ void UpdatePlayer(void)
 //=========================================
 void MovePlayer()
 {
-	D3DXVECTOR3 CameraRot = GetRotCamera();	// カメラの角度情報取得
 	D3DXVECTOR3 move = ZERO_VECTOR;			// 移動量の初期化
-	float move_max = 0.0f;
+	float moveLength = 0.0f;
 
-	if (IsJoyPadUse(0))
-	{// ジョイパッドの使用
-		if (GetJoypadStick(JOYKEY_LEFT_STICK, 0).x != 0.0f || GetJoypadStick(JOYKEY_LEFT_STICK, 0).y != 0.0f)
-		{
-			float rot;
-			move.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
-			move.z = GetJoypadStick(JOYKEY_LEFT_STICK, 0).y * -1.0f;
 
-			rot = atan2f(move.x, move.z);
+		D3DXVECTOR2 moveInput;
 
-			move.x = sinf(rot + CameraRot.y);
-			move.z = cosf(rot + CameraRot.y);
+		if (IsJoyPadUse(0))
+		{// ジョイパッドの使用
+			moveInput.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
+			moveInput.y = -GetJoypadStick(JOYKEY_LEFT_STICK, 0).y;
 
-			move_max = fabsf(move.x) + fabsf(move.z);
-			if (move_max >= 1.0f)
+			if (moveInput.x != 0.0f || moveInput.y != 0.0f)
 			{
-				move_max = 1.0f;
+				moveLength = D3DXVec2Length(&moveInput);
+
+				if (moveLength > 1.0f)
+				{
+					moveLength = 1.0f;
+				}
 			}
 		}
-	}
-	else
-	{
-		// モデルの移動
-		if (GetKeyboardPress(DIK_UP))
+		else
 		{
-			move.x += sinf(CameraRot.y);
-			move.z += cosf(CameraRot.y);
+			moveInput.x = 0.0f;
+			moveInput.y = 0.0f;
+
+			// モデルの移動
+			if (GetKeyboardPress(DIK_UP))
+			{
+				moveInput.y += 1.0f;
+				moveLength = 1.0f;
+			}
+			if (GetKeyboardPress(DIK_LEFT))
+			{
+				moveInput.x -= 1.0f;
+				moveLength = 1.0f;
+			}
+			if (GetKeyboardPress(DIK_DOWN))
+			{
+				moveInput.y -= 1.0f;
+				moveLength = 1.0f;
+			}
+			if (GetKeyboardPress(DIK_RIGHT))
+			{
+				moveInput.x += 1.0f;
+				moveLength = 1.0f;
+			}
 		}
-		if (GetKeyboardPress(DIK_LEFT))
+
+		if (moveLength > 0.0f)
 		{
-			move.x -= sinf(D3DX_PI * 0.5f + CameraRot.y);
-			move.z -= cosf(D3DX_PI * 0.5f + CameraRot.y);
+			// カメラの角度情報取得
+			D3DXVECTOR3* CameraRot = GetRotCamera();
+
+			D3DXVec2Normalize(&moveInput, &moveInput);
+
+			float c = cosf(-CameraRot->y);
+			float s = sinf(-CameraRot->y);
+
+			// move の長さは 1 になる。
+			move.x = moveInput.x * c - moveInput.y * s;
+			move.z = moveInput.x * s + moveInput.y * c;
 		}
-		if (GetKeyboardPress(DIK_DOWN))
-		{
-			move.x -= sinf(CameraRot.y);
-			move.z -= cosf(CameraRot.y);
+		else
+		{ // 入力されていない。
+			return;
 		}
-		if (GetKeyboardPress(DIK_RIGHT))
-		{
-			move.x += sinf(D3DX_PI * 0.5f + CameraRot.y);
-			move.z += cosf(D3DX_PI * 0.5f + CameraRot.y);
-		}
-	}
 
 	D3DXVECTOR3 axis;	// 回転軸
-
-	D3DXVec3Normalize(&move, &move);	// 正規化する(大きさ１のベクトルにする)
-
-	D3DXVECTOR3 inverseVec = move * -1;		// move値を反対にする
+	D3DXVECTOR3 inverseVec = -move;		// move値を反対にする
 	D3DXVECTOR3 vecY = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	D3DXVec3Cross(&axis, &inverseVec, &vecY);	// 外積で回転軸を算出。
 
-	D3DXVec3Cross(&axis, &inverseVec, &vecY);	// 行列計算
-	D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
-
-	D3DXQuaternionRotationAxis(&quaternion, &axis, MODEL_ROT_ATTENUATION * move_max);	// 回転軸と回転角度を指定
+	D3DXQUATERNION quaternion;
+	D3DXQuaternionRotationAxis(&quaternion, &axis,  moveLength * MODEL_ROT_ATTENUATION);	// 回転軸と回転角度を指定
 
 	s_player.aModel[0]->quaternion *= quaternion;
-
 	// クオータニオンのノーマライズ
 	D3DXQuaternionNormalize(&s_player.aModel[0]->quaternion, &s_player.aModel[0]->quaternion);
 
 	// 方向ベクトル掛ける移動量
-	s_player.movevec = move * PLAYER_MOVE * move_max;
+	s_player.movevec = move * moveLength * PLAYER_MOVE;
 	s_player.pos += s_player.movevec;
 }
 
@@ -297,7 +310,7 @@ void ColisionPartsModel(void)
 		// 当たった場合
 		if (SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, (model->MaxVtx.x + model->MaxVtx.y + model->MaxVtx.z) / 3.0f))
 		{
-			if (s_player.fLength >= model->MaxVtx.x * 1.5f)
+			if (s_player.fLength >= model->MaxVtx.x * 1.5f|| true)
 			{	// 取り込めるサイズの場合
 				D3DXMATRIX mtxRot;
 				D3DXVECTOR3 pos_local = model->pos_world - s_player.pos_old;
@@ -309,8 +322,6 @@ void ColisionPartsModel(void)
 				// クォータニオンの使用した姿勢の設定
 				D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
 				D3DXVec3TransformCoord(&model->pos, &pos_local, &mtxRot);
-
-				D3DXQUATERNION quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クオータニオン
 
 				model->quaternion = quaternionHit;
 				model->nIdxModelParent = 0;
@@ -408,7 +419,6 @@ void LookUpSizePlayer(void)
 		{
 			s_player.MaxVtx.z = modelMaxVtx.z;
 		}
-
 	}
 
 	D3DXVECTOR3 v = s_player.MaxVtx - s_player.MinVtx;
@@ -442,27 +452,21 @@ void DrawPlayer(void)
 	pDevice->SetTransform(D3DTS_WORLD, &s_player.mtxWorld);
 }
 
-
+#if 0
 //--------------------------------------------------
 // 読み込み処理
 //--------------------------------------------------
 void LoadPlayer(void)
 {
-	FILE* pFile;
+	FILE* pFile = fopen("data/FILE/Player.txt", "r");
 	char modelFile[255] = {};	// モデルファイル
 
-	pFile = fopen("data/FILE/Player.txt", "r");
-
-	char read[255] = {};
-
-	fscanf(pFile, "%s", &read);
-	if (strcmp(&read[0], "PlayerModel") == 0)
+	fscanf(pFile, "%s", &modelFile);
+	if (strcmp(modelFile, "PlayerModel") == 0)
 	{
-		fscanf(pFile, "%s", &read);			// = の除去
+		fscanf(pFile, "%s", &modelFile);	// = の除去
 		fscanf(pFile, "%s", &modelFile);	// 値を入れる
 	}
-
-	read[0] = *modelFile;
 
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	Model* model = s_player.aModel[0];
@@ -506,8 +510,8 @@ void LoadPlayer(void)
 	s_player.aModel[0]->rot = ZERO_VECTOR;
 	s_player.aModel[0]->nIdxModelParent = -1;
 	s_player.aModel[0]->bUse = true;
-
 }
+#endif
 
 //--------------------------------------------------
 // 取得

@@ -36,6 +36,6 @@ void UpdateGameCamera(void);	// ゲーム中の更新処理
 void UpdateResultCamera(void);	// リザルト中の更新処理
 void SetCamera(int nData);		// カメラの設定処理
 Camera* GetCamera(int nData);	// カメラの情報取得
-D3DXVECTOR3 GetRotCamera(void);	// カメラの角度情報取得
+D3DXVECTOR3* GetRotCamera(void);	// カメラの角度情報取得
 
 #endif // !_CAMERA_H_

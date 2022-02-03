@@ -302,7 +302,7 @@ Camera* GetCamera(int nData)
 //=========================================
 // ƒJƒƒ‰‚ÌŠp“xî•ñæ“¾
 //=========================================
-D3DXVECTOR3 GetRotCamera(void)
+D3DXVECTOR3* GetRotCamera(void)
 {
-	return s_camera[0].rot;
+	return &s_camera[0].rot;
 }

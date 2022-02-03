@@ -128,21 +128,21 @@ void DrawModel(void)
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);		// s—ñˆÚ“®ŠÖ”(‘æ‚Pˆø”‚ÉX,Y,Z•ûŒü‚ÌˆÚ“®s—ñ‚ðì¬)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);				// s—ñŠ|‚¯ŽZŠÖ”(‘æ2ˆø”~‘æ3ˆø”‘æ‚ð‚Pˆø”‚ÉŠi”[)
 
-		D3DXMATRIX mtxParent;
-		if (model->nIdxModelParent == -1)
-		{
-			mtxParent = GetPlayer()->mtxWorld;
-		}
-		else
-		{
-			mtxParent = s_Model[model->nIdxModelParent].mtxWorld;
-		}
-
 		// ƒvƒŒƒCƒ„[‚Æ‚­‚Á‚Â‚¢‚Ä‚¢‚éó‘Ô‚Ìƒ‚ƒfƒ‹‚ÍƒvƒŒƒCƒ„[‚Æ‚Ìs—ñŒvŽZ
 		if (model->nIdxModelParent != -2)
 		{
-			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
+			D3DXMATRIX mtxParent;
+		
+			if (model->nIdxModelParent == -1)
+			{
+				mtxParent = GetPlayer()->mtxWorld;
+			}
+			else
+			{
+				mtxParent = s_Model[model->nIdxModelParent].mtxWorld;
+			}
 
+			D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxParent);
 		}
 
 		// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è
@@ -477,14 +477,12 @@ void DrawModelUI(void)
 
 	Model* model = &(s_ModelUI);
 	Camera* camera = GetCamera(0);
-	D3DXMATRIX mtxCameraWorld;
+	D3DXMATRIX mtxCamera;
 
 	if (model != NULL && model->bUse)
 	{
 		// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
 		D3DXMatrixIdentity(&model->mtxWorld);
-		// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
-		D3DXMatrixIdentity(&mtxCameraWorld);
 
 		// Œü‚«‚ð”½‰f
 		D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// s—ñ‰ñ“]ŠÖ”(‘æ1ˆø”‚Éƒˆ[(y)ƒsƒbƒ`(x)ƒ[ƒ‹(z)•ûŒü‚Ì‰ñ“]s—ñ‚ðì¬)
@@ -494,16 +492,8 @@ void DrawModelUI(void)
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);			// s—ñˆÚ“®ŠÖ”(‘æ‚Pˆø”‚ÉX,Y,Z•ûŒü‚ÌˆÚ“®s—ñ‚ðì¬)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);					// s—ñŠ|‚¯ŽZŠÖ”(‘æ2ˆø”~‘æ3ˆø”‘æ‚ð‚Pˆø”‚ÉŠi”[)
 
-		// Œü‚«‚ð”½‰f
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, -camera->rot.y, camera->rot.x, camera->rot.z);	// s—ñ‰ñ“]ŠÖ”(‘æ1ˆø”‚Éƒˆ[(y)ƒsƒbƒ`(x)ƒ[ƒ‹(z)•ûŒü‚Ì‰ñ“]s—ñ‚ðì¬)
-		D3DXMatrixMultiply(&mtxCameraWorld, &mtxCameraWorld, &mtxRot);							// s—ñŠ|‚¯ŽZŠÖ”(‘æ2ˆø”~‘æ3ˆø”‘æ‚ð‚Pˆø”‚ÉŠi”[)
-
-		// ˆÊ’u‚ð”½‰f
-		D3DXMatrixTranslation(&mtxTrans, camera->posV.x, camera->posV.y, camera->posV.z);	// s—ñˆÚ“®ŠÖ”(‘æ‚Pˆø”‚ÉX,Y,Z•ûŒü‚ÌˆÚ“®s—ñ‚ðì¬)
-		D3DXMatrixMultiply(&mtxCameraWorld, &mtxCameraWorld, &mtxTrans);					// s—ñŠ|‚¯ŽZŠÖ”(‘æ2ˆø”~‘æ3ˆø”‘æ‚ð‚Pˆø”‚ÉŠi”[)
-
-		// ƒvƒŒƒCƒ„[‚Æ‚­‚Á‚Â‚¢‚Ä‚¢‚éó‘Ô‚Ìƒ‚ƒfƒ‹‚ÍƒJƒƒ‰‚Æ‚Ìs—ñŒvŽZ
-		D3DXMatrixMultiply(&model->mtxWorld, &mtxCameraWorld, &model->mtxWorld);
+		D3DXMatrixInverse(&mtxCamera, NULL, &camera->mtxView);
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxCamera);
 
 		// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è
 		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
@@ -542,6 +532,6 @@ void SetModelUI(Model * model)
 	//s_ModelUI.rot = rot_old;
 	s_ModelUI.rot.y = 0.0f;
 	s_ModelUI.pos.y = -10.0f;
-	s_ModelUI.pos.x = 0.0f;
+	s_ModelUI.pos.x = -20.0f;
 	s_ModelUI.pos.z = 20.0f;
 }

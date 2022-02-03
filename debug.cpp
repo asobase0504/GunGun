@@ -69,7 +69,7 @@ void DrawFPS(void)
 	char aStr[DEBUG_NUM][256];	// •\¦•¶š
 
 	// î•ñ‚Ìæ“¾
-	D3DXVECTOR3 camerarot = GetRotCamera();
+	D3DXVECTOR3 camerarot = *GetRotCamera();
 	Player* player = GetPlayer();
 	Camera* camera = GetCamera(0);
 	D3DXVECTOR3 stickL = GetJoypadStick(JOYKEY_LEFT_STICK, 0);

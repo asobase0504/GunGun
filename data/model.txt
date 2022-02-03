@@ -9,16 +9,29 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 15
+NUM_MODEL = 30
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/player.x			# [0]プレイヤー
-MODEL_FILENAME = data/MODEL/gabyou.x			# [1]画鋲(小)
-MODEL_FILENAME = data/MODEL/bee_head.x			# [2]蜂(小)
-MODEL_FILENAME = data/MODEL/desk.x				# [3]机(小)
-MODEL_FILENAME = data/MODEL/bucket.x			# [4]ポリバケツ(小)
+MODEL_FILENAME = data/MODEL/player.x				# [0]プレイヤー
+MODEL_FILENAME = data/MODEL/gabyou.x				# [1]画鋲(小)
+MODEL_FILENAME = data/MODEL/bee_head.x				# [2]蜂(小)
+MODEL_FILENAME = data/MODEL/desk.x					# [3]机(小)
+MODEL_FILENAME = data/MODEL/bucket.x				# [4]ポリバケツ
+MODEL_FILENAME = data/MODEL/vendingMachine_Blue.x	# [5]自動販売機(青)
+MODEL_FILENAME = data/MODEL/vendingMachine_Red.x	# [6]自動販売機(赤)
+MODEL_FILENAME = data/MODEL/car.x					# [7]車
+MODEL_FILENAME = data/MODEL/postbox.x				# [8]郵便ポスト
+MODEL_FILENAME = data/MODEL/colorcone.x				# [9]カラーコーン
+MODEL_FILENAME = data/MODEL/guardrail.x				# [10]ガードレール
+MODEL_FILENAME = data/MODEL/truck.x					# [11]トラック
+MODEL_FILENAME = data/MODEL/streetLight.x			# [12]街灯
+MODEL_FILENAME = data/MODEL/balloon.x				# [13]気球
+MODEL_FILENAME = data/MODEL/sword_wing.x			# [14]羽の生えた剣
+MODEL_FILENAME = data/MODEL/house00.x				# [15]家
+MODEL_FILENAME = data/MODEL/building.x				# [16]ビル
+MODEL_FILENAME = data/MODEL/shito.x				# [17]使徒
 
 PLAYERSET
 	TYPE = 0
@@ -26,8 +39,80 @@ PLAYERSET
 END_PLAYERSET
 
 MODELSET
-	TYPE = 1
+	TYPE = 4
 	POS = -50 0 20
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = -50 0 50
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = -200 0 50
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = -100 0 50
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 8
+	POS = -100 0 -50
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 9
+	POS = -50 0 -50
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 10
+	POS = -50 0 -50
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = -150 0 -150
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -150 0 -70
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = -100 20 -100
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -200 0 -100
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 15
+	POS = -700 0 -100
+	ROT = 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -900 0 -100
 	ROT = 0 0 0
 END_MODELSET
 

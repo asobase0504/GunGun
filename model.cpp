@@ -146,7 +146,7 @@ void DrawModel(void)
 		}
 
 		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);;
+		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
 
 		// 現在のマテリアルを保持
 		pDevice->GetMaterial(&matDef);
@@ -442,15 +442,15 @@ Model* SetModel(char* file)
 		D3DXMATERIAL *pMat = (D3DXMATERIAL*)pModel->pBuffMat->GetBufferPointer();
 
 		// 各メッシュのマテリアル情報を取得する
-		for (int i = 0; i < (int)pModel->nNumMat; i++)
+		for (int j = 0; j < (int)pModel->nNumMat; j++)
 		{
-			pModel->pTexture[i] = NULL;
+			pModel->pTexture[j] = NULL;
 
-			if (pMat[i].pTextureFilename != NULL)
+			if (pMat[j].pTextureFilename != NULL)
 			{// マテリアルで設定されているテクスチャ読み込み
 				D3DXCreateTextureFromFileA(pDevice,
-					pMat[i].pTextureFilename,
-					&pModel->pTexture[i]);
+					pMat[j].pTextureFilename,
+					&pModel->pTexture[j]);
 			}
 		}
 
@@ -476,13 +476,15 @@ void DrawModelUI(void)
 	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
 
 	Model* model = &(s_ModelUI);
-
-	model->rot.y += 0.05f;
+	Camera* camera = GetCamera(0);
+	D3DXMATRIX mtxCameraWorld;
 
 	if (model != NULL && model->bUse)
 	{
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&model->mtxWorld);
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&mtxCameraWorld);
 
 		// 向きを反映
 		D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
@@ -492,16 +494,16 @@ void DrawModelUI(void)
 		D3DXMatrixTranslation(&mtxTrans, model->pos.x, model->pos.y, model->pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-		D3DXMATRIX mtxParent;
+		// 向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, -camera->rot.y, camera->rot.x, camera->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+		D3DXMatrixMultiply(&mtxCameraWorld, &mtxCameraWorld, &mtxRot);							// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
-		if (model->nIdxModelParent == -1)
-		{
-			mtxParent = GetPlayer()->mtxWorld;
-		}
-		else
-		{
-			mtxParent = s_Model[model->nIdxModelParent].mtxWorld;
-		}
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, camera->posV.x, camera->posV.y, camera->posV.z);	// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+		D3DXMatrixMultiply(&mtxCameraWorld, &mtxCameraWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+		// プレイヤーとくっついている状態のモデルはカメラとの行列計算
+		D3DXMatrixMultiply(&model->mtxWorld, &mtxCameraWorld, &model->mtxWorld);
 
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &model->mtxWorld);
@@ -535,6 +537,11 @@ void DrawModelUI(void)
 //=========================================
 void SetModelUI(Model * model)
 {
+	//D3DXVECTOR3 rot_old = s_ModelUI.rot;
 	s_ModelUI = *model;
-	s_ModelUI.pos = D3DXVECTOR3(0.0f, -200.0f, 0.0f);
+	//s_ModelUI.rot = rot_old;
+	s_ModelUI.rot.y = 0.0f;
+	s_ModelUI.pos.y = -10.0f;
+	s_ModelUI.pos.x = 0.0f;
+	s_ModelUI.pos.z = 20.0f;
 }

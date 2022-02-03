@@ -178,25 +178,25 @@ void DrawGame(int cameraData)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
 												
-	// ビューボードのクリア
-	pDevice->SetViewport(&GetCamera(cameraData)->viewport);
-
-	// 画面クリア(バックバッファ＆Zバッファのクリア)
-	pDevice->Clear(0, NULL,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
-
-	SetCamera(cameraData);			// カメラ
-
 	switch (cameraData)
 	{
 	case 0:
+		// ビューボードのクリア
+		pDevice->SetViewport(&GetCamera(cameraData)->viewport);
+
+		// 画面クリア(バックバッファ＆Zバッファのクリア)
+		pDevice->Clear(0, NULL,
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
+		SetCamera(cameraData);			// カメラ
+
 		DrawWall();			// 壁
 		DrawModel();		// モデル
 		DrawPlayer();		// プレイヤー
 		DrawMeshField();	// メッシュ
 		DrawShadow();		// 影
-		DrawTimer();		// タイム
+		DrawModelUI();		// モデルUI
 
 		if (s_bPause)
 		{
@@ -206,12 +206,13 @@ void DrawGame(int cameraData)
 	DrawLine();		// ライン
 	DrawFPS();		// FPSの表示
 #endif // !_DEBUG
-		DrawGameUI();			// UI
-	break;
-	case 1:
-		DrawModelUI();			// モデルUI
-		DrawPolygon();
+		DrawGameUI();		// UI
+		DrawTimer();		// タイム
 		break;
+	//case 1:
+	//	DrawModelUI();			// モデルUI
+	//	DrawPolygon();
+	//	break;
 	default:
 		break;
 	}

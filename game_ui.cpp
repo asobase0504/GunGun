@@ -88,7 +88,7 @@ void InitGameUI(void)
 	// 頂点バッファをアンロックする
 	object->vtxBuff->Unlock();
 
-	// 長さのスコアを置く場所の背景
+	// 長さのスコアの長さ単位を出す。
 	object = &(uiLengthUnitBg);
 	ZeroMemory(object, sizeof(object));
 	object->pos = D3DXVECTOR3(170.0f, 170.0f, 0.0f);	// 位置

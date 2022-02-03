@@ -49,6 +49,7 @@ void LookUpSizePlayer(void);	// プレイヤーのサイズを調べる
 static Player s_player;			// モデルの構造体
 static MODEL_STATE s_state;		// モデルのステータス
 static int s_nShadowCnt;		// 影の割り当て
+static Model s_getModel;		// くっついたモデル
 
 //=========================================
 // 初期化
@@ -172,6 +173,8 @@ void UpdatePlayer(void)
 
 	// 角度の正規化
 	NormalizeRot(&pPlayer->rot.y);
+
+	SetModelUI(&s_getModel);
 }
 
 //=========================================
@@ -314,7 +317,7 @@ void ColisionPartsModel(void)
 
 				s_player.nModelCnt++;
 
-				SetModelUI(model);
+				s_getModel = *model;
 			}
 			else
 			{	// 取り込めないサイズの場合
@@ -456,7 +459,7 @@ void LoadPlayer(void)
 	if (strcmp(&read[0], "PlayerModel") == 0)
 	{
 		fscanf(pFile, "%s", &read);			// = の除去
-		fscanf(pFile, "%s", &modelFile);		// 値を入れる
+		fscanf(pFile, "%s", &modelFile);	// 値を入れる
 	}
 
 	read[0] = *modelFile;

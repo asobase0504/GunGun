@@ -471,18 +471,32 @@ Model* SetModel(char* file)
 void DrawModelUI(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DXMATRIX mtxScale, mtxRot, mtxTrans;	// 計算用マトリックス
 	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
 
 	Model* model = &(s_ModelUI);
 	Camera* camera = GetCamera(0);
 	D3DXMATRIX mtxCamera;
+	s_ModelUI.rot.y += 0.01f;
+
+	D3DXVECTOR3 size = model->MaxVtx - model->MinVtx;
+	float scale = 1.0f;
+	while (size.x >= 3.0f || size.y >= 3.0f || size.z >= 3.0f)
+	{
+		size = model->MaxVtx - model->MinVtx;
+		scale -= 0.01f;
+		size *= scale;
+	}
 
 	if (model != NULL && model->bUse)
 	{
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&model->mtxWorld);
+
+		// スケールの反映
+		D3DXMatrixScaling(&mtxScale, scale, scale, scale);
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxScale);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 		// 向きを反映
 		D3DXMatrixRotationYawPitchRoll(&mtxRot, model->rot.y, model->rot.x, model->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
@@ -527,11 +541,10 @@ void DrawModelUI(void)
 //=========================================
 void SetModelUI(Model * model)
 {
-	//D3DXVECTOR3 rot_old = s_ModelUI.rot;
+	D3DXVECTOR3 rot_old = s_ModelUI.rot;
 	s_ModelUI = *model;
-	//s_ModelUI.rot = rot_old;
-	s_ModelUI.rot.y = 0.0f;
-	s_ModelUI.pos.y = -10.0f;
-	s_ModelUI.pos.x = -20.0f;
+	s_ModelUI.rot = rot_old;
+	s_ModelUI.pos.y = -5.85f;
+	s_ModelUI.pos.x = -17.0f;
 	s_ModelUI.pos.z = 20.0f;
 }

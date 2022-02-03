@@ -197,6 +197,7 @@ void DrawGame(int cameraData)
 		DrawMeshField();	// メッシュ
 		DrawShadow();		// 影
 		DrawModelUI();		// モデルUI
+		DrawGameUI();		// UI
 
 		if (s_bPause)
 		{
@@ -206,7 +207,6 @@ void DrawGame(int cameraData)
 	DrawLine();		// ライン
 	DrawFPS();		// FPSの表示
 #endif // !_DEBUG
-		DrawGameUI();		// UI
 		DrawTimer();		// タイム
 		break;
 	//case 1:

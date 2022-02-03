@@ -20,50 +20,23 @@
 //------------------------------------
 static D3DLIGHT9 s_light[LIGTH_MAX];	//ライト情報
 
+//------------------------------------
+// プロトタイプ宣言
+//------------------------------------
+static void SetLight(D3DXCOLOR col, D3DXVECTOR3 vec, int nNum);
+
 //=========================================
 // 初期化
 //=========================================
 void InitLight(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXVECTOR3 vecDir;	// ライトの方向ベクトル
-
 	// ライトをクリアする
-	ZeroMemory(&s_light[0], sizeof(D3DLIGHT9));	// 構造体変数をゼロクリアできる関数
+	ZeroMemory(s_light, sizeof(s_light));
 
-	// ライトの種類を設定
-	s_light[0].Type = D3DLIGHT_DIRECTIONAL;		// 平行光源
-
-	// ライトの拡散光を設定
-	s_light[0].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// ライトの色
-
-	// ライトの方向を設定
-	vecDir = D3DXVECTOR3(0.2f, -0.8f, -0.4f);
-	D3DXVec3Normalize(&vecDir, &vecDir);	// 正規化する(大きさ１のベクトルにする)
-	s_light[0].Direction = vecDir;
-
-	// ライトを設定する
-	pDevice->SetLight(0, &s_light[0]);
-
-	// ライトを有効にする
-	pDevice->LightEnable(0, true);
-
-	// ライトの種類を設定
-	s_light[1].Type = D3DLIGHT_DIRECTIONAL;		// 平行光源
-
-	// ライトの拡散光を設定
-	s_light[1].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);	// ライトの色
-
-	// ライトの方向を設定
-	vecDir = D3DXVECTOR3(0.2f, -0.8f, 0.4f);
-	D3DXVec3Normalize(&vecDir, &vecDir);	// 正規化する(大きさ１のベクトルにする)
-	s_light[0].Direction = vecDir;
-
-	// ライトを設定する
-	pDevice->SetLight(0, &s_light[0]);
-
-	// ライトを有効にする
-	pDevice->LightEnable(0, true);
+	// ライトの設定
+	SetLight(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, -0.8f, 0.4f), 0);
+	SetLight(D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f), D3DXVECTOR3(0.2f, -0.8f, -0.4f), 1);
+	SetLight(D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f), D3DXVECTOR3(-0.2f, 0.8f, 0.4f), 2);
 }
 
 //=========================================
@@ -78,4 +51,30 @@ void UninitLight(void)
 //=========================================
 void UpdateLight(void)
 {
+}
+
+//=========================================
+// 設定
+//=========================================
+static void SetLight(D3DXCOLOR col, D3DXVECTOR3 vec, int nNum)
+{
+	// デバイスへのポインタの取得
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	D3DXVECTOR3 vecDir;		// ライトの方向ベクトル
+
+	s_light[nNum].Type = D3DLIGHT_DIRECTIONAL;	// ライトの種類を設定 ( 平行光源 )
+	s_light[nNum].Diffuse = col;	// ライトの拡散光を設定 ( ライトの色 )
+
+	vecDir = vec;	// ライトの方向を設定
+
+	// 正規化する ( 大きさ 1 のベクトルにする )
+	D3DXVec3Normalize(&vecDir, &vecDir);
+	s_light[nNum].Direction = vecDir;
+
+	// ライトを設定する
+	pDevice->SetLight(nNum, &s_light[nNum]);
+
+	// ライトを有効にする
+	pDevice->LightEnable(nNum, TRUE);
 }

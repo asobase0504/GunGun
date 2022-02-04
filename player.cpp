@@ -60,6 +60,7 @@ void InitPlayer(void)
 
 	// プレイヤーにくっつくモデルの配置
 	LoadModel();
+	LoadMap();
 	// 読み込み処理
 	//LoadPlayer();
 

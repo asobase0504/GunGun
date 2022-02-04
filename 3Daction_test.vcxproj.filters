@@ -108,6 +108,9 @@
     <ClCompile Include="title_ui.cpp">
       <Filter>00_メインファイル</Filter>
     </ClCompile>
+    <ClCompile Include="load.cpp">
+      <Filter>01_Setem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shadow.h">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="title_ui.h">
       <Filter>00_メインファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="load.h">
+      <Filter>01_Setem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

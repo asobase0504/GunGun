@@ -16,14 +16,17 @@
 #include "player.h"
 #include <stdio.h>
 
+#include "load.h"
+
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MODEL_NUM				(25)
+#define MODEL_NUM				(100)
 #define MODEL_MAX				(255)
 #define PLAYER_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
 #define MODEL_LOAD_FILE			("data/model.txt")
+#define MAP_LOAD_FILE			("data/map.txt")
 //------------------------------------
 // 静的変数
 //------------------------------------
@@ -265,47 +268,11 @@ void LoadModel(void)
 		{
 			isType = true;
 		}
-		else if (strcmp(&read[0], "MODELSET") == 0)
-		{
-			for (nModelData = 0; nModelData < MODEL_MAX; nModelData++)
-			{
-				if (!s_Model[nModelData].bUse)
-				{
-					break;
-				}
-			}
-			isModel = true;
-		}
-		else if (strcmp(&read[0], "PLAYERSET") == 0)
-		{
-			for (nModelData = 0; nModelData < MODEL_MAX; nModelData++)
-			{
-				if (!s_Model[nModelData].bUse)
-				{
-					break;
-				}
-			}
-			isPlayer = true;
-		}
-		
+
 		if (strcmp(&read[0], "END_TYPESET") == 0)
 		{
 			nModelFileCnt++;
 			isType = false;
-		}
-		else if (strcmp(&read[0], "END_MODELSET") == 0)
-		{
-			Model** parts = GetPlayerModel();
-			parts += nModelCnt;
-			*parts = &s_Model[nModelData];
-			nModelCnt++;
-			isModel = false;
-		}
-		else if (strcmp(&read[0], "END_PLAYERSET") == 0)
-		{
-			Model** player = GetPlayerModel();
-			*player = &s_Model[nModelData];
-			isPlayer = false;
 		}
 
 		if (isType)
@@ -316,8 +283,6 @@ void LoadModel(void)
 				fscanf(pFile, "%s", &modelFile[nModelFileCnt][0]);
 
 				Model* modelType = &(s_ModelType[nModelFileCnt]);
-
-				ZeroMemory(modelType, sizeof(s_ModelType));
 
 				modelType->scale = 1.0f;
 
@@ -374,7 +339,108 @@ void LoadModel(void)
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f", &modelType->sizeAdd);
 			}
+			if (strcmp(&read[0], "COLLISION_SPHERE") == 0)
+			{
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f", &modelType->fLength);
+
+				modelType->typeCollision = COLLISION_SPHERE;
+			}
+			if (strcmp(&read[0], "COLLISION_SPHERE") == 0)
+			{
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f %f %f %f", &modelType->size.top, &modelType->size.bottom, &modelType->size.left, &modelType->size.right);
+
+				modelType->typeCollision = COLLISION_SPHERE;
+			}
+			if (strcmp(&read[0], "COLLISION_POS") == 0)
+			{
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f %f %f", &modelType->pos_Collision.x, &modelType->pos_Collision.y, &modelType->pos_Collision.z);
+			}
 		}
+	}
+	fclose(pFile);
+}
+
+//=========================================
+// 読み込み処理
+//=========================================
+void LoadMap(void)
+{
+	FILE* pFile;
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	bool isModel = false;
+	bool isType = false;
+	bool isPlayer = false;
+	char modelFile[255][255] = {};
+	int nModelFileCnt = 0;
+	int nModelCnt = 1;
+	int nModelData;
+
+	pFile = fopen(MAP_LOAD_FILE, "r");
+
+	char read[255] = {};
+	while (1)
+	{
+		fscanf(pFile, "%s", &read);
+
+		//# を検出すると一行読み込む
+		if (strncmp(&read[0], "#", 1) == 0)
+		{
+			fgets(read, 255, pFile);
+			continue;
+		}
+
+		if (strcmp(&read[0], "END_SCRIPT") == 0)
+		{
+			break;
+		}
+
+		if (strcmp(&read[0], "MODELSET") == 0)
+		{
+			for (nModelData = 0; nModelData < MODEL_MAX; nModelData++)
+			{
+				if (!s_Model[nModelData].bUse)
+				{
+					break;
+				}
+			}
+			isModel = true;
+		}
+		else if (strcmp(&read[0], "PLAYERSET") == 0)
+		{
+			for (nModelData = 0; nModelData < MODEL_MAX; nModelData++)
+			{
+				if (!s_Model[nModelData].bUse)
+				{
+					break;
+				}
+			}
+			isPlayer = true;
+		}
+
+		if (strcmp(&read[0], "END_MODELSET") == 0)
+		{
+			Model** parts = GetPlayerModel();
+			parts += nModelCnt;
+			*parts = &s_Model[nModelData];
+			nModelCnt++;
+			isModel = false;
+		}
+		else if (strcmp(&read[0], "END_PLAYERSET") == 0)
+		{
+			Model** player = GetPlayerModel();
+			*player = &s_Model[nModelData];
+			isPlayer = false;
+		}
+
 		if (isModel)
 		{
 			if (strcmp(&read[0], "TYPE") == 0)
@@ -402,7 +468,7 @@ void LoadModel(void)
 			if (strcmp(&read[0], "ROT") == 0)
 			{
 				D3DXVECTOR3 rot;
-	
+
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
 				s_Model[nModelData].rot = rot;
@@ -432,7 +498,6 @@ void LoadModel(void)
 				fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
 				s_Model[nModelData].pos = pos;
 			}
-
 		}
 	}
 }

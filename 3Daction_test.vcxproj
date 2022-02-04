@@ -162,6 +162,7 @@
     <ClCompile Include="key_config.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="line.cpp" />
+    <ClCompile Include="load.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh_cylinder.cpp" />
     <ClCompile Include="mesh_field.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="key_config.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="line.h" />
+    <ClInclude Include="load.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="mesh_cylinder.h" />
     <ClInclude Include="mesh_field.h" />

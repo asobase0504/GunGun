@@ -66,7 +66,7 @@ void InitGame(void)
 	InitGameUI();		// UI
 
 	// タイムの設定処理
-	StartTimer(990, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
+	StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
 	CountRestartStop(true, 0);
 
 	// ポリゴンの設定処理
@@ -210,7 +210,6 @@ void DrawGame(int cameraData)
 		DrawTimer();		// タイム
 		break;
 	//case 1:
-	//	DrawModelUI();			// モデルUI
 	//	DrawPolygon();
 	//	break;
 	default:

@@ -9,29 +9,46 @@
 
 #include "main.h"
 
+typedef enum
+{
+	COLLISION_SPHERE,
+	COLLISION_CUBOID,
+	COLLISION_MAX
+}COLLISION_TYPE;
+
 //------------------------------------
 // モデルの構造体定義
 //------------------------------------
 typedef struct
 {
+	// 基本情報
+	char name[255];		// 名前
+	float sizeCriter;	// くっつくサイズの制限
+	float sizeAdd;		// くっついたときに加算するサイズ量
+	D3DXVECTOR3 pos;				// 位置
+	D3DXVECTOR3 pos_old;			// 前回位置
+	D3DXVECTOR3 pos_world;			// ワールド位置
+	D3DXVECTOR3 rot;				// 角度
+
+	// 当たり判定情報
+	COLLISION_TYPE typeCollision;	// 当たり判定の種類
+	D3DXVECTOR3 pos_Collision;		// 当たり判定の基準値
+	RECT size;						// 直方体の当たり判定の大きさ
+	float fLength;					// 球の当たり判定の大きさ
+
+	// モデル情報
 	LPD3DXMESH pMesh;				// メッシュ情報へのポインタ		// 頂点の集まりのこと
 	LPD3DXBUFFER pBuffMat;			// マテリアル情報へのポインタ	// 1つのXファイルに複数のマテリアルが入っている
 	LPDIRECT3DTEXTURE9 *pTexture;	// テクスチャへのポインタ
 	DWORD nNumMat;					// マテリアル情報の数
 	D3DXMATRIX mtxWorld;			// ワールドマトリックス
-	D3DXVECTOR3 pos;				// 位置
-	D3DXVECTOR3 pos_old;			// 前回位置
-	D3DXVECTOR3 pos_world;			// ワールド位置
-	D3DXVECTOR3 rot;				// 角度
-	D3DXVECTOR3 rotDest;			// 目的の角度
+	float scale;					// モデルスケール
 
-	// クオータニオン系統
+	// クオータニオン情報
 	D3DXQUATERNION quaternion;		// クオータニオン
-	D3DXQUATERNION quaternion_old;		// クオータニオン
 	bool isQuaternion;				// クオータニオンを使用するかどうか。
 
 	D3DXVECTOR3 movevec;			// ベクトル
-	D3DXVECTOR3 vec;				// ベクトル
 	float moverot;					// 移動時の回転量
 	D3DXVECTOR3 move;				// 移動量
 	D3DXVECTOR3 MinVtx;				// 頂点の最小値

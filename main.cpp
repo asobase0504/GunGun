@@ -390,8 +390,6 @@ void Update(void)
 //=========================================
 void Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスの取得
-
 	for (int i = 0; i < 2; i++)
 	{
 		// 描画開始

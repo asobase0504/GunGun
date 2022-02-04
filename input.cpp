@@ -61,9 +61,9 @@ void UninitKeyboard(void);								//終了処理
 void UpdateKeyboard(void);								//更新処理
 
 //ジョイパッド
-HRESULT InitJoypad(void);								//初期化
-void UninitJoypad(void);								//終了処理
-void UpdateJoypad(void);								//更新処理
+HRESULT InitJoypad(void);	//初期化
+void UninitJoypad(void);	//終了処理
+void UpdateJoypad(void);	//更新処理
 
 //マウス
 HRESULT InitMouse(HINSTANCE hlnstance, HWND hWnd);		//初期化

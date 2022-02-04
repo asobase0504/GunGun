@@ -130,7 +130,6 @@ void UpdatePlayer(void)
 			continue;
 		}
 		model->pos_old = model->pos;
-		model->quaternion_old = model->quaternion;
 
 		model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
 	}

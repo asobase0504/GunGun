@@ -31,6 +31,7 @@ static Model s_ModelType[MODEL_NUM];	// モデルの種類を保管
 static Model s_Model[MODEL_MAX];		// モデルの構造体
 static Model s_ModelUI;					// モデルUIの構造体
 static int s_nShadowCnt;				// 影の割り当て
+static LPD3DXFONT s_pFont = NULL;	// フォントへのポインタ
 
 //=========================================
 // 初期化
@@ -40,6 +41,9 @@ void InitModel(void)
 	ZeroMemory(s_ModelType, sizeof(s_ModelType));
 	ZeroMemory(&s_ModelUI, sizeof(s_ModelUI));
 	ZeroMemory(s_Model, sizeof(s_Model));
+
+	// デバッグ表示用フォントの生成
+	D3DXCreateFont(GetDevice(), 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "07あかずきんポップ Heavy", &s_pFont);
 }
 
 //=========================================
@@ -78,6 +82,13 @@ void UninitModel(void)
 			model->pBuffMat->Release();
 			model->pBuffMat = NULL;
 		}
+	}
+
+	// デバッグ表示用フォントの破棄
+	if (s_pFont != NULL)
+	{
+		s_pFont->Release();
+		s_pFont = NULL;
 	}
 }
 
@@ -224,6 +235,7 @@ void LoadModel(void)
 	FILE* pFile;
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	bool isModel = false;
+	bool isType = false;
 	bool isPlayer = false;
 	char modelFile[255][255] = {};
 	int nModelFileCnt = 0;
@@ -249,49 +261,11 @@ void LoadModel(void)
 			break;
 		}
 
-		if (strcmp(&read[0], "MODEL_FILENAME") == 0)
+		if (strcmp(&read[0], "TYPESET") == 0)
 		{
-			fscanf(pFile, "%s", &read);
-			fscanf(pFile, "%s", &modelFile[nModelFileCnt][0]);
-
-			Model* modelType = &(s_ModelType[nModelFileCnt]);
-
-			// Xファイルの読み込み
-			D3DXLoadMeshFromX(&modelFile[nModelFileCnt][0],
-				D3DXMESH_SYSTEMMEM,
-				pDevice,
-				NULL,
-				&modelType->pBuffMat,
-				NULL,
-				&modelType->nNumMat,
-				&modelType->pMesh);
-
-			// メッシュに使用されているテクスチャ用の配列を用意する
-			modelType->pTexture = new LPDIRECT3DTEXTURE9[modelType->nNumMat];
-
-			// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
-			D3DXMATERIAL *pMat = (D3DXMATERIAL*)modelType->pBuffMat->GetBufferPointer();
-
-			// 各メッシュのマテリアル情報を取得する
-			for (int i = 0; i < (int)modelType->nNumMat; i++)
-			{
-				modelType->pTexture[i] = NULL;
-
-				if (pMat[i].pTextureFilename != NULL)
-				{// マテリアルで設定されているテクスチャ読み込み
-					D3DXCreateTextureFromFileA(pDevice,
-						pMat[i].pTextureFilename,
-						&modelType->pTexture[i]);
-				}
-			}
-
-			// モデルのサイズ計測
-			ModelSize(&modelType->MinVtx, &modelType->MaxVtx, modelType->pMesh);
-
-			nModelFileCnt++;
+			isType = true;
 		}
-
-		if (strcmp(&read[0], "MODELSET") == 0)
+		else if (strcmp(&read[0], "MODELSET") == 0)
 		{
 			for (nModelData = 0; nModelData < MODEL_MAX; nModelData++)
 			{
@@ -314,7 +288,12 @@ void LoadModel(void)
 			isPlayer = true;
 		}
 		
-		if (strcmp(&read[0], "END_MODELSET") == 0)
+		if (strcmp(&read[0], "END_TYPESET") == 0)
+		{
+			nModelFileCnt++;
+			isType = false;
+		}
+		else if (strcmp(&read[0], "END_MODELSET") == 0)
 		{
 			Model** parts = GetPlayerModel();
 			parts += nModelCnt;
@@ -329,6 +308,73 @@ void LoadModel(void)
 			isPlayer = false;
 		}
 
+		if (isType)
+		{
+			if (strcmp(&read[0], "FILENAME") == 0)
+			{
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%s", &modelFile[nModelFileCnt][0]);
+
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				ZeroMemory(modelType, sizeof(s_ModelType));
+
+				modelType->scale = 1.0f;
+
+				// Xファイルの読み込み
+				D3DXLoadMeshFromX(&modelFile[nModelFileCnt][0],
+					D3DXMESH_SYSTEMMEM,
+					pDevice,
+					NULL,
+					&modelType->pBuffMat,
+					NULL,
+					&modelType->nNumMat,
+					&modelType->pMesh);
+
+				// メッシュに使用されているテクスチャ用の配列を用意する
+				modelType->pTexture = new LPDIRECT3DTEXTURE9[modelType->nNumMat];
+
+				// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+				D3DXMATERIAL *pMat = (D3DXMATERIAL*)modelType->pBuffMat->GetBufferPointer();
+
+				// 各メッシュのマテリアル情報を取得する
+				for (int i = 0; i < (int)modelType->nNumMat; i++)
+				{
+					modelType->pTexture[i] = NULL;
+
+					if (pMat[i].pTextureFilename != NULL)
+					{// マテリアルで設定されているテクスチャ読み込み
+						D3DXCreateTextureFromFileA(pDevice,
+							pMat[i].pTextureFilename,
+							&modelType->pTexture[i]);
+					}
+				}
+
+				// モデルのサイズ計測
+				ModelSize(&modelType->MinVtx, &modelType->MaxVtx, modelType->pMesh);
+			}
+			if (strcmp(&read[0], "NAME") == 0)
+			{
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%s", &modelType->name[0]);
+			}
+			if (strcmp(&read[0], "SIZE_CRITERIA") == 0)
+			{
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f", &modelType->sizeCriter);
+			}
+			if (strcmp(&read[0], "SIZE_ADD") == 0)
+			{
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f", &modelType->sizeAdd);
+			}
+		}
 		if (isModel)
 		{
 			if (strcmp(&read[0], "TYPE") == 0)
@@ -533,6 +579,13 @@ void DrawModelUI(void)
 		// 保持していたマテリアルを戻す
 		pDevice->SetMaterial(&matDef);
 	}
+
+	// 表示領域の作成
+	RECT rect = { -1050,600,SCREEN_WIDTH,SCREEN_HEIGHT };
+
+	// テキストの描画
+	s_pFont->DrawText(NULL, &model->name[0], -1, &rect, DT_CENTER, D3DCOLOR_RGBA(0, 255, 255, 255));
+
 }
 
 //=========================================
@@ -544,7 +597,7 @@ void SetModelUI(Model * model)
 	D3DXVECTOR3 rot_old = s_ModelUI.rot;
 	s_ModelUI = *model;
 	s_ModelUI.rot = rot_old;
-	s_ModelUI.pos.y = -5.85f;
+	s_ModelUI.pos.y = -6.0f;
 	s_ModelUI.pos.x = -17.0f;
 	s_ModelUI.pos.z = 20.0f;
 }

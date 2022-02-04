@@ -237,13 +237,9 @@ void LoadModel(void)
 {
 	FILE* pFile;
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	bool isModel = false;
 	bool isType = false;
-	bool isPlayer = false;
 	char modelFile[255][255] = {};
 	int nModelFileCnt = 0;
-	int nModelCnt = 1;
-	int nModelData;
 
 	pFile = fopen(MODEL_LOAD_FILE, "r");
 
@@ -353,7 +349,7 @@ void LoadModel(void)
 				Model* modelType = &(s_ModelType[nModelFileCnt]);
 
 				fscanf(pFile, "%s", &read);
-				fscanf(pFile, "%f %f %f %f", &modelType->size.top, &modelType->size.bottom, &modelType->size.left, &modelType->size.right);
+				fscanf(pFile, "%f %f %f", &modelType->size.x, &modelType->size.y, &modelType->size.z);
 
 				modelType->typeCollision = COLLISION_SPHERE;
 			}
@@ -375,12 +371,8 @@ void LoadModel(void)
 void LoadMap(void)
 {
 	FILE* pFile;
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	bool isModel = false;
-	bool isType = false;
 	bool isPlayer = false;
-	char modelFile[255][255] = {};
-	int nModelFileCnt = 0;
 	int nModelCnt = 1;
 	int nModelData;
 
@@ -500,6 +492,7 @@ void LoadMap(void)
 			}
 		}
 	}
+	fclose(pFile);
 }
 
 //=========================================

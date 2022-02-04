@@ -354,3 +354,59 @@ bool SphereColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, float fL
 	D3DXVECTOR3 v = pos1 - pos2;
 	return D3DXVec3LengthSq(&v) <= (fLength1 + fLength2)*(fLength1 + fLength2);
 }
+
+//=========================================
+//
+// 球と立方体の当たり判定
+//
+// 引数1 pos1		対象1の位置
+// 引数2 fLength1	対象1の長さ
+// 引数3 pos2		対象2の位置
+// 引数4 size		対象2の大きさ
+//=========================================
+bool SphereCuboidColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, D3DXVECTOR3 size)
+{
+	D3DXVECTOR3 Vec(0, 0, 0);   // 最終的に長さを求めるベクトル
+
+	// 各軸についてはみ出た部分のベクトルを算出
+	FLOAT L = size.x;
+	if (!(L <= 0))
+	{
+		D3DXVECTOR3 x = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+		FLOAT s = D3DXVec3Dot(&(pos1 - pos2), &x) / L;
+
+		// sの値から、はみ出した部分があればそのベクトルを加算
+		s = (float)fabs(s);
+		if (s > 1)
+		{
+			Vec += (1 - s)*L*x;   // はみ出した部分のベクトル算出
+		}
+	}
+	L = size.y;
+	if (!(L <= 0))
+	{
+		D3DXVECTOR3 y = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		FLOAT s = D3DXVec3Dot(&(pos1 - pos2), &y) / L;
+
+		// sの値から、はみ出した部分があればそのベクトルを加算
+		s = (float)fabs(s);
+		if (s > 1)
+		{
+			Vec += (1 - s)*L*y;   // はみ出した部分のベクトル算出
+		}
+	}
+	L = size.z;
+	if (!(L <= 0))
+	{
+		D3DXVECTOR3 z = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		FLOAT s = D3DXVec3Dot(&(pos1 - pos2), &z) / L;
+
+		// sの値から、はみ出した部分があればそのベクトルを加算
+		s = (float)fabs(s);
+		if (s > 1)
+		{
+			Vec += (1 - s)*L*z;   // はみ出した部分のベクトル算出
+		}
+	}
+	return fLength1 < D3DXVec3Length(&Vec);
+}

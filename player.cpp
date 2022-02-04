@@ -139,7 +139,7 @@ void UpdatePlayer(void)
 	MovePlayer();
 	
 	// プレイヤーと床の当たり判定
-	CollisionMeshField(&pPlayer->pos);
+	//CollisionMeshField(&pPlayer->pos);
 
 	// モデルパーツごとの当たり判定
 	ColisionPartsModel();
@@ -152,12 +152,12 @@ void UpdatePlayer(void)
 	//for (int i = 0; i < PARTS_NUM; i++)
 	//{
 	//	Model* model = pPlayer->aModel[i];
-
+	//
 	//	if (model == NULL || !model->bUse || model->nIdxModelParent != 0)
 	//	{
 	//		continue;
 	//	}
-
+	//
 	//	if (model->pos_world.y + pPlayer->fLengthLand * 2.0f < fData)
 	//	{
 	//		fData = model->pos_world.y + pPlayer->fLengthLand * 2.0f;
@@ -165,10 +165,14 @@ void UpdatePlayer(void)
 	//}
 	//pPlayer->fLengthLand = fData;
 
-	pPlayer->pos.y =  pPlayer->fLength;	// プレイヤーの位置を底上げ。
+	//pPlayer->pos.y = pPlayer->fLength;	// プレイヤーの位置を底上げ。
 	
 	//// 大地までの話す距離
-	//pPlayer->pos.y = pPlayer->fLengthLand;
+	pPlayer->pos.y -= 0.5f;
+	if (pPlayer->pos.y - pPlayer->fLength <= 0.0f)
+	{
+		pPlayer->pos.y = pPlayer->fLength;
+	}
 
 	// 角度の正規化
 	NormalizeRot(&pPlayer->rot.y);
@@ -308,9 +312,10 @@ void ColisionPartsModel(void)
 		}
 
 		// 当たった場合
-		if (SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, (model->MaxVtx.x + model->MaxVtx.y + model->MaxVtx.z) / 3.0f))
+		if ((SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, model->fLength) && model->typeCollision == COLLISION_SPHERE) ||
+			(SphereCuboidColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, model->size) && model->typeCollision == COLLISION_CUBOID))
 		{
-			if (s_player.fLength >= model->MaxVtx.x * 1.5f|| true)
+			if (s_player.fLength >= model->sizeCriter)
 			{	// 取り込めるサイズの場合
 				D3DXMATRIX mtxRot;
 				D3DXVECTOR3 pos_local = model->pos_world - s_player.pos_old;
@@ -332,18 +337,19 @@ void ColisionPartsModel(void)
 			}
 			else
 			{	// 取り込めないサイズの場合
-				D3DXVECTOR3 vec(model->pos_world - s_player.pos);	// 方向ベクトル
-				D3DXVec3Normalize(&vec, &vec);						// 当たった方向を取得
+				D3DXVECTOR3 vec = (model->pos_world - s_player.pos);	// 方向ベクトル
+				//D3DXVec3Normalize(&vec, &vec);						// 当たった方向を取得
 
-				float fLength = s_player.fLength + model->MaxVtx.x;	// 長さ
+				//float fLength = s_player.fLength + (model->MaxVtx.x * 2.0f);	// 長さ
 
-				// 方向ベクトルに長さを掛ける
-				vec *= fLength;
+				//// 方向ベクトルに長さを掛ける
+				//vec *= fLength;
 				
 				// 速度を0にする
 				s_player.movevec = ZERO_VECTOR;
 
-				s_player.pos = model->pos_world - vec;
+				s_player.pos = s_player.pos_old;
+				//s_player.pos.y += 1.0f;
 			}
 		}
 	}

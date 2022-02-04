@@ -33,7 +33,7 @@ typedef struct
 	// “–‚½‚è”»’èî•ñ
 	COLLISION_TYPE typeCollision;	// “–‚½‚è”»’è‚ÌŽí—Þ
 	D3DXVECTOR3 pos_Collision;		// “–‚½‚è”»’è‚ÌŠî€’l
-	RECT size;						// ’¼•û‘Ì‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+	D3DXVECTOR3 size;				// ’¼•û‘Ì‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 	float fLength;					// ‹…‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 
 	// ƒ‚ƒfƒ‹î•ñ

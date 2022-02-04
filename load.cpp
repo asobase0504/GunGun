@@ -148,7 +148,7 @@ void WritingBinaryModel(void)
 				Model* modelType = &(s_ModelType[nModelFileCnt]);
 
 				fscanf(pFile, "%s", &read);
-				fscanf(pFile, "%f %f %f %f", &modelType->size.top, &modelType->size.bottom, &modelType->size.left, &modelType->size.right);
+				fscanf(pFile, "%f %f %f", &modelType->size.x, &modelType->size.y, &modelType->size.z);
 
 				modelType->typeCollision = COLLISION_SPHERE;
 			}

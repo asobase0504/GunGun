@@ -42,9 +42,9 @@ void InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff);		// •
 void RectDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ’Êí‚Ì•`Ê
 void RectAddDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ‰ÁZˆ—‚Ì•`Ê
 
-// “–‚½‚è”»’è
-bool SegmentColision(Segment seg1, Segment seg2);	// ü•ª“¯m‚Ì“–‚½‚è”»’è
-bool SphereColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, float fLength2);		// ‹…“¯m‚Ì“–‚½‚è”»’è
-bool SphereCuboidColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, D3DXVECTOR3 size);	// ‹…‚Æ—§•û‘Ì‚Ì“–‚½‚è”»’è
-bool SphereCylinderColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, float fLength2);	// ‹…‚Æ“›‚Ì“–‚½‚è”»’è
+// ZoŒn“
+bool isSharpAngle(D3DXVECTOR3* pos1, D3DXVECTOR3* pos2, D3DXVECTOR3* pos3);	// ‰sŠp‚©”Û‚©
+float CalculateDistPointLine(D3DXVECTOR3* posPoint, D3DXVECTOR3* posLine, D3DXVECTOR3* vecLine, D3DXVECTOR3* posDist, float* fLength);	// “_‚Æü•ª‚ÌÅ’Z‹——£‚ğZo
+float CalculateDistPointSegment(D3DXVECTOR3* posPoint, Segment* segment, D3DXVECTOR3* vecLine, D3DXVECTOR3* posDist, float* fLength);	// “_‚Æü•ª‚ÌÅ’Z‹——£‚ğZo
+
 #endif // !_COMMON_H_

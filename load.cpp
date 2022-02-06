@@ -32,13 +32,9 @@ void WritingBinaryModel(void)
 {
 	FILE* pFile;
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	bool isModel = false;
 	bool isType = false;
-	bool isPlayer = false;
 	char modelFile[255][255] = {};
 	int nModelFileCnt = 0;
-	int nModelCnt = 1;
-	int nModelData;
 
 	pFile = fopen(MODEL_LOAD_FILE, "r");
 

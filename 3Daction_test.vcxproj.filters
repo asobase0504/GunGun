@@ -111,6 +111,9 @@
     <ClCompile Include="load.cpp">
       <Filter>01_Setem</Filter>
     </ClCompile>
+    <ClCompile Include="colision.cpp">
+      <Filter>01_Setem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shadow.h">
@@ -198,6 +201,9 @@
       <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="load.h">
+      <Filter>01_Setem</Filter>
+    </ClInclude>
+    <ClInclude Include="colision.h">
       <Filter>01_Setem</Filter>
     </ClInclude>
   </ItemGroup>

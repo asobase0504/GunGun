@@ -9,6 +9,7 @@
 //------------------------------------
 #include "main.h"
 #include "common.h"
+#include "colision.h"
 #include "player.h"
 #include "input.h"
 #include "line.h"

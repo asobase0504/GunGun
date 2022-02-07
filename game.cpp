@@ -32,7 +32,7 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MESH_FIELD	"data/TEXTURE/bee_tex.jpg"
+#define MESH_FIELD	"data/TEXTURE/bg001.jpg"
 
 //------------------------------------
 // スタティック変数
@@ -70,11 +70,13 @@ void InitGame(void)
 	CountRestartStop(true, 0);
 
 	// ポリゴンの設定処理
-	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f),NULL,"floar");
-	
+	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), NULL, "floar");
+	SetPolygonUI(&D3DXVECTOR3(-25.5f, -10.5f, 30.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(5.0f, 0.0f, 5.0f), "data/TEXTURE/Circle.png");
+	//SetPolygonUI(&D3DXVECTOR3(0.0f, 10.0f, -50.0f), &D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(150.0f, 0.0f, 50.0f), "data/TEXTURE/bee_tex.jpg");
+
 	// メッシュフィールドの設定処理
 	SetMesh setMesh;
-	setMesh.file = "data/TEXTURE/bg001.jpg";
+	setMesh.file = MESH_FIELD;
 	setMesh.fLineHeight = 50.0f;
 	setMesh.fLineWidth = 50.0f;
 	setMesh.nSurfaceHeight = 30;
@@ -198,6 +200,7 @@ void DrawGame(int cameraData)
 		DrawShadow();		// 影
 		DrawModelUI();		// モデルUI
 		DrawGameUI();		// UI
+		DrawPolygonUI();	// ポリゴンUI
 
 		if (s_bPause)
 		{

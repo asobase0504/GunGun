@@ -34,9 +34,9 @@ void InitLight(void)
 	ZeroMemory(s_light, sizeof(s_light));
 
 	// ÉâÉCÉgÇÃê›íË
-	SetLight(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, -0.8f, 0.4f), 0);
-	SetLight(D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f), D3DXVECTOR3(0.2f, -0.8f, -0.4f), 1);
-	SetLight(D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f), D3DXVECTOR3(-0.2f, 0.8f, 0.4f), 2);
+	SetLight(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f), D3DXVECTOR3(0.2f, -0.8f, 0.4f), 0);
+	SetLight(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f), D3DXVECTOR3(0.2f, -0.8f, -0.4f), 1);
+	SetLight(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f), D3DXVECTOR3(-0.2f, 0.8f, 0.4f), 2);
 }
 
 //=========================================

@@ -390,11 +390,11 @@ void Update(void)
 //=========================================
 void Draw(void)
 {
-	for (int i = 0; i < 2; i++)
-	{
-		// 描画開始
-		if (SUCCEEDED(g_pD3DDevice->BeginScene()))
-		{// 	描画開始が成功した場合
+	// 描画開始
+	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
+	{// 	描画開始が成功した場合
+		for (int i = 0; i < 2; i++)
+		{
 			switch (s_mode)
 			{
 			case MODE_TITLE:	// タイトル画面

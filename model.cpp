@@ -34,7 +34,7 @@ static Model s_ModelType[MODEL_NUM];	// モデルの種類を保管
 static Model s_Model[MODEL_MAX];		// モデルの構造体
 static Model s_ModelUI;					// モデルUIの構造体
 static int s_nShadowCnt;				// 影の割り当て
-static LPD3DXFONT s_pFont = NULL;	// フォントへのポインタ
+static LPD3DXFONT s_pFont = NULL;		// フォントへのポインタ
 
 //=========================================
 // 初期化
@@ -87,6 +87,24 @@ void UninitModel(void)
 		}
 	}
 
+	ZeroMemory(&s_ModelUI, sizeof(s_ModelUI));
+
+	if (s_ModelUI.pTexture != NULL)
+	{
+		s_ModelUI.pTexture = NULL;
+	}
+
+	// メッシュの解放
+	if (s_ModelUI.pMesh != NULL)
+	{
+		s_ModelUI.pMesh = NULL;
+	}
+	// マテリアルの解放
+	if (s_ModelUI.pBuffMat != NULL)
+	{
+		s_ModelUI.pBuffMat = NULL;
+	}
+
 	// デバッグ表示用フォントの破棄
 	if (s_pFont != NULL)
 	{
@@ -108,7 +126,7 @@ void UpdateModel(void)
 void DrawModel(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DXMATRIX mtxScale, mtxRot, mtxTrans;	// 計算用マトリックス
 	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
 
@@ -124,7 +142,10 @@ void DrawModel(void)
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&model->mtxWorld);
 
-		// 角度の反映
+		// スケールの反映
+		D3DXMatrixScaling(&mtxScale, model->scale, model->scale, model->scale);
+		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxScale);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+																							// 角度の反映
 		if (model->isQuaternion)
 		{
 			// クォータニオンの使用した姿勢の設定
@@ -360,6 +381,13 @@ void LoadModel(void)
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &modelType->pos_Collision.x, &modelType->pos_Collision.y, &modelType->pos_Collision.z);
 			}
+			if (strcmp(&read[0], "SCALE") == 0)
+			{
+				Model* modelType = &(s_ModelType[nModelFileCnt]);
+
+				fscanf(pFile, "%s", &read);
+				fscanf(pFile, "%f", &modelType->scale);
+			}
 		}
 	}
 	fclose(pFile);
@@ -585,7 +613,7 @@ void DrawModelUI(void)
 	s_ModelUI.rot.y += 0.01f;
 
 	D3DXVECTOR3 size = model->MaxVtx - model->MinVtx;
-	float scale = 1.0f;
+	float scale = model->scale;
 	while (size.x >= 3.0f || size.y >= 3.0f || size.z >= 3.0f)
 	{
 		size = model->MaxVtx - model->MinVtx;
@@ -622,6 +650,9 @@ void DrawModelUI(void)
 		// マテリアルデータへのポインタを取得
 		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
 
+		// ライトを無効にする
+		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
 		for (int j = 0; j < (int)model->nNumMat; j++)
 		{
 			// マテリアルの設定
@@ -638,8 +669,11 @@ void DrawModelUI(void)
 		pDevice->SetMaterial(&matDef);
 	}
 
+	// ライトを有効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
 	// 表示領域の作成
-	RECT rect = { -1050,600,SCREEN_WIDTH,SCREEN_HEIGHT };
+	RECT rect = { -1050,670,SCREEN_WIDTH,SCREEN_HEIGHT };
 
 	// テキストの描画
 	s_pFont->DrawText(NULL, &model->name[0], -1, &rect, DT_CENTER, D3DCOLOR_RGBA(0, 255, 255, 255));
@@ -655,7 +689,7 @@ void SetModelUI(Model * model)
 	D3DXVECTOR3 rot_old = s_ModelUI.rot;
 	s_ModelUI = *model;
 	s_ModelUI.rot = rot_old;
-	s_ModelUI.pos.y = -6.0f;
+	s_ModelUI.pos.y = -9.0f;
 	s_ModelUI.pos.x = -17.0f;
 	s_ModelUI.pos.z = 20.0f;
 }

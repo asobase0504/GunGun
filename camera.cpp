@@ -197,6 +197,8 @@ void SetCamera(int nData)
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
 		10.0f,400.0f * camara->fDistance / 60.0f);	// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
 
+	//D3DXMatrixOrthoLH(&camara->mtxProjection, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 10.0f, 400.0f * camara->fDistance / 60.0f);
+	
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &camara->mtxProjection);
 }
@@ -212,15 +214,15 @@ void InputCamera(void)
 
 	if (IsJoyPadUse(0))
 	{// ジョイパッドの使用
-		if (GetJoypadPress(JOYKEY_RIGHT_SHOULDER))
+		if (GetJoypadStick(JOYKEY_RIGHT_STICK, 0).x > 0.5f)
 		{
-			pCamera->rot.y += CAMERA_ROT_VOLUME;	// 回転量
+			pCamera->rot.y += CAMERA_ROT_VOLUME * GetJoypadStick(JOYKEY_RIGHT_STICK, 0).x;	// 回転量
 			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 		}
-		if (GetJoypadPress(JOYKEY_LEFT_SHOULDER))
+		if (GetJoypadStick(JOYKEY_RIGHT_STICK, 0).x < -0.5f)
 		{
-			pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// 回転量
+			pCamera->rot.y += CAMERA_ROT_VOLUME * GetJoypadStick(JOYKEY_RIGHT_STICK, 0).x;	// 回転量
 			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 		}

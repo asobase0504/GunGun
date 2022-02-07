@@ -65,6 +65,7 @@ void InitPlayer(void)
 	// 読み込み処理
 	//LoadPlayer();
 
+	s_player.fLength += s_player.aModel[0]->fLength;
 	s_player.pos = ZERO_VECTOR;
 	s_player.pos.y = -s_player.MinVtx.y;
 	s_player.rot = ZERO_VECTOR;
@@ -168,7 +169,7 @@ void UpdatePlayer(void)
 
 	//pPlayer->pos.y = pPlayer->fLength;	// プレイヤーの位置を底上げ。
 	
-	//// 大地までの話す距離
+	//// 大地までの離す距離
 	pPlayer->pos.y -= 0.5f;
 	if (pPlayer->pos.y - pPlayer->fLength <= 0.0f)
 	{
@@ -332,6 +333,9 @@ void ColisionPartsModel(void)
 				model->quaternion = quaternionHit;
 				model->nIdxModelParent = 0;
 
+				// プレイヤーの長さを規定値加算
+				s_player.fLength += model->sizeAdd;
+
 				s_player.nModelCnt++;
 
 				s_getModel = *model;
@@ -339,17 +343,12 @@ void ColisionPartsModel(void)
 			else
 			{	// 取り込めないサイズの場合
 				D3DXVECTOR3 vec = (model->pos_world - s_player.pos);	// 方向ベクトル
-				//D3DXVec3Normalize(&vec, &vec);						// 当たった方向を取得
+				D3DXVec3Normalize(&vec, &vec);						// 当たった方向を取得
 
-				//float fLength = s_player.fLength + (model->MaxVtx.x * 2.0f);	// 長さ
-
-				//// 方向ベクトルに長さを掛ける
-				//vec *= fLength;
-				
 				// 速度を0にする
 				s_player.movevec = ZERO_VECTOR;
 
-				s_player.pos = s_player.pos_old;
+				s_player.pos -= vec;
 				//s_player.pos.y += 1.0f;
 			}
 		}
@@ -429,7 +428,7 @@ void LookUpSizePlayer(void)
 	}
 
 	D3DXVECTOR3 v = s_player.MaxVtx - s_player.MinVtx;
-	s_player.fLength = sqrtf((v.x + v.y + v.z) / 6.0f - s_player.aModel[0]->MaxVtx.x) + s_player.aModel[0]->MaxVtx.x;
+	//s_player.fLength = sqrtf((v.x + v.y + v.z) / 6.0f - s_player.aModel[0]->MaxVtx.x) + s_player.aModel[0]->MaxVtx.x;
 }
 
 //=========================================

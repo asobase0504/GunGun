@@ -90,7 +90,7 @@ void DrawFPS(void)
 	sprintf(&aStr[9][0],	"posVDest : %.3f|%.3f|%.3f\n", camera->posVDest.x, camera->posVDest.y, camera->posVDest.z);
 	sprintf(&aStr[10][0],	"posRDest : %.3f|%.3f|%.3f\n", camera->posRDest.x, camera->posRDest.y, camera->posRDest.z);
 	sprintf(&aStr[11][0],	"LengthLand : %.3f\n", player->fLengthLand);
-	sprintf(&aStr[12][0],	"Model.y : %.3f\n", player->aModel[7]->pos_world.y);
+	sprintf(&aStr[12][0],	"\n");
 	sprintf(&aStr[13][0],	"stickL : %.3f|%.3f|%.3f\n", stickL.x, stickL.y, stickL.z);
 	sprintf(&aStr[14][0],	"stickR : %.3f|%.3f|%.3f\n", stickR.x, stickR.y, stickR.z);
 	sprintf(&aStr[15][0],	"move : %.3f|%.3f|%.3f\n", player->movevec.x, player->movevec.y, player->movevec.z);

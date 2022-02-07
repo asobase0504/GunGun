@@ -79,6 +79,7 @@ void InitCamera(void)
 //=========================================
 void UninitCamera(void)
 {
+
 }
 
 //=========================================
@@ -154,11 +155,6 @@ void UpdateResultCamera(void)
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 
 	pCamera->posR.y = player->pos.y;
-	//// ™X‚Éã‚Éã‚ª‚é
-	//if (pCamera->posR.y <= 75.0f)
-	//{
-	//	pCamera->posR.y += 0.5f;	// ’Ž‹“_
-	//}
 
 	// Šp“x‚Ì³‹K‰»
 	if (pCamera->rot.y > D3DX_PI)

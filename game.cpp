@@ -137,33 +137,20 @@ void UpdateGame(void)
 		UpdateMeshField();		// メッシュ
 		UpdateWall();			// 壁
 		UpdateTimer();			// タイム
+
 #ifdef _DEBUG
 		UpdateLine();	// ライン
 #endif // !_DEBUG
+
 		UpdateGameUI();			// UI
 
-		if (GetKeyboardTrigger(DIK_T))
+		Player* player = GetPlayer();
+		if ((int)player->fLength / 24 == s_nSizeCnt)
 		{
-			SetGameUITex("data/TEXTURE/WORD/mm.png");
+			GetCamera(0)->fDistance *= 1.5f;
+			s_nSizeCnt++;
 		}
-		if (GetKeyboardTrigger(DIK_Y))
-		{
-			SetGameUITex("data/TEXTURE/WORD/cm.png");
-		}
-		if (GetKeyboardTrigger(DIK_U))
-		{
-			SetGameUITex("data/TEXTURE/WORD/m.png");
-		}
-		if (GetKeyboardTrigger(DIK_I))
-		{
-			SetGameUITex("data/TEXTURE/WORD/km.png");
-		}
-	}
 
-	if ((int)GetPlayer()->fLength / 14 == s_nSizeCnt)
-	{
-		GetCamera(0)->fDistance *= 1.5f;
-		s_nSizeCnt++;
 	}
 
 	// 時間が切れたらリザルトに以降
@@ -171,6 +158,14 @@ void UpdateGame(void)
 	{
 		SetFade(MODE_RESULT);
 	}
+
+#ifdef _DEBUG
+	if (GetJoypadTrigger(JOYKEY_X))
+	{
+		SetFade(MODE_RESULT);
+	}
+#endif // !_DEBUG
+
 }
 
 //=========================================

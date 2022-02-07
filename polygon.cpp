@@ -18,21 +18,6 @@
 #define MAX_POLYGON	(64)
 
 //------------------------------------
-// ポリゴンの構造体を定義
-//------------------------------------
-typedef struct
-{
-	char* name;
-	LPDIRECT3DVERTEXBUFFER9	VtxBuff;	// 頂点バッファーへのポインタ
-	LPDIRECT3DTEXTURE9		Tex;		// テクスチャへのポインタ
-	D3DXVECTOR3				pos;		// 頂点座標
-	D3DXVECTOR3				size;		// 頂点座標
-	D3DXVECTOR3				rot;		// 回転座標
-	D3DXMATRIX				mtxWorld;	// ワールドマトリックス
-	bool					bUse;		// 使用しているか
-} ObjectPolygon;
-
-//------------------------------------
 // 静的変数
 //------------------------------------
 static ObjectPolygon s_aPolygon[MAX_POLYGON];		// ポリゴンの構造体
@@ -347,6 +332,28 @@ bool CollisionPolygon(D3DXVECTOR3* pos, char* name)
 		}
 	}
 	return false;
+}
+
+//=========================================
+// ポリゴンの取得
+//=========================================
+ObjectPolygon* GetPolygon(char * name)
+{
+	for (int i = 0; i < MAX_POLYGON; i++)
+	{
+		ObjectPolygon* polygon = &s_aPolygon[i];
+
+		if (s_aPolygon[i].name == NULL)
+		{
+			continue;
+		}
+
+		if (strcmp(s_aPolygon[i].name, name) == 0 && polygon->bUse)
+		{
+			return &s_aPolygon[i];
+		}
+	}
+	return s_aPolygon;
 }
 
 //=========================================

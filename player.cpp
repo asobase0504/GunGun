@@ -58,6 +58,7 @@ static Model s_getModel;		// くっついたモデル
 void InitPlayer(void)
 {
 	ZeroMemory(&s_player, sizeof(s_player));
+	ZeroMemory(&s_getModel, sizeof(s_getModel));
 
 	// プレイヤーにくっつくモデルの配置
 	LoadModel();

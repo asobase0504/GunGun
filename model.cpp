@@ -45,7 +45,7 @@ void InitModel(void)
 	ZeroMemory(&s_ModelUI, sizeof(s_ModelUI));
 	ZeroMemory(s_Model, sizeof(s_Model));
 
-	// デバッグ表示用フォントの生成
+	// 取得したモデル名用フォントの生成
 	D3DXCreateFont(GetDevice(), 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "07あかずきんポップ Heavy", &s_pFont);
 }
 
@@ -87,23 +87,33 @@ void UninitModel(void)
 		}
 	}
 
-	ZeroMemory(&s_ModelUI, sizeof(s_ModelUI));
+	//if (s_ModelUI.pTexture != NULL)
+	//{
+	//	for (int j = 0; j < (int)s_ModelUI.nNumMat; j++)
+	//	{
+	//		if (s_ModelUI.pTexture[j] != NULL)
+	//		{// テクスチャの解放
+	//			//s_ModelUI.pTexture[j]->Release();
+	//			s_ModelUI.pTexture[j] = NULL;
+	//		}
+	//	}
 
-	if (s_ModelUI.pTexture != NULL)
-	{
-		s_ModelUI.pTexture = NULL;
-	}
+	//	delete[]s_ModelUI.pTexture;
+	//	s_ModelUI.pTexture = NULL;
+	//}
 
-	// メッシュの解放
-	if (s_ModelUI.pMesh != NULL)
-	{
-		s_ModelUI.pMesh = NULL;
-	}
-	// マテリアルの解放
-	if (s_ModelUI.pBuffMat != NULL)
-	{
-		s_ModelUI.pBuffMat = NULL;
-	}
+	//// メッシュの解放
+	//if (s_ModelUI.pMesh != NULL)
+	//{
+	//	s_ModelUI.pMesh->Release();
+	//	s_ModelUI.pMesh = NULL;
+	//}
+	//// マテリアルの解放
+	//if (s_ModelUI.pBuffMat != NULL)
+	//{
+	//	s_ModelUI.pBuffMat->Release();
+	//	s_ModelUI.pBuffMat = NULL;
+	//}
 
 	// デバッグ表示用フォントの破棄
 	if (s_pFont != NULL)

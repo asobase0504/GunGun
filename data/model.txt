@@ -76,7 +76,7 @@ TYPESET
 NAME = プリン
 FILENAME = data/MODEL/purin.x			# [6]プリン
 SIZE_CRITERIA = 3.0						# モデルがくっつき始める値
-SIZE_ADD = 0.1							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.175						# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 6.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -103,7 +103,7 @@ TYPESET
 NAME = ビールジョッキ
 FILENAME = data/MODEL/mug.x				# [9]ビールジョッキ
 SIZE_CRITERIA = 5.5						# モデルがくっつき始める値
-SIZE_ADD = 0.08							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.2							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 5.0					# 当たり判定の大きさ
 SCALE = 0.5								# モデルの大きさ
 END_TYPESET
@@ -112,7 +112,7 @@ TYPESET
 NAME = コップ
 FILENAME = data/MODEL/cop.x				# [10]コップ
 SIZE_CRITERIA = 5.0						# モデルがくっつき始める値
-SIZE_ADD = 0.08							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.2							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 5.0					# 当たり判定の大きさ
 SCALE = 0.5								# モデルの大きさ
 END_TYPESET
@@ -127,8 +127,17 @@ SCALE = 0.15							# モデルの大きさ
 END_TYPESET
 
 TYPESET
+NAME = カップアイス
+FILENAME = data/MODEL/Cauldron.x		# [12]カップアイス
+SIZE_CRITERIA = 6.0						# モデルがくっつき始める値
+SIZE_ADD = 0.5							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+COLLISION_SPHERE = 5.0					# 当たり判定の大きさ
+SCALE = 0.5								# モデルの大きさ
+END_TYPESET
+
+TYPESET
 NAME = マジョノカマ
-FILENAME = data/MODEL/Cauldron.x		# [12]釜
+FILENAME = data/MODEL/Cauldron.x		# [13]釜
 SIZE_CRITERIA = 24.0					# モデルがくっつき始める値
 SIZE_ADD = 2							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
@@ -456,4 +465,12 @@ COLLISION_SPHERE = 10.0						# 当たり判定の大きさ
 SCALE = 1.0									# モデルの大きさ
 END_TYPESET
 
+TYPESET
+NAME = スコップ
+FILENAME = data/MODEL/Chocolate.x			# [47]チョコレート
+SIZE_CRITERIA = 0.0							# モデルがくっつき始める値
+SIZE_ADD = 0.0								# モデルがくっついた時プレイヤーをどれくらい大きくするか
+COLLISION_SPHERE = 10.0						# 当たり判定の大きさ
+SCALE = 1.0									# モデルの大きさ
+END_TYPESET
 END_SCRIPT		# この行は絶対消さないこと！

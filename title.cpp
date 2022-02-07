@@ -101,7 +101,11 @@ void InitTitle(void)
 	DeleteModel();		// プレイヤー以外のモデルの消失
 
 	// ポリゴンの設定処理
-	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Exit.jpg","exit");
+	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_00.png", "Title01");
+	SetPolygon(&D3DXVECTOR3(-15.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_01.png", "Title02");
+	SetPolygon(&D3DXVECTOR3(15.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_00.png", "Title03");
+	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_01.png", "Title04");
+	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Exit.jpg", "exit");
 	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Start.jpg", "start");
 
 	// プレイヤーの設定処理
@@ -155,16 +159,20 @@ void UpdateTitle(void)
 	// プレイヤーが指定されたポリゴンに乗っていたらカウントを進める
 	if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < 50)
 	{
+		//GetPolygon("start")->pos.y += 1.0f;
 		s_Select = SELECT_GAMESTART;
 		s_nCnt++;
 	}
 	else if (CollisionPolygon(&GetPlayer()->pos, "exit") && s_nCnt < 50)
 	{
+		//GetPolygon("exit")->pos.y += 1.0f;
 		s_Select = SELECT_EXIT;
 		s_nCnt++;
 	}
 	else if(s_nCnt < 50)
 	{
+		//GetPolygon("start")->pos.y = 1.0f;
+		//GetPolygon("exit")->pos.y = 1.0f;
 		s_nCnt = 0;
 	}
 
@@ -242,8 +250,8 @@ void DrawTitle(int cameraData)
 			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
 		SetCamera(cameraData);	// カメラ
-		DrawPolygon();			// ポリゴン
 		DrawMeshField();		// メッシュフィールド
+		DrawPolygon();			// ポリゴン
 		DrawModel();		// モデル
 		DrawPlayer();			// プレイヤー
 	}

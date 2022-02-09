@@ -22,6 +22,7 @@
 //------------------------------------
 static ObjectPolygon s_aPolygon[MAX_POLYGON];		// ポリゴンの構造体
 static ObjectPolygon s_aPolygonUI[MAX_POLYGON];		// ポリゴンの構造体
+static float s_nSinCnt;
 
 //=========================================
 // 初期化
@@ -60,6 +61,66 @@ void UninitPolygon(void)
 //=========================================
 void UpdatePolygon(void)
 {
+	s_nSinCnt++;
+	for (int i = 0; i <= MAX_POLYGON; i++)
+	{
+		ObjectPolygon* polygon = &s_aPolygon[i];
+
+		if (!polygon->bUse)
+		{
+			continue;
+		}
+
+		if (strcmp(polygon->name, "Title01") == 0)
+		{
+		}
+		else if (strcmp(polygon->name, "Title02") == 0)
+		{
+
+		}
+		else if (strcmp(polygon->name, "Title03") == 0)
+		{
+
+		}
+		else if (strcmp(polygon->name, "Title04") == 0)
+		{
+
+		}
+
+		VERTEX_3D* pVtx = NULL;
+
+		// 頂点座標をロック
+		polygon->VtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		// 頂点座標の設定
+		pVtx[0].pos = D3DXVECTOR3(-polygon->size.x, polygon->size.y, polygon->size.z);
+		pVtx[1].pos = D3DXVECTOR3(polygon->size.x, polygon->size.y, polygon->size.z);
+		pVtx[2].pos = D3DXVECTOR3(-polygon->size.x, polygon->size.y, -polygon->size.z);
+		pVtx[3].pos = D3DXVECTOR3(polygon->size.x, polygon->size.y, -polygon->size.z);
+
+		// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
+		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+		// 頂点カラーの設定
+		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+		// テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+		// 頂点座標をアンロック
+		polygon->VtxBuff->Unlock();
+
+		break;
+	}
 }
 
 //=========================================

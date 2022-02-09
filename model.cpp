@@ -22,11 +22,11 @@
 // マクロ定義
 //------------------------------------
 #define MODEL_NUM				(100)
-#define MODEL_MAX				(255)
 #define PLAYER_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
 #define MODEL_LOAD_FILE			("data/model.txt")
-#define MAP_LOAD_FILE			("data/map.txt")
+#define MAP_LOAD_FILE			("data/map02.txt")
+
 //------------------------------------
 // 静的変数
 //------------------------------------
@@ -87,35 +87,7 @@ void UninitModel(void)
 		}
 	}
 
-	//if (s_ModelUI.pTexture != NULL)
-	//{
-	//	for (int j = 0; j < (int)s_ModelUI.nNumMat; j++)
-	//	{
-	//		if (s_ModelUI.pTexture[j] != NULL)
-	//		{// テクスチャの解放
-	//			//s_ModelUI.pTexture[j]->Release();
-	//			s_ModelUI.pTexture[j] = NULL;
-	//		}
-	//	}
-
-	//	delete[]s_ModelUI.pTexture;
-	//	s_ModelUI.pTexture = NULL;
-	//}
-
-	//// メッシュの解放
-	//if (s_ModelUI.pMesh != NULL)
-	//{
-	//	s_ModelUI.pMesh->Release();
-	//	s_ModelUI.pMesh = NULL;
-	//}
-	//// マテリアルの解放
-	//if (s_ModelUI.pBuffMat != NULL)
-	//{
-	//	s_ModelUI.pBuffMat->Release();
-	//	s_ModelUI.pBuffMat = NULL;
-	//}
-
-	// デバッグ表示用フォントの破棄
+	// 取得したモデル表示用フォントの破棄
 	if (s_pFont != NULL)
 	{
 		s_pFont->Release();
@@ -481,7 +453,7 @@ void LoadMap(void)
 				fscanf(pFile, "%d", &nData);
 
 				s_Model[nModelData] = s_ModelType[nData];
-
+				s_Model[nModelData].nType = nData;
 				s_Model[nModelData].nIdxModelParent = -2;
 				s_Model[nModelData].quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
 				s_Model[nModelData].isQuaternion = true;
@@ -542,13 +514,36 @@ void SetModel(Model* model)
 	{
 		Model* pModel = &(s_Model[i]);
 
-		if (!pModel->bUse)
+		if (pModel->bUse)
 		{
 			continue;
 		}
 
 		pModel = model;
+
+		break;
 	}
+}
+
+//=========================================
+// 設定
+//=========================================
+Model* SetModel(int nType)
+{
+	for (int i = 0; i < MODEL_MAX; i++)
+	{
+		Model* pModel = &(s_Model[i]);
+
+		if (pModel->bUse)
+		{
+			continue;
+		}
+
+		s_Model[i] = s_ModelType[nType];
+
+		return pModel;
+	}
+	return NULL;
 }
 
 //=========================================
@@ -702,4 +697,51 @@ void SetModelUI(Model * model)
 	s_ModelUI.pos.y = -9.0f;
 	s_ModelUI.pos.x = -17.0f;
 	s_ModelUI.pos.z = 20.0f;
+}
+
+//==================
+// マップの出力処理
+// Author hamada ryuuga
+// Author YudaKaito
+//==================
+void OutputMap(char *Filename)
+{
+	Player* player = GetPlayer();
+	//ファイル開け
+	FILE *pFile = fopen(Filename, "w");
+
+	fprintf(pFile, "SCRIPT\n\n");
+	fprintf(pFile, "#------------------------------------------------------------------------------\n");
+	fprintf(pFile, "# プレイヤーの設置\n");
+	fprintf(pFile, "#------------------------------------------------------------------------------\n");
+
+	fprintf(pFile, "PLAYERSET\n");
+	fprintf(pFile, "TYPE = %d\n", player->aModel[0]->nType);
+	fprintf(pFile, "ROT = %.4f %.4f %.4f\n", player->aModel[0]->pos.x, player->aModel[0]->pos.y, player->aModel[0]->pos.z);
+	fprintf(pFile, "END_PLAYERSET\n");
+
+	fprintf(pFile, "#------------------------------------------------------------------------------\n");
+	fprintf(pFile, "# モデルの設置\n");
+	fprintf(pFile, "#------------------------------------------------------------------------------\n");
+	for (int nCnt = 0; nCnt < PARTS_NUM; nCnt++)
+	{
+		Model* model = &s_Model[nCnt];
+
+		if (model == NULL || !model->bUse)
+		{
+			continue;
+		}
+
+		fprintf(pFile, "# %s\n", model->name);
+		fprintf(pFile, "MODELSET\n");
+		fprintf(pFile, "TYPE = %d\n", model->nType);
+		fprintf(pFile, "POS = %.4f %.4f %.4f\n", model->pos.x, model->pos.y, model->pos.z);
+		fprintf(pFile, "ROT = %.4f %.4f %.4f\n", model->rot.x, model->rot.y, model->rot.z);
+
+		fprintf(pFile, "END_MODELSET\n");
+		fprintf(pFile, "\n");
+	}
+	fprintf(pFile, "END_SCRIPT\n\n");
+
+	fclose(pFile);
 }

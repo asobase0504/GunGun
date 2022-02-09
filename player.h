@@ -16,7 +16,7 @@
 //------------------------------------
 // モデルパーツの構造体定義
 //------------------------------------
-#define PARTS_NUM	(255)		// パーツの数
+#define PARTS_NUM	(512)		// パーツの数
 
 //------------------------------------
 // モデルの構造体定義
@@ -46,7 +46,7 @@ void UninitPlayer(void);	// プレイヤーの終了処理
 void UpdatePlayer(void);	// プレイヤーの更新処理
 void DrawPlayer(void);		// プレイヤーの更新処理
 void MovePlayer(void);		// プレイヤーの移動
-void DeleteModel(void);		// プレイヤー以外のモデルを
+void DeleteModel(void);		// プレイヤー以外のモデルを解放する
 Player* GetPlayer(void);	// プレイヤーの取得処理
 Model** GetPlayerModel(void);	// プレイヤーモデルの取得処理
 #endif // !_PLAYER_H_

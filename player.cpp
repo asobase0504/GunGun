@@ -40,7 +40,6 @@ typedef enum
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-//void LoadPlayer(void);			// プレイヤーの読み込み処理
 void ColisionPartsModel(void);	// モデルパーツ同士の当たり判定
 void LookUpSizePlayer(void);	// プレイヤーのサイズを調べる
 
@@ -168,9 +167,7 @@ void UpdatePlayer(void)
 	//}
 	//pPlayer->fLengthLand = fData;
 
-	//pPlayer->pos.y = pPlayer->fLength;	// プレイヤーの位置を底上げ。
-	
-	//// 大地までの離す距離
+	// 地面までの離す距離
 	pPlayer->pos.y -= 0.5f;
 	if (pPlayer->pos.y - pPlayer->fLength <= 0.0f)
 	{
@@ -192,69 +189,69 @@ void MovePlayer()
 	float moveLength = 0.0f;
 
 
-		D3DXVECTOR2 moveInput;
+	D3DXVECTOR2 moveInput;
 
-		if (IsJoyPadUse(0))
-		{// ジョイパッドの使用
-			moveInput.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
-			moveInput.y = -GetJoypadStick(JOYKEY_LEFT_STICK, 0).y;
+	if (IsJoyPadUse(0))
+	{// ジョイパッドの使用
+		moveInput.x = GetJoypadStick(JOYKEY_LEFT_STICK, 0).x;
+		moveInput.y = -GetJoypadStick(JOYKEY_LEFT_STICK, 0).y;
 
-			if (moveInput.x != 0.0f || moveInput.y != 0.0f)
-			{
-				moveLength = D3DXVec2Length(&moveInput);
-
-				if (moveLength > 1.0f)
-				{
-					moveLength = 1.0f;
-				}
-			}
-		}
-		else
+		if (moveInput.x != 0.0f || moveInput.y != 0.0f)
 		{
-			moveInput.x = 0.0f;
-			moveInput.y = 0.0f;
+			moveLength = D3DXVec2Length(&moveInput);
 
-			// モデルの移動
-			if (GetKeyboardPress(DIK_UP))
+			if (moveLength > 1.0f)
 			{
-				moveInput.y += 1.0f;
-				moveLength = 1.0f;
-			}
-			if (GetKeyboardPress(DIK_LEFT))
-			{
-				moveInput.x -= 1.0f;
-				moveLength = 1.0f;
-			}
-			if (GetKeyboardPress(DIK_DOWN))
-			{
-				moveInput.y -= 1.0f;
-				moveLength = 1.0f;
-			}
-			if (GetKeyboardPress(DIK_RIGHT))
-			{
-				moveInput.x += 1.0f;
 				moveLength = 1.0f;
 			}
 		}
+	}
+	else
+	{
+		moveInput.x = 0.0f;
+		moveInput.y = 0.0f;
 
-		if (moveLength > 0.0f)
+		// モデルの移動
+		if (GetKeyboardPress(DIK_UP))
 		{
-			// カメラの角度情報取得
-			D3DXVECTOR3* CameraRot = GetRotCamera();
-
-			D3DXVec2Normalize(&moveInput, &moveInput);
-
-			float c = cosf(-CameraRot->y);
-			float s = sinf(-CameraRot->y);
-
-			// move の長さは 1 になる。
-			move.x = moveInput.x * c - moveInput.y * s;
-			move.z = moveInput.x * s + moveInput.y * c;
+			moveInput.y += 1.0f;
+			moveLength = 1.0f;
 		}
-		else
-		{ // 入力されていない。
-			return;
+		if (GetKeyboardPress(DIK_LEFT))
+		{
+			moveInput.x -= 1.0f;
+			moveLength = 1.0f;
 		}
+		if (GetKeyboardPress(DIK_DOWN))
+		{
+			moveInput.y -= 1.0f;
+			moveLength = 1.0f;
+		}
+		if (GetKeyboardPress(DIK_RIGHT))
+		{
+			moveInput.x += 1.0f;
+			moveLength = 1.0f;
+		}
+	}
+
+	if (moveLength > 0.0f)
+	{
+		// カメラの角度情報取得
+		D3DXVECTOR3* CameraRot = GetRotCamera();
+
+		D3DXVec2Normalize(&moveInput, &moveInput);
+
+		float c = cosf(-CameraRot->y);
+		float s = sinf(-CameraRot->y);
+
+		// move の長さは 1 になる。
+		move.x = moveInput.x * c - moveInput.y * s;
+		move.z = moveInput.x * s + moveInput.y * c;
+	}
+	else
+	{ // 入力されていない。
+		return;
+	}
 
 	D3DXVECTOR3 axis;	// 回転軸
 	D3DXVECTOR3 inverseVec = -move;		// move値を反対にする
@@ -262,7 +259,7 @@ void MovePlayer()
 	D3DXVec3Cross(&axis, &inverseVec, &vecY);	// 外積で回転軸を算出。
 
 	D3DXQUATERNION quaternion;
-	D3DXQuaternionRotationAxis(&quaternion, &axis,  moveLength * MODEL_ROT_ATTENUATION);	// 回転軸と回転角度を指定
+	D3DXQuaternionRotationAxis(&quaternion, &axis, moveLength * MODEL_ROT_ATTENUATION);	// 回転軸と回転角度を指定
 
 	s_player.aModel[0]->quaternion *= quaternion;
 	// クオータニオンのノーマライズ
@@ -442,10 +439,6 @@ void DrawPlayer(void)
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&s_player.mtxWorld);
-
-	//// スケールの反映
-	//D3DXMatrixScaling(&mtxScale, 1.0f, 1.0f, 1.0f);
-	//D3DXMatrixMultiply(&s_mtxWorld, &s_mtxWorld, &mtxScale);		// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 	
 	// 向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, s_player.rot.y, s_player.rot.x, s_player.rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
@@ -458,67 +451,6 @@ void DrawPlayer(void)
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_player.mtxWorld);
 }
-
-#if 0
-//--------------------------------------------------
-// 読み込み処理
-//--------------------------------------------------
-void LoadPlayer(void)
-{
-	FILE* pFile = fopen("data/FILE/Player.txt", "r");
-	char modelFile[255] = {};	// モデルファイル
-
-	fscanf(pFile, "%s", &modelFile);
-	if (strcmp(modelFile, "PlayerModel") == 0)
-	{
-		fscanf(pFile, "%s", &modelFile);	// = の除去
-		fscanf(pFile, "%s", &modelFile);	// 値を入れる
-	}
-
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	Model* model = s_player.aModel[0];
-
-	// Xファイルの読み込み
-	D3DXLoadMeshFromX(modelFile,
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&model->pBuffMat,
-		NULL,
-		&model->nNumMat,
-		&model->pMesh);
-
-	// モデルのサイズ計測
-	ModelSize(&(s_player.MinVtx), &(s_player.MaxVtx), model->pMesh);
-	// モデルのサイズ計測
-	ModelSize(&model->MinVtx, &model->MaxVtx, model->pMesh);
-
-	// メッシュに使用されているテクスチャ用の配列を用意する
-	model->pTexture = new LPDIRECT3DTEXTURE9[model->nNumMat];
-
-	// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
-	D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
-
-	// 各メッシュのマテリアル情報を取得する
-	for (int j = 0; j < (int)model->nNumMat; j++)
-	{
-		model->pTexture[j] = NULL;
-
-		if (pMat[j].pTextureFilename != NULL)
-		{// マテリアルで設定されているテクスチャ読み込み
-			D3DXCreateTextureFromFileA(pDevice,
-				pMat[j].pTextureFilename,
-				&model->pTexture[j]);
-		}
-	}
-
-	s_player.aModel[0]->pos = ZERO_VECTOR;
-	//s_player.aModel[0].pos.y = -s_player.MinVtx.y;
-	s_player.aModel[0]->rot = ZERO_VECTOR;
-	s_player.aModel[0]->nIdxModelParent = -1;
-	s_player.aModel[0]->bUse = true;
-}
-#endif
 
 //--------------------------------------------------
 // 取得

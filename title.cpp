@@ -112,15 +112,8 @@ void InitTitle(void)
 	Player* player = GetPlayer();
 	player->pos = D3DXVECTOR3(0.0f, 0.0f, -25.0f);
 
-	D3DXVECTOR3 axis;	// 回転軸
-	D3DXVECTOR3 inverseVec = D3DXVECTOR3(0.5f, 0.0f, 0.5f);		// move値を反対にする
-	D3DXVECTOR3 vecY = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	D3DXVec3Cross(&axis, &inverseVec, &vecY);	// 外積で回転軸を算出。
-
-	D3DXQUATERNION quaternion;
-	D3DXQuaternionRotationAxis(&quaternion, &axis, D3DX_PI*0.5f);	// 回転軸と回転角度を指定
-
-	player->aModel[0]->quaternion *= quaternion;
+	player->aModel[0]->quaternion = ZERO_QUATERNION;
+	D3DXQuaternionRotationYawPitchRoll(&player->aModel[0]->quaternion, D3DX_PI * 0.25f, D3DX_PI * 0.25f, 0.0f);
 
 	// クオータニオンのノーマライズ
 	D3DXQuaternionNormalize(&player->aModel[0]->quaternion, &player->aModel[0]->quaternion);

@@ -9,6 +9,8 @@
 
 #include "main.h"
 
+#define MODEL_MAX				(512)
+
 typedef enum
 {
 	COLLISION_SPHERE,
@@ -25,6 +27,7 @@ typedef struct
 	char name[255];		// 名前
 	float sizeCriter;	// くっつくサイズの制限
 	float sizeAdd;		// くっついたときに加算するサイズ量
+	int nType;			// モデルタイプ
 	D3DXVECTOR3 pos;				// 位置
 	D3DXVECTOR3 pos_old;			// 前回位置
 	D3DXVECTOR3 pos_world;			// ワールド位置
@@ -69,7 +72,9 @@ Model* GetModel(void);		// モデルの取得処理
 void LoadModel(void);		// モデルの読み込み処理
 void LoadMap(void);			// モデルマップの読み込み処理
 void SetModel(Model* model);		// モデルの設定(読み込みされたモデル参照)
+Model* SetModel(int nType);			// モデルの設定(読み込みされたモデル参照)
 void DrawModelUI(void);				// モデルUIの描画
 void SetModelUI(Model* model);		// モデルUIの設定
+void OutputMap(char *Filename);		// アイテムの設置
 
 #endif // !_MODEL_H_

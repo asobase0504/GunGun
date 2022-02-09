@@ -86,7 +86,7 @@ void UpdateFade(void)
 	{
 		if (s_fade == FADE_IN)
 		{// フェードイン状態
-			s_colorFade.a -= 0.005f;	// ポリゴンを透明にしていく
+			s_colorFade.a -= 0.01f;	// ポリゴンを透明にしていく
 
 			if (s_colorFade.a <= 0.0f)
 			{

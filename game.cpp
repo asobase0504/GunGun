@@ -28,6 +28,7 @@
 #include "fade.h"
 #include "debug.h"
 #include "game_ui.h"
+#include "item.h"
 
 //------------------------------------
 // マクロ定義
@@ -39,6 +40,7 @@
 //------------------------------------
 static bool s_bPause;			// ポーズ中かどうか
 static int	s_nSizeCnt;			// 大きさの区切り回数
+static bool s_bDebug;			// デバッグモードかどうか
 
 //=========================================
 // 初期化
@@ -46,6 +48,7 @@ static int	s_nSizeCnt;			// 大きさの区切り回数
 void InitGame(void)
 {
 	s_bPause = false;
+	s_bDebug = false;
 	s_nSizeCnt = 1;
 #ifdef _DEBUG
 	// ラインの初期化処理
@@ -105,6 +108,7 @@ void UninitGame(void)
 #ifdef _DEBUG
 	// ライン
 	UninitLine();
+	
 #endif // !_DEBUG
 
 	// タイマーの破棄
@@ -129,7 +133,17 @@ void UpdateGame(void)
 	{
 		// 更新
 		UpdateModel();			// モデル
-		UpdatePlayer();			// プレイヤー
+
+		// デバッグモードかどうか
+		if (!s_bDebug)
+		{
+			UpdatePlayer();			// プレイヤー
+		}
+		else
+		{
+			UpdateItem();
+		}
+
 		UpdateGameCamera();		// カメラ
 		UpdateLight();			// ライト
 		UpdatePolygon();		// ポリゴン
@@ -140,11 +154,27 @@ void UpdateGame(void)
 
 #ifdef _DEBUG
 		UpdateLine();	// ライン
+		if (GetJoypadTrigger(JOYKEY_BACK))
+		{
+			s_bDebug = !s_bDebug;
+
+			if (s_bDebug)
+			{
+				InitItem();
+			}
+			else
+			{
+				UninitItem();
+			}
+		}
+#else
+
 #endif // !_DEBUG
 
 		UpdateGameUI();			// UI
 
 		Player* player = GetPlayer();
+		// プレイヤーが画面一杯になったら画面の拡大
 		if ((int)player->fLength / 24 == s_nSizeCnt)
 		{
 			GetCamera(0)->fDistance *= 1.5f;
@@ -154,7 +184,7 @@ void UpdateGame(void)
 	}
 
 	// 時間が切れたらリザルトに以降
-	if (TimerUp(0) || GetJoypadTrigger(JOYKEY_X))
+	if (TimerUp(0))
 	{
 		SetFade(MODE_RESULT);
 	}
@@ -164,8 +194,12 @@ void UpdateGame(void)
 	{
 		SetFade(MODE_RESULT);
 	}
-#endif // !_DEBUG
+	if (GetJoypadTrigger(JOYKEY_Y))
+	{
+		OutputMap("data/map02.txt");
+	}
 
+#endif // !_DEBUG
 }
 
 //=========================================
@@ -201,10 +235,17 @@ void DrawGame(int cameraData)
 		{
 			DrawPause();
 		}
+
 #ifdef _DEBUG
-	DrawLine();		// ライン
-	DrawFPS();		// FPSの表示
+		if (s_bDebug)
+		{
+
+		}
+
+		DrawLine();		// ライン
+		DrawFPS();		// FPSの表示
 #endif // !_DEBUG
+
 		DrawTimer();		// タイム
 		break;
 	//case 1:

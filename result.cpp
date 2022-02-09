@@ -19,8 +19,8 @@
 #include "light.h"
 #include "model.h"
 #include "player.h"
-#include "mesh_sky.h"
 #include "mesh_field.h"
+#include "polygon.h"
 
 //------------------------------------
 // マクロ定義
@@ -44,16 +44,14 @@ void InitResult(void)
 	InitResultUI();		// リザルトUI
 	InitCamera();		// カメラ
 	InitLight();		// ライト
-	InitMeshSky();		// メッシュ(空)
-	SetMeshSky();		// メッシュ(空)の設定
+	InitPolygon();		// ポリゴン
 
-
-	// プレイヤーのゲット
+	// プレイヤーの設定
 	s_player = GetPlayer();
 	s_player->pos = ZERO_VECTOR;
 	s_player->pos.y = 50.0f;
 
-	// モデル
+	// モデルの設定
 	for (int i = 0; i < sizeof(s_player->aModel) / sizeof(s_player->aModel[0]); i++)
 	{
 		if (s_player->aModel[i] == NULL || !s_player->aModel[i]->bUse)
@@ -68,7 +66,8 @@ void InitResult(void)
 		SetModel(s_player->aModel[i]);	// 設定
 	}
 
-	upSpead = 0.01f;
+	// ポリゴンの設定
+	SetPolygon(&D3DXVECTOR3(0.0f, (400.0f * GetCamera(0)->fDistance / 60.0f) - 10.0f, 0.0f), &D3DXVECTOR3(D3DX_PI*-0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), "data/TEXTURE/sky.png", "wall");
 }
 
 //=========================================
@@ -82,7 +81,7 @@ void UninitResult(void)
 	UninitResultUI();	// リザルトUI
 	UninitCamera();		// カメラ
 	UninitLight();		// ライト
-	UninitMeshSky();	// メッシュ(空)
+	UninitPolygon();	// ポリゴン
 }
 
 //=========================================
@@ -95,7 +94,7 @@ void UpdateResult(void)
 	UpdateResultCamera();	// カメラ
 	UpdateLight();			// ライト
 	UpdateModel();			// モデル
-	UpdateMeshSky();		// メッシュ(空)
+	UpdatePolygon();		// ポリゴン
 
 	switch (modeResult)
 	{
@@ -108,22 +107,26 @@ void UpdateResult(void)
 
 		break;
 	case RESULT_1:
-
-		if (s_player->pos.y <= 500.0f)
-		{
-			upSpead += 0.01f;	// 速度上昇
-			s_player->pos.y += upSpead * upSpead;
-		}
-
-		if (GetFade() == FADE_NONE && DecisionKey())
-		{
-			SetFade(MODE_TITLE);	 // タイトル画面に移行
-		}
+	{
 		break;
+	}
 	default:
 		break;
 	}
 
+	D3DXVECTOR3 axis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 回転軸
+
+	D3DXQUATERNION quaternion;
+	D3DXQuaternionRotationAxis(&quaternion, &axis, 0.025f);	// 回転軸と回転角度を指定
+
+	s_player->aModel[0]->quaternion *= quaternion;
+	// クオータニオンのノーマライズ
+	D3DXQuaternionNormalize(&s_player->aModel[0]->quaternion, &s_player->aModel[0]->quaternion);
+
+	if (GetFade() == FADE_NONE && DecisionKey())
+	{
+		SetFade(MODE_TITLE);	 // タイトル画面に移行
+	}
 }
 
 //=========================================
@@ -145,10 +148,10 @@ void DrawResult(int cameraData)
 		
 		// 描画処理
 		SetCamera(cameraData);		// カメラ
-		DrawModel();		// モデル
-		DrawPlayer();		// プレイヤー
-		DrawMeshSky();		// メッシュ(空)
-		DrawResultUI();		// リザルトUI
+		DrawModel();				// モデル
+		DrawPlayer();				// プレイヤー
+		DrawResultUI();				// リザルトUI
+		DrawPolygon();				// ポリゴン
 	}
 }
 

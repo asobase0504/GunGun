@@ -25,7 +25,7 @@
 #define PLAYER_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
 #define MODEL_LOAD_FILE			("data/model.txt")
-#define MAP_LOAD_FILE			("data/map02.txt")
+#define MAP_LOAD_FILE			("data/map.txt")
 
 //------------------------------------
 // ê√ìIïœêî

@@ -160,6 +160,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="game_ui.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="item.cpp" />
     <ClCompile Include="key_config.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="line.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="game_ui.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="item.h" />
     <ClInclude Include="key_config.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="line.h" />

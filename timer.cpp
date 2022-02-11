@@ -1,6 +1,6 @@
 //=========================================
 // 
-// プレイヤー処理関数
+// タイム処理
 // Author KOZUNA HIROHITO
 // Author YudaKaito
 // 
@@ -8,31 +8,9 @@
 #include "timer.h"
 
 //マクロ定義
-#define MAX_TIMER_DITIT		(256)		//タイマー(1桁)の最大数
-#define MAX_TIMER			(64)		//タイマー(全体)の最大数
-
-//タイム(全体)の構造体の定義
-typedef struct
-{
-	int nSecond;
-	int nFps;
-	int nDigit;
-	int nNumber;
-	bool bUse;
-	bool bCount;
-}Timer;
-
-//タイム(1桁)の構造体の定義
-typedef struct
-{
-	float fWidth;
-	float fHeight;
-	D3DXVECTOR3 pos;
-	int nPatn;
-	int nNumber;
-	bool bUse;
-
-}TimerDigit;
+#define MAX_TIMER_DITIT		(256)		// タイマー(1桁)の最大数
+#define MAX_TIMER			(64)		// タイマー(全体)の最大数
+#define TIME_TEX			"data/TEXTURE/数字.png"	// タイマーのテクスチャ
 
 //グローバル変数
 static LPDIRECT3DTEXTURE9 g_pTextureTimer = { NULL };					//テクスチャへのポインタ
@@ -56,7 +34,7 @@ void InitTimer(void)
 
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/数字.png",
+		TIME_TEX,
 		&g_pTextureTimer);
 
 	//頂点バッファの生成
@@ -107,8 +85,6 @@ void InitTimer(void)
 	}
 	//頂点バッファをアンロック
 	g_pVtxBuffTimer->Unlock();
-
-
 }
 
 //=========================================
@@ -129,7 +105,6 @@ void UninitTimer(void)
 		g_pVtxBuffTimer->Release();
 		g_pVtxBuffTimer = NULL;
 	}
-
 }
 
 //=========================================
@@ -141,22 +116,24 @@ void UpdateTimer(void)
 	{
 		Timer* timer = &(g_Timer[i]);
 
-		if (timer->bUse && timer->bCount)
+		if (!timer->bUse && !timer->bCount)
 		{
-			timer->nFps++;
-			if (timer->nFps >= 55)
+			continue;
+		}
+
+		timer->nFps++;
+		if (timer->nFps >= 55)
+		{
+			timer->nFps = 0;
+
+			if (timer->nSecond >= 0)
 			{
-				timer->nFps = 0;
-				
-				if (timer->nSecond >= 0)
-				{
-					//タイムのセット
-					SetTimer(timer->nNumber, timer->nSecond);
-				}
-				
-				//タイマーを進める
-				timer->nSecond--;
+				//タイムのセット
+				SetTimer(timer->nNumber, timer->nSecond);
 			}
+
+			//タイマーを進める
+			timer->nSecond--;
 		}
 	}
 
@@ -202,63 +179,77 @@ void DrawTimer(void)
 
 	for (int nCnt = 0; nCnt < MAX_TIMER_DITIT; nCnt++)
 	{
-		if (g_TimerDigit[nCnt].bUse)
+		if (!g_TimerDigit[nCnt].bUse)
 		{
-			//ポリゴンの描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,		//プリミティブの種類
-				4 * nCnt,						//描画する最初の頂点インデックス
-				2);		//プリミティブ（ポリゴン）数
+			continue;
 		}
+
+		//ポリゴンの描画
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,		//プリミティブの種類
+			4 * nCnt,						//描画する最初の頂点インデックス
+			2);		//プリミティブ（ポリゴン）数
 	}
 }
 
 //=========================================
-//タイムの開始処理
+// タイムの取得処理
+//=========================================
+Timer* GetTimer(int nNumber)
+{
+	return &g_Timer[nNumber];
+}
+
+//=========================================
+// タイムの開始処理
 //=========================================
 void StartTimer(int nSecond, int nDigit, float fWidth, float fHeight, D3DXVECTOR3 pos, int nPatn)
 {
 	int nCntTimer;
 	for (nCntTimer = 0; nCntTimer < MAX_TIMER; nCntTimer++)
 	{//タイマーのグループのループ
-		if (!g_Timer[nCntTimer].bUse)
+
+		if (g_Timer[nCntTimer].bUse)
 		{
-			g_Timer[nCntTimer].nSecond = nSecond;//表示時間
-			//タイマーの番号
-			if (nCntTimer - 1 < 0)
-			{
-				g_Timer[nCntTimer].nNumber = 0;
-			}
-			else
-			{
-				g_Timer[nCntTimer].nNumber = g_Timer[nCntTimer - 1].nNumber + 1;
-			}
-			g_Timer[nCntTimer].bUse = true;//使用してるかどうか
-			g_Timer[nCntTimer].bCount = false;//カウントが止まっている状態
-
-			break;
+			continue;
 		}
-	}
 
-	
+		g_Timer[nCntTimer].nSecond = nSecond;	//表示時間
+		
+		//タイマーの番号
+		if (nCntTimer - 1 < 0)
+		{
+			g_Timer[nCntTimer].nNumber = 0;
+		}
+		else
+		{
+			g_Timer[nCntTimer].nNumber = g_Timer[nCntTimer - 1].nNumber + 1;
+		}
+		g_Timer[nCntTimer].bUse = true;//使用してるかどうか
+		g_Timer[nCntTimer].bCount = false;//カウントが止まっている状態
+
+		break;
+	}
 
 	for (int nCnt = 0; nCnt < MAX_TIMER_DITIT; nCnt++)
 	{//タイマーの１桁のループ
 		TimerDigit *timerDigit = &(g_TimerDigit[nCnt]);
 
-		if (!timerDigit->bUse)
+		if (timerDigit->bUse)
 		{
-			timerDigit->fWidth = fWidth;//横幅
-			timerDigit->fHeight = fHeight;//縦幅
-			timerDigit->pos = D3DXVECTOR3(pos.x - g_Timer[nCntTimer].nDigit * fWidth * 2, pos.y, 0.0f);//位置
-			timerDigit->nPatn = nPatn;//表示のしかた
-			timerDigit->nNumber = g_Timer[nCntTimer].nNumber;//タイマーの番号
-			timerDigit->bUse = true;//使用してるかどうか
-			g_Timer[nCntTimer].nDigit++;//必要な桁数カウント
+			continue;
+		}
 
-			if (g_Timer[nCntTimer].nDigit == nDigit + 1)
-			{
-				break;
-			}
+		timerDigit->fWidth = fWidth;	//横幅
+		timerDigit->fHeight = fHeight;	//縦幅
+		timerDigit->pos = D3DXVECTOR3(pos.x - g_Timer[nCntTimer].nDigit * fWidth * 2, pos.y, 0.0f);//位置
+		timerDigit->nPatn = nPatn;//表示のしかた
+		timerDigit->nNumber = g_Timer[nCntTimer].nNumber;//タイマーの番号
+		timerDigit->bUse = true;//使用してるかどうか
+		g_Timer[nCntTimer].nDigit++;//必要な桁数カウント
+
+		if (g_Timer[nCntTimer].nDigit == nDigit + 1)
+		{
+			break;
 		}
 	}
 
@@ -273,12 +264,9 @@ bool TimerUp(int nNumber)
 {
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
-		if (g_Timer[nCnt].bUse && g_Timer[nCnt].nNumber == nNumber)
+		if (g_Timer[nCnt].bUse && g_Timer[nCnt].nNumber == nNumber && g_Timer[nCnt].nSecond <= 0)
 		{
-			if (g_Timer[nCnt].nSecond <= 0)
-			{
 				return true;
-			}
 		}
 	}
 	return false;
@@ -333,44 +321,49 @@ void BreakTimer(int nNumber)
 static void SetTimer(int nNumber, int nSecond)
 {
 	int aPosTexU = 0;
-	VERTEX_2D *pVtx;		//頂点情報へのポインタ
 
 	for (int nCntTimer = 0; nCntTimer < MAX_TIMER; nCntTimer++)
 	{
 		Timer* timer = &(g_Timer[nCntTimer]);
 
-		if (timer->bUse && timer->nNumber == nNumber)
+		if (!timer->bUse || timer->nNumber != nNumber)
 		{
-			for (int nCntDigit = 0; nCntDigit < MAX_TIMER_DITIT; nCntDigit++)
+			continue;
+		}
+
+		for (int nCntDigit = 0; nCntDigit < MAX_TIMER_DITIT; nCntDigit++)
+		{
+			TimerDigit *timerDigit = &(g_TimerDigit[nCntDigit]);
+
+			if (!timerDigit->bUse || timerDigit->nNumber != nNumber)
 			{
-				TimerDigit *timerDigit = &(g_TimerDigit[nCntDigit]);
-
-				if (timerDigit->bUse && timerDigit->nNumber == nNumber)
-				{
-					// 頂点バッファをロックし、頂点情報へのポインタを取得
-					g_pVtxBuffTimer->Lock(0, 0, (void**)&pVtx, 0);
-
-					pVtx += 4 * nCntDigit;  //頂点データのポインタを４* nCntDigitつ分進める
-					
-					for (int nCntTexU = 0, nCnt = 1; nCntTexU < timer->nDigit; nCntTexU++, nCnt *= 10)
-					{
-						aPosTexU = nSecond % (nCnt * 10) / nCnt;	//各位の数字を格納
-
-						//テクスチャ座標の設定
-						pVtx[0].tex = D3DXVECTOR2(0.1f * aPosTexU, 0.0f);
-						pVtx[1].tex = D3DXVECTOR2(0.1f * (aPosTexU + 1), 0.0f);
-						pVtx[2].tex = D3DXVECTOR2(0.1f * aPosTexU, 1.0f);
-						pVtx[3].tex = D3DXVECTOR2(0.1f * (aPosTexU + 1), 1.0f);
-
-						pVtx += 4;  //頂点データのポインタを４つ分進める
-
-					}
-					//頂点バッファをアンロック
-					g_pVtxBuffTimer->Unlock();
-
-					return;
-				}
+				continue;
 			}
+
+			VERTEX_2D *pVtx;		//頂点情報へのポインタ
+			
+			// 頂点バッファをロックし、頂点情報へのポインタを取得
+			g_pVtxBuffTimer->Lock(0, 0, (void**)&pVtx, 0);
+
+			pVtx += 4 * nCntDigit;  //頂点データのポインタを４* nCntDigitつ分進める
+
+			for (int nCntTexU = 0, nCnt = 1; nCntTexU < timer->nDigit; nCntTexU++, nCnt *= 10)
+			{
+				aPosTexU = nSecond % (nCnt * 10) / nCnt;	//各位の数字を格納
+
+				//テクスチャ座標の設定
+				pVtx[0].tex = D3DXVECTOR2(0.1f * aPosTexU, 0.0f);
+				pVtx[1].tex = D3DXVECTOR2(0.1f * (aPosTexU + 1), 0.0f);
+				pVtx[2].tex = D3DXVECTOR2(0.1f * aPosTexU, 1.0f);
+				pVtx[3].tex = D3DXVECTOR2(0.1f * (aPosTexU + 1), 1.0f);
+
+				pVtx += 4;  //頂点データのポインタを４つ分進める
+
+			}
+			//頂点バッファをアンロック
+			g_pVtxBuffTimer->Unlock();
+
+			return;
 		}
 	}
 }
@@ -378,14 +371,16 @@ static void SetTimer(int nNumber, int nSecond)
 //=========================================
 //カウントのリスタートとストップ処理
 //=========================================
-void CountRestartStop(bool bCount ,int nNumber)
+void CountRestartStop(bool bCount, int nNumber)
 {
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
-		if (g_Timer[nCnt].bUse && g_Timer[nCnt].nNumber == nNumber)
+		if (!g_Timer[nCnt].bUse && g_Timer[nCnt].nNumber != nNumber)
 		{
-			g_Timer[nCnt].bCount = bCount;//カウントをリスタートかストップさせる
-			break;
+			continue;
 		}
+
+		g_Timer[nCnt].bCount = bCount;//カウントをリスタートかストップさせる
+		break;
 	}
 }

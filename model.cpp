@@ -25,7 +25,7 @@
 #define PLAYER_MOVE				(1.0f)
 #define MODEL_ROT_ATTENUATION	(0.05f)
 #define MODEL_LOAD_FILE			("data/model.txt")
-#define MAP_LOAD_FILE			("data/map.txt")
+#define MAP_LOAD_FILE			("data/map03.txt")
 
 //------------------------------------
 // ê√ìIïœêî
@@ -473,7 +473,7 @@ void LoadMap(void)
 
 				fscanf(pFile, "%s", &read);
 				fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
-				s_Model[nModelData].rot = rot;
+				D3DXQuaternionRotationYawPitchRoll(&s_Model[nModelData].quaternion, rot.y, rot.x, rot.z);
 			}
 		}
 		if (isPlayer)
@@ -508,7 +508,7 @@ void LoadMap(void)
 //=========================================
 // ê›íË
 //=========================================
-void SetModel(Model* model)
+Model* SetModel(Model* model)
 {
 	for (int i = 0; i < MODEL_MAX; i++)
 	{
@@ -521,7 +521,7 @@ void SetModel(Model* model)
 
 		pModel = model;
 
-		break;
+		return pModel;
 	}
 }
 

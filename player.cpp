@@ -72,6 +72,11 @@ void InitPlayer(void)
 	s_player.movevec = ZERO_VECTOR;
 	s_player.aModel[0]->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
 
+	if (s_player.pos.y - s_player.fLength <= 0.0f)
+	{
+		s_player.pos.y = s_player.fLength;
+	}
+
 	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
 	{
 		Model* model = s_player.aModel[i];
@@ -141,7 +146,7 @@ void UpdatePlayer(void)
 	MovePlayer();
 	
 	// プレイヤーと床の当たり判定
-	//CollisionMeshField(&pPlayer->pos);
+	CollisionMeshField(&pPlayer->pos);
 
 	// モデルパーツごとの当たり判定
 	ColisionPartsModel();

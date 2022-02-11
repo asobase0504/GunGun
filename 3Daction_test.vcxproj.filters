@@ -22,6 +22,12 @@
     <Filter Include="01_Setem">
       <UniqueIdentifier>{2841e225-c3ba-4c36-8870-53312dada8cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="txt">
+      <UniqueIdentifier>{d77810b7-393d-46ea-91fa-bb038126604a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_2D">
+      <UniqueIdentifier>{73fc32fb-3d7d-4002-a4a8-dc476bbba4cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="shadow.cpp">
@@ -49,9 +55,6 @@
       <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="fade.cpp">
-      <Filter>00_メインファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="result_ui.cpp">
       <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="billboard.cpp">
@@ -99,14 +102,8 @@
     <ClCompile Include="wall.cpp">
       <Filter>02_3DStage</Filter>
     </ClCompile>
-    <ClCompile Include="game_ui.cpp">
-      <Filter>00_メインファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ui.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="title_ui.cpp">
-      <Filter>00_メインファイル</Filter>
     </ClCompile>
     <ClCompile Include="load.cpp">
       <Filter>01_Setem</Filter>
@@ -116,6 +113,18 @@
     </ClCompile>
     <ClCompile Include="item.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="result_ui.cpp">
+      <Filter>03_2D</Filter>
+    </ClCompile>
+    <ClCompile Include="title_ui.cpp">
+      <Filter>03_2D</Filter>
+    </ClCompile>
+    <ClCompile Include="game_ui.cpp">
+      <Filter>03_2D</Filter>
+    </ClCompile>
+    <ClCompile Include="countdown.cpp">
+      <Filter>03_2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,9 +153,6 @@
       <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>00_メインファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="result_ui.h">
       <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
@@ -194,14 +200,8 @@
     <ClInclude Include="wall.h">
       <Filter>02_3DStage</Filter>
     </ClInclude>
-    <ClInclude Include="game_ui.h">
-      <Filter>00_メインファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ui.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="title_ui.h">
-      <Filter>00_メインファイル</Filter>
     </ClInclude>
     <ClInclude Include="load.h">
       <Filter>01_Setem</Filter>
@@ -212,5 +212,28 @@
     <ClInclude Include="item.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="title_ui.h">
+      <Filter>03_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="result_ui.h">
+      <Filter>03_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="game_ui.h">
+      <Filter>03_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="countdown.h">
+      <Filter>03_2D</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\map.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="data\map02.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="data\model.txt">
+      <Filter>txt</Filter>
+    </Text>
   </ItemGroup>
 </Project>

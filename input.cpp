@@ -214,7 +214,7 @@ bool GetKeyboardTrigger(int nKey)
 }
 
 //キーボードの全キープレス情報を取得
-bool GetKeyboardAllPress(void)
+bool GetKeyboardPress(void)
 {
 	for (int nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
 	{
@@ -227,7 +227,7 @@ bool GetKeyboardAllPress(void)
 }
 
 //キーボードの全キートリガー情報を取得
-bool GetKeyboardAllTrigger(void)
+bool GetKeyboardTrigger(void)
 {
 	for (int nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
 	{

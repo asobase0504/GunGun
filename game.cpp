@@ -41,6 +41,8 @@
 static bool s_bPause;			// ポーズ中かどうか
 static int	s_nSizeCnt;			// 大きさの区切り回数
 static bool s_bDebug;			// デバッグモードかどうか
+static bool s_bCountDownTime;	// カウントダウン中か否か 
+static int	nDelayCnt;			// 遅延時のカウント
 
 //=========================================
 // 初期化
@@ -49,6 +51,8 @@ void InitGame(void)
 {
 	s_bPause = false;
 	s_bDebug = false;
+	s_bCountDownTime = false;
+
 	s_nSizeCnt = 1;
 #ifdef _DEBUG
 	// ラインの初期化処理
@@ -69,13 +73,13 @@ void InitGame(void)
 	InitGameUI();		// UI
 
 	// タイムの設定処理
-	StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
+	StartTimer(3, 0, 40.0f, 80.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), 0);
 	CountRestartStop(true, 0);
+	CountRestartStop(true, 1);
 
 	// ポリゴンの設定処理
 	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), NULL, "floar");
 	SetPolygonUI(&D3DXVECTOR3(-25.5f, -10.5f, 30.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(5.0f, 0.0f, 5.0f), "data/TEXTURE/Circle.png");
-	//SetPolygonUI(&D3DXVECTOR3(0.0f, 10.0f, -50.0f), &D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(150.0f, 0.0f, 50.0f), "data/TEXTURE/bee_tex.jpg");
 
 	// メッシュフィールドの設定処理
 	SetMesh setMesh;
@@ -112,7 +116,7 @@ void UninitGame(void)
 #endif // !_DEBUG
 
 	// タイマーの破棄
-	BreakTimer(0);
+	BreakTimer(1);
 }
 
 //=========================================
@@ -120,7 +124,27 @@ void UninitGame(void)
 //=========================================
 void UpdateGame(void)
 {
-	if (GetJoypadTrigger(JOYKEY_START))
+	if (!TimerUp(0) && GetTimer(0)->bUse)
+	{
+		UpdateTimer();			// プレイヤー
+		return;
+	}
+
+	if (!s_bCountDownTime)
+	{
+		StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
+		// タイマーの破棄
+		BreakTimer(0);
+		s_bCountDownTime  = true;
+	}
+
+	if (nDelayCnt < 30)
+	{
+		nDelayCnt++;
+		return;
+	}
+
+	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardTrigger(DIK_P))
 	{
 		s_bPause = !s_bPause;
 	}
@@ -152,25 +176,6 @@ void UpdateGame(void)
 		UpdateWall();			// 壁
 		UpdateTimer();			// タイム
 
-#ifdef _DEBUG
-		UpdateLine();	// ライン
-		if (GetJoypadTrigger(JOYKEY_BACK))
-		{
-			s_bDebug = !s_bDebug;
-
-			if (s_bDebug)
-			{
-				InitItem();
-			}
-			else
-			{
-				UninitItem();
-			}
-		}
-#else
-
-#endif // !_DEBUG
-
 		UpdateGameUI();			// UI
 
 		Player* player = GetPlayer();
@@ -184,21 +189,38 @@ void UpdateGame(void)
 	}
 
 	// 時間が切れたらリザルトに以降
-	if (TimerUp(0))
+	if (TimerUp(1))
 	{
 		SetFade(MODE_RESULT);
 	}
 
 #ifdef _DEBUG
+	UpdateLine();	// ライン
+
+	// エディタモードの切り替え
+	if (GetJoypadTrigger(JOYKEY_BACK))
+	{
+		s_bDebug = !s_bDebug;
+
+		if (s_bDebug)
+		{
+			InitItem();
+		}
+		else
+		{
+			UninitItem();
+		}
+	}
+	// リザルト画面に移動
 	if (GetJoypadTrigger(JOYKEY_X))
 	{
 		SetFade(MODE_RESULT);
 	}
+	// マップの更新
 	if (GetJoypadTrigger(JOYKEY_Y))
 	{
 		OutputMap("data/map02.txt");
 	}
-
 #endif // !_DEBUG
 }
 
@@ -239,7 +261,7 @@ void DrawGame(int cameraData)
 #ifdef _DEBUG
 		if (s_bDebug)
 		{
-
+			DrawItem();
 		}
 
 		DrawLine();		// ライン

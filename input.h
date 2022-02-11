@@ -22,7 +22,6 @@
 //----------------------------------------------------------------------------
 // インクルードファイル
 //----------------------------------------------------------------------------
-
 #include "main.h"
 
 //----------------------------------------------------------------------------
@@ -69,20 +68,19 @@ typedef enum
 //----------------------------------------------------------------------------
 // プロトタイプ宣言
 //----------------------------------------------------------------------------
-
-// 入力処理のプロトタイプ宣言
+// 入力処理
 
 HRESULT InitInput(HINSTANCE hInstance, HWND hWnd);		// 入力処理全部の初期化
 void UninitInput(void);									// 入力処理全部の終了処理
 void UpdateInput(void);									// 入力処理全部の更新処理
 
-// プロトタイプ宣言キーボード
-bool GetKeyboardPress(int nKey);			// キーボードプレス処理
-bool GetKeyboardTrigger(int nKey);			// キーボードトリガー処理
-bool GetKeyboardAllPress(void);				// キーボード全キープレス処理
-bool GetKeyboardAllTrigger(void);			// キーボード全キートリガー処理
+// キーボード
+bool GetKeyboardPress(void);			// キーボード全キープレス処理
+bool GetKeyboardPress(int nKey);		// キーボードプレス処理
+bool GetKeyboardTrigger(void);			// キーボード全キートリガー処理
+bool GetKeyboardTrigger(int nKey);		// キーボードトリガー処理
 
-// プロトタイプ宣言ジョイパット
+// ジョイパッド
 bool GetJoypadPress(void);										// ジョイパッドプレス処理(キー指定なし)
 bool GetJoypadPress(JOYKEY Key);								// ジョイパッドプレス処理(プレイヤー指定なし)
 bool GetJoypadPress(JOYKEY Key, int nPlayer);					// ジョイパッドプレス処理(プレイヤー指定あり)

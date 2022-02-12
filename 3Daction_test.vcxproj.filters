@@ -126,6 +126,9 @@
     <ClCompile Include="countdown.cpp">
       <Filter>03_2D</Filter>
     </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>01_Setem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shadow.h">
@@ -223,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="countdown.h">
       <Filter>03_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>01_Setem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

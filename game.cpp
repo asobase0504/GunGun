@@ -33,7 +33,7 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MESH_FIELD	"data/TEXTURE/bg001.jpg"
+#define MESH_FIELD	"data/TEXTURE/kusa.jpg"
 
 //------------------------------------
 // スタティック変数
@@ -124,9 +124,25 @@ void UninitGame(void)
 //=========================================
 void UpdateGame(void)
 {
+	// ポーズ中ならポーズ以外を更新しない
+	if (s_bPause)
+	{
+		UpdatePause();		// ポーズ
+		return;
+	}
+
+	UpdateTimer();			// タイム
+
+	// カウントダウン判定
 	if (!TimerUp(0) && GetTimer(0)->bUse)
 	{
-		UpdateTimer();			// プレイヤー
+		return;
+	}
+
+	// ゲームスタート時の遅延
+	if (nDelayCnt < 30)
+	{
+		nDelayCnt++;
 		return;
 	}
 
@@ -135,13 +151,7 @@ void UpdateGame(void)
 		StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
 		// タイマーの破棄
 		BreakTimer(0);
-		s_bCountDownTime  = true;
-	}
-
-	if (nDelayCnt < 30)
-	{
-		nDelayCnt++;
-		return;
+		s_bCountDownTime = true;
 	}
 
 	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardTrigger(DIK_P))
@@ -149,43 +159,24 @@ void UpdateGame(void)
 		s_bPause = !s_bPause;
 	}
 
-	if (s_bPause)
+	// 更新
+	UpdateModel();			// モデル
+	UpdatePlayer();			// プレイヤー
+	UpdateGameCamera();		// カメラ
+	UpdateLight();			// ライト
+	UpdatePolygon();		// ポリゴン
+	UpdateShadow();			// 影
+	UpdateMeshField();		// メッシュ
+	UpdateWall();			// 壁
+
+	UpdateGameUI();			// UI
+
+	Player* player = GetPlayer();
+	// プレイヤーが画面一杯になったら画面の拡大
+	if ((int)player->fLength / 24 == s_nSizeCnt)
 	{
-		UpdatePause();	// ポーズ
-	}
-	else
-	{
-		// 更新
-		UpdateModel();			// モデル
-
-		// デバッグモードかどうか
-		if (!s_bDebug)
-		{
-			UpdatePlayer();			// プレイヤー
-		}
-		else
-		{
-			UpdateItem();
-		}
-
-		UpdateGameCamera();		// カメラ
-		UpdateLight();			// ライト
-		UpdatePolygon();		// ポリゴン
-		UpdateShadow();			// 影
-		UpdateMeshField();		// メッシュ
-		UpdateWall();			// 壁
-		UpdateTimer();			// タイム
-
-		UpdateGameUI();			// UI
-
-		Player* player = GetPlayer();
-		// プレイヤーが画面一杯になったら画面の拡大
-		if ((int)player->fLength / 24 == s_nSizeCnt)
-		{
-			GetCamera(0)->fDistance *= 1.5f;
-			s_nSizeCnt++;
-		}
-
+		GetCamera(0)->fDistance *= 1.5f;
+		s_nSizeCnt++;
 	}
 
 	// 時間が切れたらリザルトに以降

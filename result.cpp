@@ -12,6 +12,7 @@
 #include "key_config.h"
 #include "common.h"
 #include "fade.h"
+#include "sound.h"
 // 2D
 #include "result_ui.h"
 // 3D
@@ -68,6 +69,8 @@ void InitResult(void)
 
 	// ポリゴンの設定
 	SetPolygon(&D3DXVECTOR3(0.0f, (400.0f * GetCamera(0)->fDistance / 60.0f) - 10.0f, 0.0f), &D3DXVECTOR3(D3DX_PI*-0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), "data/TEXTURE/sky.png", "wall");
+
+	PlaySound(SOUND_LABEL_BGM_RESULT);
 }
 
 //=========================================
@@ -75,6 +78,7 @@ void InitResult(void)
 //=========================================
 void UninitResult(void)
 {
+	StopSound();
 	// 終了処理
 	UninitModel();		// モデル
 	UninitPlayer();		// プレイヤー

@@ -19,7 +19,7 @@
 #include "mesh_field.h"
 #include "player.h"
 #include "model.h"
-
+#include "sound.h"
 #include <assert.h>
 
 //------------------------------------
@@ -129,6 +129,7 @@ void InitTitle(void)
 	setMesh.rot = ZERO_VECTOR;
 	SetMeshField(&setMesh);
 
+	PlaySound(SOUND_LABEL_BGM_TITLE);
 }
 
 //=========================================
@@ -136,6 +137,7 @@ void InitTitle(void)
 //=========================================
 void UninitTitle(void)
 {
+	StopSound();
 	UninitCamera();		// カメラ
 	UninitLight();		// ライト
 	UninitPolygon();	// ポリゴン

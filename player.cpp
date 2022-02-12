@@ -17,6 +17,7 @@
 #include "model.h"
 #include "shadow.h"
 #include "mesh_field.h"
+#include "sound.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -62,15 +63,10 @@ void InitPlayer(void)
 	// プレイヤーにくっつくモデルの配置
 	LoadModel();
 	LoadMap();
-	// 読み込み処理
-	//LoadPlayer();
 
 	s_player.fLength += s_player.aModel[0]->fLength;
-	s_player.pos = ZERO_VECTOR;
 	s_player.pos.y = -s_player.MinVtx.y;
-	s_player.rot = ZERO_VECTOR;
-	s_player.movevec = ZERO_VECTOR;
-	s_player.aModel[0]->quaternion = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f);	// クォータニオン
+	s_player.aModel[0]->quaternion = ZERO_QUATERNION;	// クォータニオン
 
 	if (s_player.pos.y - s_player.fLength <= 0.0f)
 	{
@@ -81,15 +77,10 @@ void InitPlayer(void)
 	{
 		Model* model = s_player.aModel[i];
 
-		if (model == NULL)
+		if (model == NULL || !(model->bUse))
 		{
 			continue;
 		}
-		if (!(model->bUse))
-		{
-			continue;
-		}
-
 		model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
 	}
 
@@ -146,7 +137,7 @@ void UpdatePlayer(void)
 	MovePlayer();
 	
 	// プレイヤーと床の当たり判定
-	CollisionMeshField(&pPlayer->pos);
+	//CollisionMeshField(&pPlayer->pos);
 
 	// モデルパーツごとの当たり判定
 	ColisionPartsModel();
@@ -155,7 +146,7 @@ void UpdatePlayer(void)
 	LookUpSizePlayer();
 	
 	// 地面までの離す距離
-	pPlayer->pos.y -= 0.5f;
+	pPlayer->pos.y -= 1.5f;
 	if (pPlayer->pos.y - pPlayer->fLength <= 0.0f)
 	{
 		pPlayer->pos.y = pPlayer->fLength;
@@ -253,7 +244,7 @@ void MovePlayer()
 	D3DXQuaternionNormalize(&s_player.aModel[0]->quaternion, &s_player.aModel[0]->quaternion);
 
 	// 方向ベクトル掛ける移動量
-	s_player.movevec = move * moveLength * PLAYER_MOVE;
+	s_player.movevec = move * moveLength * PLAYER_MOVE * 2.0f * ((s_player.fLength / 24.0f + 1) * 0.5f);
 	s_player.pos += s_player.movevec;
 }
 
@@ -300,6 +291,7 @@ void ColisionPartsModel(void)
 		{
 			if (s_player.fLength >= model->sizeCriter)
 			{	// 取り込めるサイズの場合
+				PlaySound(SOUND_LABEL_SE_GETITEM);
 				D3DXMATRIX mtxRot;
 				D3DXVECTOR3 pos_local = model->pos_world - s_player.pos_old;
 				D3DXVECTOR3 v = ZERO_VECTOR;
@@ -311,7 +303,7 @@ void ColisionPartsModel(void)
 				D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
 				D3DXVec3TransformCoord(&model->pos, &pos_local, &mtxRot);
 
-				model->quaternion = quaternionHit;
+				model->quaternion *= quaternionHit;
 				model->nIdxModelParent = 0;
 
 				// プレイヤーの長さを規定値加算

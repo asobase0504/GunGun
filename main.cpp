@@ -16,8 +16,7 @@
 #include "result.h"
 #include "debug.h"
 #include <stdio.h>
-#include "player.h"
-#include "camera.h"
+#include "sound.h"
 
 //-----------------------------------------
 // マクロ定義
@@ -300,6 +299,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
+	InitSound(hWnd);
+
 	// モードの設定
 	InitFade(s_mode);
 
@@ -312,6 +313,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 void Uninit(void)
 {
 	UninitFPS();
+	UninitSound();
 
 	//// デバッグ表示用フォントの破棄
 	//if (g_pFont != NULL)

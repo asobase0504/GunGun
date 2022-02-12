@@ -28,7 +28,7 @@
 #include "fade.h"
 #include "debug.h"
 #include "game_ui.h"
-#include "item.h"
+#include "sound.h"
 
 //------------------------------------
 // マクロ定義
@@ -91,6 +91,8 @@ void InitGame(void)
 	setMesh.pos = ZERO_VECTOR;
 	setMesh.rot = ZERO_VECTOR;
 	SetMeshField(&setMesh);
+
+	PlaySound(SOUND_LABEL_BGM_GAME);
 }
 
 //=========================================
@@ -98,6 +100,7 @@ void InitGame(void)
 //=========================================
 void UninitGame(void)
 {
+	StopSound();
 	// 終了
 	UninitTimer();			// タイム
 	UninitPause();			// ポーズ
@@ -148,7 +151,7 @@ void UpdateGame(void)
 
 	if (!s_bCountDownTime)
 	{
-		StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
+		StartTimer(60, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
 		// タイマーの破棄
 		BreakTimer(0);
 		s_bCountDownTime = true;
@@ -173,9 +176,10 @@ void UpdateGame(void)
 
 	Player* player = GetPlayer();
 	// プレイヤーが画面一杯になったら画面の拡大
-	if ((int)player->fLength / 24 == s_nSizeCnt)
+	if ((int)player->fLength / 32 == s_nSizeCnt)
 	{
 		GetCamera(0)->fDistance *= 1.5f;
+		GetCamera(0)->posV.y += player->fLength / s_nSizeCnt;
 		s_nSizeCnt++;
 	}
 
@@ -188,20 +192,6 @@ void UpdateGame(void)
 #ifdef _DEBUG
 	UpdateLine();	// ライン
 
-	// エディタモードの切り替え
-	if (GetJoypadTrigger(JOYKEY_BACK))
-	{
-		s_bDebug = !s_bDebug;
-
-		if (s_bDebug)
-		{
-			InitItem();
-		}
-		else
-		{
-			UninitItem();
-		}
-	}
 	// リザルト画面に移動
 	if (GetJoypadTrigger(JOYKEY_X))
 	{
@@ -250,11 +240,6 @@ void DrawGame(int cameraData)
 		}
 
 #ifdef _DEBUG
-		if (s_bDebug)
-		{
-			DrawItem();
-		}
-
 		DrawLine();		// ライン
 		DrawFPS();		// FPSの表示
 #endif // !_DEBUG

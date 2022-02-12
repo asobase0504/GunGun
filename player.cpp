@@ -154,24 +154,6 @@ void UpdatePlayer(void)
 	// プレイヤーの球の半径を求める
 	LookUpSizePlayer();
 	
-	/// 球の凸凹を表現するための当たり判定
-	//float fData = 0.0f;
-	//for (int i = 0; i < PARTS_NUM; i++)
-	//{
-	//	Model* model = pPlayer->aModel[i];
-	//
-	//	if (model == NULL || !model->bUse || model->nIdxModelParent != 0)
-	//	{
-	//		continue;
-	//	}
-	//
-	//	if (model->pos_world.y + pPlayer->fLengthLand * 2.0f < fData)
-	//	{
-	//		fData = model->pos_world.y + pPlayer->fLengthLand * 2.0f;
-	//	}
-	//}
-	//pPlayer->fLengthLand = fData;
-
 	// 地面までの離す距離
 	pPlayer->pos.y -= 0.5f;
 	if (pPlayer->pos.y - pPlayer->fLength <= 0.0f)
@@ -307,11 +289,7 @@ void ColisionPartsModel(void)
 	{
 		Model* model = s_player.aModel[j];
 
-		if (model == NULL)
-		{
-			continue;
-		}
-		if (!(model->bUse) || model->nIdxModelParent != -2)
+		if (model == NULL || !(model->bUse) || model->nIdxModelParent != -2)
 		{
 			continue;
 		}
@@ -340,7 +318,6 @@ void ColisionPartsModel(void)
 				s_player.fLength += model->sizeAdd;
 
 				s_player.nModelCnt++;
-
 				s_getModel = *model;
 			}
 			else
@@ -352,7 +329,9 @@ void ColisionPartsModel(void)
 				s_player.movevec = ZERO_VECTOR;
 
 				s_player.pos -= vec;
-				//s_player.pos.y += 1.0f;
+
+				// 上る処理
+				s_player.pos.y += 1.0f;
 			}
 		}
 	}

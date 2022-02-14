@@ -12,6 +12,7 @@
 #include "game.h"
 #include "common.h"
 #include "player.h"
+#include "input.h"
 #include <stdio.h>
 
 //------------------------------------
@@ -130,7 +131,7 @@ void InitGameUI(void)
 		object->vtxBuff->Unlock();
 	}
 
-	// 左スティックを置く場所の背景
+	// 移動方法
 	{
 		object = &(uiOperationDescription[0]);
 		ZeroMemory(object, sizeof(object));
@@ -140,9 +141,16 @@ void InitGameUI(void)
 		object->Width = 150.0f;								// 幅
 		object->bUse = true;								// 使用に切り替え
 
-		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/LeftStick.png", &object->tex);	// テクスチャの読込
+		if (IsJoyPadUse(0))
+		{
+			D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/LeftStick.png", &object->tex);	// テクスチャの読込
+		}
+		else
+		{
+			D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/WASD.png", &object->tex);	// テクスチャの読込
+		}
 
-																								// 頂点バッファの生成
+		// 頂点バッファの生成
 		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
 			D3DUSAGE_WRITEONLY,
 			FVF_VERTEX_2D,
@@ -165,7 +173,7 @@ void InitGameUI(void)
 		object->vtxBuff->Unlock();
 	}
 
-	// 左スティックを置く場所の背景
+	// 移動
 	{
 		object = &(uiOperationDescription[1]);
 		ZeroMemory(object, sizeof(object));
@@ -177,7 +185,7 @@ void InitGameUI(void)
 
 		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/move.png", &object->tex);	// テクスチャの読込
 
-																						// 頂点バッファの生成
+		// 頂点バッファの生成
 		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
 			D3DUSAGE_WRITEONLY,
 			FVF_VERTEX_2D,
@@ -200,7 +208,7 @@ void InitGameUI(void)
 		object->vtxBuff->Unlock();
 	}
 
-	// 左スティックを置く場所の背景
+	// カメラ移動の方法
 	{
 		object = &(uiOperationDescription[2]);
 		ZeroMemory(object, sizeof(object));
@@ -210,9 +218,16 @@ void InitGameUI(void)
 		object->Width = 150.0f;								// 幅
 		object->bUse = true;								// 使用に切り替え
 
-		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/RightStick.png", &object->tex);	// テクスチャの読込
+		if (IsJoyPadUse(0))
+		{
+			D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/RightStick.png", &object->tex);	// テクスチャの読込
+		}
+		else
+		{
+			D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/QE.png", &object->tex);	// テクスチャの読込
+		}
 
-																								// 頂点バッファの生成
+		// 頂点バッファの生成
 		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
 			D3DUSAGE_WRITEONLY,
 			FVF_VERTEX_2D,
@@ -235,7 +250,7 @@ void InitGameUI(void)
 		object->vtxBuff->Unlock();
 	}
 
-	// 左スティックを置く場所の背景
+	// カメラ移動
 	{
 		object = &(uiOperationDescription[3]);
 		ZeroMemory(object, sizeof(object));

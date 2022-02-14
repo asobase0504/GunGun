@@ -241,5 +241,11 @@
     <Text Include="data\model.txt">
       <Filter>txt</Filter>
     </Text>
+    <Text Include="data\map06.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="data\map05.txt">
+      <Filter>txt</Filter>
+    </Text>
   </ItemGroup>
 </Project>

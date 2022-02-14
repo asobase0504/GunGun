@@ -223,6 +223,8 @@
   <ItemGroup>
     <Text Include="data\map.txt" />
     <Text Include="data\map02.txt" />
+    <Text Include="data\map05.txt" />
+    <Text Include="data\map06.txt" />
     <Text Include="data\model.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

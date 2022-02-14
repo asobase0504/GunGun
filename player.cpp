@@ -317,7 +317,7 @@ void ColisionPartsModel(void)
 				Dist = model->fLength + s_player.fLength - Dist;
 
 				// ‘¬“x‚ð0‚É‚·‚é
-				s_player.movevec = ZERO_VECTOR;
+				//s_player.movevec = ZERO_VECTOR;
 
 				s_player.pos -= vec * Dist;
 

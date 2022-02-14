@@ -49,7 +49,7 @@ TYPESET
 NAME = ポリバケツ
 FILENAME = data/MODEL/bucket.x			# [3]ポリバケツ
 SIZE_CRITERIA = 20.0					# モデルがくっつき始める値
-SIZE_ADD = 2.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.75							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -85,7 +85,7 @@ TYPESET
 NAME = ワインボトル
 FILENAME = data/MODEL/wineBottle.x		# [7]ワインボトル
 SIZE_CRITERIA = 5.0						# モデルがくっつき始める値
-SIZE_ADD = 0.075						# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.035						# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 4.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -94,7 +94,7 @@ TYPESET
 NAME = ビールボトル
 FILENAME = data/MODEL/beerBottle.x		# [8]ビールボトル
 SIZE_CRITERIA = 5.0						# モデルがくっつき始める値
-SIZE_ADD = 0.075						# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.035						# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 4.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -103,7 +103,7 @@ TYPESET
 NAME = ビールジョッキ
 FILENAME = data/MODEL/mug.x				# [9]ビールジョッキ
 SIZE_CRITERIA = 5.5						# モデルがくっつき始める値
-SIZE_ADD = 0.215						# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.115						# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 5.0					# 当たり判定の大きさ
 SCALE = 0.5								# モデルの大きさ
 END_TYPESET
@@ -112,7 +112,7 @@ TYPESET
 NAME = コップ
 FILENAME = data/MODEL/cop.x				# [10]コップ
 SIZE_CRITERIA = 5.0						# モデルがくっつき始める値
-SIZE_ADD = 0.2							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.15							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 5.0					# 当たり判定の大きさ
 SCALE = 0.5								# モデルの大きさ
 END_TYPESET
@@ -139,7 +139,7 @@ TYPESET
 NAME = マジョノカマ
 FILENAME = data/MODEL/Cauldron.x		# [13]釜
 SIZE_CRITERIA = 24.0					# モデルがくっつき始める値
-SIZE_ADD = 1.2							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.45							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -151,7 +151,7 @@ TYPESET
 NAME = ソラノツルギ
 FILENAME = data/MODEL/sword_wing.x		# [13]羽の生えた剣
 SIZE_CRITERIA = 28.5					# モデルがくっつき始める値
-SIZE_ADD = 1.25							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.25							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -160,7 +160,7 @@ TYPESET
 NAME = フウインサレタツルギ
 FILENAME = data/MODEL/sword_seal.x		# [14]台座に刺さった剣
 SIZE_CRITERIA = 27.0					# モデルがくっつき始める値
-SIZE_ADD = 1.35							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.255						# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -169,7 +169,7 @@ TYPESET
 NAME = サバクノケン
 FILENAME = data/MODEL/sword_03.x		# [15]剣(うねる柄)
 SIZE_CRITERIA = 28.0					# モデルがくっつき始める値
-SIZE_ADD = 2.5							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.45							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -178,7 +178,7 @@ TYPESET
 NAME = アオイケン
 FILENAME = data/MODEL/sword_04.x		# [16]剣(青)
 SIZE_CRITERIA = 31.0					# モデルがくっつき始める値
-SIZE_ADD = 2.75							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.35							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -190,7 +190,7 @@ TYPESET
 NAME = ジハンキ
 FILENAME = data/MODEL/vendingMachine_Blue.x	# [17]自動販売機(青)
 SIZE_CRITERIA = 42.0						# モデルがくっつき始める値
-SIZE_ADD = 1.1								# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.35								# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 15.0						# 当たり判定の大きさ
 SCALE = 1.0									# モデルの大きさ
 END_TYPESET
@@ -199,7 +199,7 @@ TYPESET
 NAME = ジハンキ
 FILENAME = data/MODEL/vendingMachine_Red.x	# [18]自動販売機(赤)
 SIZE_CRITERIA = 42.0						# モデルがくっつき始める値
-SIZE_ADD = 1.1								# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.35								# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 15.0						# 当たり判定の大きさ
 SCALE = 1.0									# モデルの大きさ
 END_TYPESET
@@ -207,8 +207,8 @@ END_TYPESET
 TYPESET
 NAME = クルマ
 FILENAME = data/MODEL/car.x				# [19]車
-SIZE_CRITERIA = 50.0					# モデルがくっつき始める値
-SIZE_ADD = 1.45							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_CRITERIA = 70.0					# モデルがくっつき始める値
+SIZE_ADD = 0.65							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -217,7 +217,7 @@ TYPESET
 NAME = ポスト
 FILENAME = data/MODEL/postbox.x			# [20]郵便ポスト
 SIZE_CRITERIA = 20.0					# モデルがくっつき始める値
-SIZE_ADD = 0.75							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.25							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -234,8 +234,8 @@ END_TYPESET
 TYPESET
 NAME = ガードレール
 FILENAME = data/MODEL/guardrail.x		# [22]ガードレール
-SIZE_CRITERIA = 70.0					# モデルがくっつき始める値
-SIZE_ADD = 1.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_CRITERIA = 80.0					# モデルがくっつき始める値
+SIZE_ADD = 0.65							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -243,8 +243,8 @@ END_TYPESET
 TYPESET
 NAME = トラック
 FILENAME = data/MODEL/truck.x			# [23]トラック
-SIZE_CRITERIA = 130.0					# モデルがくっつき始める値
-SIZE_ADD = 3.5							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_CRITERIA = 150.0					# モデルがくっつき始める値
+SIZE_ADD = 1.5							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 30.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -253,7 +253,7 @@ TYPESET
 NAME = ガイトウ
 FILENAME = data/MODEL/streetLight.x		# [24]街灯
 SIZE_CRITERIA = 25.0					# モデルがくっつき始める値
-SIZE_ADD = 1.25							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.55							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -262,7 +262,7 @@ TYPESET
 NAME = ガイトウ
 FILENAME = data/MODEL/streetLight_02.x	# [25]街灯02
 SIZE_CRITERIA = 50.0					# モデルがくっつき始める値
-SIZE_ADD = 0.75							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.25							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -271,7 +271,7 @@ TYPESET
 NAME = キキュウ
 FILENAME = data/MODEL/balloon.x			# [26]気球
 SIZE_CRITERIA = 75.0					# モデルがくっつき始める値
-SIZE_ADD = 0.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.5							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -279,7 +279,7 @@ END_TYPESET
 TYPESET
 NAME = イエ
 FILENAME = data/MODEL/house00.x			# [27]家
-SIZE_CRITERIA = 200.0					# モデルがくっつき始める値
+SIZE_CRITERIA = 230.0					# モデルがくっつき始める値
 SIZE_ADD = 0.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 25.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
@@ -288,7 +288,7 @@ END_TYPESET
 TYPESET
 NAME = イエ
 FILENAME = data/MODEL/house01.x			# [27]家2
-SIZE_CRITERIA = 150.0					# モデルがくっつき始める値
+SIZE_CRITERIA = 170.0					# モデルがくっつき始める値
 SIZE_ADD = 0.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 25.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
@@ -307,7 +307,7 @@ TYPESET
 NAME = ジテンシャ
 FILENAME = data/MODEL/bicycle.x			# [29]自転車
 SIZE_CRITERIA = 27.0					# モデルがくっつき始める値
-SIZE_ADD = 1.25							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.45							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -316,7 +316,7 @@ TYPESET
 NAME = ジテンシャ
 FILENAME = data/MODEL/bicycle01.x		# [30]自転車
 SIZE_CRITERIA = 25.0					# モデルがくっつき始める値
-SIZE_ADD = 1.25							# モデルがくっついた時プレイヤーをどれくらい大きくするか
+SIZE_ADD = 0.45							# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
@@ -472,5 +472,14 @@ SIZE_CRITERIA = 35.0						# モデルがくっつき始める値
 SIZE_ADD = 0.15								# モデルがくっついた時プレイヤーをどれくらい大きくするか
 COLLISION_SPHERE = 10.0						# 当たり判定の大きさ
 SCALE = 1.0									# モデルの大きさ
+END_TYPESET
+
+TYPESET
+NAME = シト
+FILENAME = data/MODEL/shito.x			# [47]チョコレート
+SIZE_CRITERIA = 35.0						# モデルがくっつき始める値
+SIZE_ADD = 0.15								# モデルがくっついた時プレイヤーをどれくらい大きくするか
+COLLISION_SPHERE = 10.0						# 当たり判定の大きさ
+SCALE = 3.5									# モデルの大きさ
 END_TYPESET
 END_SCRIPT		# この行は絶対消さないこと！

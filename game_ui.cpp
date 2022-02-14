@@ -18,8 +18,6 @@
 // マクロ定義
 //------------------------------------
 #define SCORE_BG_TEX		"data/TEXTURE/Circle.png"
-#define MODELCOUNT_MAX		(3)	// モデル数のスコアの最大桁数
-#define SCORELENGTH_MAX		(3)	// 長さスコアの最大桁数
 
 //------------------------------------
 // UIの構造体
@@ -42,6 +40,7 @@ typedef struct
 static Object uiLengthScoreBg;
 static Object uiLengthUnitBg;
 static Object uiGetModelUnitBg[2] = {};
+static Object uiOperationDescription[4] = {};
 static LPD3DXFONT s_pFont = NULL;		// フォントへのポインタ
 static char s_aLength[5];
 static float s_fLength;
@@ -62,70 +61,214 @@ void InitGameUI(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
 
 	// 長さのスコアの長さ単位を出す。
-	object = &(uiLengthUnitBg);
-	ZeroMemory(object, sizeof(object));
-	object->pos = D3DXVECTOR3(170.0f, 175.0f, 0.0f);	// 位置
-	object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
-	object->Height = 75.0f;								// 高さ
-	object->Width = 100.0f;								// 幅
-	object->bUse = true;								// 使用に切り替え
-
-	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/mm.png", &object->tex);	// テクスチャの読込
-
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&object->vtxBuff,
-		NULL);
-
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
-		float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
-		float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+		object = &(uiLengthUnitBg);
+		ZeroMemory(object, sizeof(object));
+		object->pos = D3DXVECTOR3(170.0f, 175.0f, 0.0f);	// 位置
+		object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
+		object->Height = 75.0f;								// 高さ
+		object->Width = 100.0f;								// 幅
+		object->bUse = true;								// 使用に切り替え
 
-		SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
-		SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
-		InitRectRhw(pVtx);														// rhwの設定
-		InitRectTex(pVtx);														// テクスチャ座標の設定
+		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/mm.png", &object->tex);	// テクスチャの読込
+
+		// 頂点バッファの生成
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+			D3DUSAGE_WRITEONLY,
+			FVF_VERTEX_2D,
+			D3DPOOL_MANAGED,
+			&object->vtxBuff,
+			NULL);
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+			float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+			InitRectRhw(pVtx);														// rhwの設定
+			InitRectTex(pVtx);														// テクスチャ座標の設定
+		}
+		// 頂点バッファをアンロックする
+		object->vtxBuff->Unlock();
 	}
-	// 頂点バッファをアンロックする
-	object->vtxBuff->Unlock();
 
 	// 長さのスコアを置く場所の背景
-	object = &(uiLengthScoreBg);
-	ZeroMemory(object, sizeof(object));
-	object->pos = D3DXVECTOR3(110.0f, 120.0f, 0.0f);	// 位置
-	object->col = D3DXCOLOR(0.0f, 0.6f, 0.0f, 1.0f);	// 色
-	object->Height = 250.0f;							// 高さ
-	object->Width = 250.0f;								// 幅
-	object->bUse = true;								// 使用に切り替え
-
-	D3DXCreateTextureFromFile(pDevice, SCORE_BG_TEX, &object->tex);	// テクスチャの読込
-
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&object->vtxBuff,
-		NULL);
-
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
-		float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
-		float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+		object = &(uiLengthScoreBg);
+		ZeroMemory(object, sizeof(object));
+		object->pos = D3DXVECTOR3(110.0f, 120.0f, 0.0f);	// 位置
+		object->col = D3DXCOLOR(0.0f, 0.6f, 0.0f, 1.0f);	// 色
+		object->Height = 250.0f;							// 高さ
+		object->Width = 250.0f;								// 幅
+		object->bUse = true;								// 使用に切り替え
 
-		SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
-		SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
-		InitRectRhw(pVtx);														// rhwの設定
-		InitRectTex(pVtx);														// テクスチャ座標の設定
+		D3DXCreateTextureFromFile(pDevice, SCORE_BG_TEX, &object->tex);	// テクスチャの読込
+
+																		// 頂点バッファの生成
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+			D3DUSAGE_WRITEONLY,
+			FVF_VERTEX_2D,
+			D3DPOOL_MANAGED,
+			&object->vtxBuff,
+			NULL);
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+			float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+			InitRectRhw(pVtx);														// rhwの設定
+			InitRectTex(pVtx);														// テクスチャ座標の設定
+		}
+		// 頂点バッファをアンロックする
+		object->vtxBuff->Unlock();
 	}
-	// 頂点バッファをアンロックする
-	object->vtxBuff->Unlock();
+
+	// 左スティックを置く場所の背景
+	{
+		object = &(uiOperationDescription[0]);
+		ZeroMemory(object, sizeof(object));
+		object->pos = D3DXVECTOR3(1200.0f, 120.0f, 0.0f);	// 位置
+		object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
+		object->Height = 50.0f;								// 高さ
+		object->Width = 150.0f;								// 幅
+		object->bUse = true;								// 使用に切り替え
+
+		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/LeftStick.png", &object->tex);	// テクスチャの読込
+
+																								// 頂点バッファの生成
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+			D3DUSAGE_WRITEONLY,
+			FVF_VERTEX_2D,
+			D3DPOOL_MANAGED,
+			&object->vtxBuff,
+			NULL);
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+			float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+			InitRectRhw(pVtx);														// rhwの設定
+			InitRectTex(pVtx);														// テクスチャ座標の設定
+		}
+		// 頂点バッファをアンロックする
+		object->vtxBuff->Unlock();
+	}
+
+	// 左スティックを置く場所の背景
+	{
+		object = &(uiOperationDescription[1]);
+		ZeroMemory(object, sizeof(object));
+		object->pos = D3DXVECTOR3(1000.0f, 120.0f, 0.0f);	// 位置
+		object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
+		object->Height = 50.0f;								// 高さ
+		object->Width = 150.0f;								// 幅
+		object->bUse = true;								// 使用に切り替え
+
+		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/move.png", &object->tex);	// テクスチャの読込
+
+																						// 頂点バッファの生成
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+			D3DUSAGE_WRITEONLY,
+			FVF_VERTEX_2D,
+			D3DPOOL_MANAGED,
+			&object->vtxBuff,
+			NULL);
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+			float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+			InitRectRhw(pVtx);														// rhwの設定
+			InitRectTex(pVtx);														// テクスチャ座標の設定
+		}
+		// 頂点バッファをアンロックする
+		object->vtxBuff->Unlock();
+	}
+
+	// 左スティックを置く場所の背景
+	{
+		object = &(uiOperationDescription[2]);
+		ZeroMemory(object, sizeof(object));
+		object->pos = D3DXVECTOR3(1200.0f, 150.0f, 0.0f);	// 位置
+		object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
+		object->Height = 50.0f;								// 高さ
+		object->Width = 150.0f;								// 幅
+		object->bUse = true;								// 使用に切り替え
+
+		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/RightStick.png", &object->tex);	// テクスチャの読込
+
+																								// 頂点バッファの生成
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+			D3DUSAGE_WRITEONLY,
+			FVF_VERTEX_2D,
+			D3DPOOL_MANAGED,
+			&object->vtxBuff,
+			NULL);
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+			float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+			InitRectRhw(pVtx);														// rhwの設定
+			InitRectTex(pVtx);														// テクスチャ座標の設定
+		}
+		// 頂点バッファをアンロックする
+		object->vtxBuff->Unlock();
+	}
+
+	// 左スティックを置く場所の背景
+	{
+		object = &(uiOperationDescription[3]);
+		ZeroMemory(object, sizeof(object));
+		object->pos = D3DXVECTOR3(1000.0f, 150.0f, 0.0f);	// 位置
+		object->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
+		object->Height = 50.0f;								// 高さ
+		object->Width = 150.0f;								// 幅
+		object->bUse = true;								// 使用に切り替え
+
+		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/CameraMove.png", &object->tex);	// テクスチャの読込
+
+																						// 頂点バッファの生成
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+			D3DUSAGE_WRITEONLY,
+			FVF_VERTEX_2D,
+			D3DPOOL_MANAGED,
+			&object->vtxBuff,
+			NULL);
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+			float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+			InitRectRhw(pVtx);														// rhwの設定
+			InitRectTex(pVtx);														// テクスチャ座標の設定
+		}
+		// 頂点バッファをアンロックする
+		object->vtxBuff->Unlock();
+	}
 
 	// プレイヤーの大きさ用フォントの生成
 	D3DXCreateFont(GetDevice(), 100, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "07あかずきんポップ Heavy", &s_pFont);
@@ -138,6 +281,10 @@ void UninitGameUI(void)
 {
 	UninitObject(&uiLengthScoreBg);
 	UninitObject(&uiLengthUnitBg);
+	UninitObject(&uiOperationDescription[0]);
+	UninitObject(&uiOperationDescription[1]);
+	UninitObject(&uiOperationDescription[2]);
+	UninitObject(&uiOperationDescription[3]);
 	// デバッグ表示用フォントの破棄
 	if (s_pFont != NULL)
 	{
@@ -152,41 +299,48 @@ void UninitGameUI(void)
 void UpdateGameUI(void)
 {
 	Player* player = GetPlayer();
-	if (player->fLength < 1.0f)
+	if (player->fLength < 0.001f)
 	{
 		SetGameUITex("data/TEXTURE/WORD/mm.png");
 	}
-	if (player->fLength > 1.0f &&player->fLength < 100.0f)
+	if (player->fLength < 0.001f &&player->fLength < 1.0f)
 	{
 		SetGameUITex("data/TEXTURE/WORD/cm.png");
 	}
-	if (player->fLength > 100.0f && player->fLength < (100.0f * 1000.0f))
+	if (player->fLength > 1.0 && player->fLength < 1000.0f)
 	{
 		SetGameUITex("data/TEXTURE/WORD/m.png");
 	}
-	if (player->fLength >= (100.0f * 1000.0f))
+	if (player->fLength >= 1000.0f)
 	{
 		SetGameUITex("data/TEXTURE/WORD/km.png");
 	}
 
 	s_fLength = player->fLength;
-	if (s_fLength < 1.0f)
+	if (s_fLength < 0.001f)
+	{
+		s_fLength *= 10000.0f;
+	}
+	else if (s_fLength > 0.001f && s_fLength < 1.0f)
 	{
 		s_fLength *= 100.0f;
 	}
-	else if (s_fLength > 1.0f && s_fLength < 100.0f)
+	else if (s_fLength > 1.0f && s_fLength < 1000.0f)
 	{
 	}
-	else if (s_fLength > 100.0f && s_fLength < (100.0f * 1000.0f))
+	else if (s_fLength >= 1000.0f)
 	{
-		s_fLength /= 100.0f;
-	}
-	else if (s_fLength >= (100.0f * 1000.0f))
-	{
-		s_fLength /= 100000.0f;
+		s_fLength /= 1000.0f;
 	}
 
-	sprintf(s_aLength, "%.1f", s_fLength);
+	if (s_fLength >= 100.0f)
+	{
+		sprintf(s_aLength, "%.0f", s_fLength);
+	}
+	else
+	{
+		sprintf(s_aLength, "%.1f", s_fLength);
+	}
 }
 
 //=========================================
@@ -213,6 +367,62 @@ void DrawGameUI(void)
 	}
 
 	object = &(uiLengthUnitBg);
+	if (object->bUse)
+	{
+		// 頂点バッファをデータストリーム設定
+		pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
+
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
+
+		// ポリゴン描画
+		// テクスチャの設定
+		RectDraw(pDevice, object->tex, 0);
+	}
+
+	object = &(uiOperationDescription[0]);
+	if (object->bUse)
+	{
+		// 頂点バッファをデータストリーム設定
+		pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
+
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
+
+		// ポリゴン描画
+		// テクスチャの設定
+		RectDraw(pDevice, object->tex, 0);
+	}
+
+	object = &(uiOperationDescription[1]);
+	if (object->bUse)
+	{
+		// 頂点バッファをデータストリーム設定
+		pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
+
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
+
+		// ポリゴン描画
+		// テクスチャの設定
+		RectDraw(pDevice, object->tex, 0);
+	}
+
+	object = &(uiOperationDescription[2]);
+	if (object->bUse)
+	{
+		// 頂点バッファをデータストリーム設定
+		pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
+
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
+
+		// ポリゴン描画
+		// テクスチャの設定
+		RectDraw(pDevice, object->tex, 0);
+	}
+
+	object = &(uiOperationDescription[3]);
 	if (object->bUse)
 	{
 		// 頂点バッファをデータストリーム設定

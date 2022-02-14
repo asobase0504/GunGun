@@ -18,8 +18,8 @@ typedef enum
 	SOUND_LABEL_BGM_GAME,			// BGMゲーム
 	SOUND_LABEL_BGM_RESULT,			// BGMリザルト
 	SOUND_LABEL_SE_GETITEM,			// くっついた音
-	SOUND_LABEL_SE_HIT,				// 当たった時
-	SOUND_LABEL_SE_EXPLOSION,		// 爆発音
+	SOUND_LABEL_SE_CHARGE,			// タイトルでモード選択時の音
+	SOUND_LABEL_SE_SERECT,			// 選択音
 	SOUND_LABEL_SE_DIEPLAYER,		// 死亡音
 	SOUND_LABEL_SE_DIE000,			// 死亡音
 	SOUND_LABEL_SE_DIE001,			// 死亡音

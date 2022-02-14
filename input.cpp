@@ -32,6 +32,7 @@ LPDIRECTINPUT8 g_pInput = NULL;						//DirectInputオブジェクトへのポインタ
 LPDIRECTINPUTDEVICE8 g_pDevKeyboard = NULL;			//入力デバイス（キーボード（コントローラー用は別に作る））へのポインタ
 BYTE g_aKeyState[NUM_KEY_MAX];						//キーボードのプレス情報
 BYTE g_aKeyStateTrigger[NUM_KEY_MAX];				//キーボードのトリガー情報
+BYTE g_aKeyStateRelease[NUM_KEY_MAX];				//キーボードのリリース情報
 
 
 //ジョイパッド
@@ -191,7 +192,8 @@ void UpdateKeyboard(void)
 	{
 		for (nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
 		{
-			g_aKeyStateTrigger[nCntKey] = (g_aKeyState[nCntKey] ^ aKeyState[nCntKey]) & aKeyState[nCntKey]; //キーボードのトリガー情報を保存
+			g_aKeyStateTrigger[nCntKey] = ~g_aKeyState[nCntKey] & aKeyState[nCntKey]; //キーボードのトリガー情報を保存
+			g_aKeyStateRelease[nCntKey] = g_aKeyState[nCntKey] & ~aKeyState[nCntKey]; //キーボードのリリース情報を保存
 			g_aKeyState[nCntKey] = aKeyState[nCntKey];		//キーボードのプレス情報を保存
 		}
 	}
@@ -342,6 +344,32 @@ bool GetJoypadTrigger(JOYKEY Key)
 	for (int nPlayer = 0; nPlayer < PLAYER_MAX; nPlayer++)
 	{
 		if (GetJoypadTrigger((JOYKEY)Key, nPlayer))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+//ジョイパッドのプレス処理(プレイヤー指定のみ)
+bool GetJoypadPress(int nPlayer)
+{
+	for (int nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
+	{
+		if (GetJoypadPress((JOYKEY)nCntKey, nPlayer))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+//ジョイパッドのトリガー処理(プレイヤー指定のみ)
+bool GetJoypadTrigger(int nPlayer)
+{
+	for (int nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
+	{
+		if (GetJoypadTrigger((JOYKEY)nCntKey, nPlayer))
 		{
 			return true;
 		}

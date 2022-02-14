@@ -45,10 +45,7 @@ static Object scoreModel;
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-//static void InitObject(Object *object);		// 初期化
 static void UninitObject(Object *object);	// 終了
-//static void UpdateObject(Object *object);	// 更新
-//static void DrawObject(Object *object);		// 描画
 
 //=========================================
 // 初期化

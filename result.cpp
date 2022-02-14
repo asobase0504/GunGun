@@ -30,7 +30,6 @@
 //=========================================
 // 静的変数変数
 //=========================================
-static RESULT_MODE modeResult;	// リザルトのモード
 static Player* s_player;		// プレイヤーデータ
 static float upSpead;			// モデルの上昇スピード
 
@@ -39,8 +38,6 @@ static float upSpead;			// モデルの上昇スピード
 //=========================================
 void InitResult(void)
 {
-	modeResult = RESULT_0;	// モードのリセット
-
 	// 初期化処理
 	InitResultUI();		// リザルトUI
 	InitCamera();		// カメラ
@@ -68,7 +65,7 @@ void InitResult(void)
 	}
 
 	// ポリゴンの設定
-	SetPolygon(&D3DXVECTOR3(0.0f, (400.0f * GetCamera(0)->fDistance / 60.0f) - 10.0f, 0.0f), &D3DXVECTOR3(D3DX_PI*-0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), "data/TEXTURE/sky.png", "wall");
+	SetPolygon(&D3DXVECTOR3(0.0f, (400.0f * GetCamera(0)->fDistance / 60.0f) - 10.0f, 0.0f), &D3DXVECTOR3(D3DX_PI*-0.5f, 0.0f, 0.0f), &D3DXVECTOR3(100.0f, 0.0f, 100.0f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/sky.png", "wall");
 
 	PlaySound(SOUND_LABEL_BGM_RESULT);
 }
@@ -99,24 +96,6 @@ void UpdateResult(void)
 	UpdateLight();			// ライト
 	UpdateModel();			// モデル
 	UpdatePolygon();		// ポリゴン
-
-	switch (modeResult)
-	{
-	case RESULT_0:
-
-		if (DecisionKey())
-		{
-			modeResult = RESULT_1;
-		}
-
-		break;
-	case RESULT_1:
-	{
-		break;
-	}
-	default:
-		break;
-	}
 
 	D3DXVECTOR3 axis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 回転軸
 
@@ -157,12 +136,4 @@ void DrawResult(int cameraData)
 		DrawResultUI();				// リザルトUI
 		DrawPolygon();				// ポリゴン
 	}
-}
-
-//=========================================
-// リザルトのモードを取得
-//=========================================
-RESULT_MODE* GetResult(void)
-{
-	return &modeResult;
 }

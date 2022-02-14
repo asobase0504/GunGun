@@ -25,8 +25,9 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define TITLEPRESS_WIDTH	(620)
-#define TITLEPRESS_HEIGHT	(100)
+#define TITLEPRESS_WIDTH		(620)
+#define TITLEPRESS_HEIGHT		(100)
+#define TIMEUP_FADE				(90)	// フェードまでの時間
 
 //------------------------------------
 // プレスエンターの状態の種類
@@ -84,6 +85,7 @@ static int	s_nCnt;
 static bool	s_bFadeCheek;	// フェード処置に移行するかの処理
 static int	s_nFadeCnt;		// フェード処理に行くまでの間隔
 static bool s_bExit;		// Exitのフラグ
+static bool s_bSelectSE;
 
 //=========================================
 // 初期化処理
@@ -101,12 +103,12 @@ void InitTitle(void)
 	DeleteModel();		// プレイヤー以外のモデルの消失
 
 	// ポリゴンの設定処理
-	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_00.png", "Title01");
-	SetPolygon(&D3DXVECTOR3(-15.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_01.png", "Title02");
-	SetPolygon(&D3DXVECTOR3(15.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_00.png", "Title03");
-	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, 25.0f), &ZERO_VECTOR, D3DXVECTOR3(12.5f, 0.0f, 12.5f), "data/TEXTURE/TITLE/Title_01.png", "Title04");
-	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Exit.jpg", "exit");
-	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, D3DXVECTOR3(25.0f, 0.0f, 12.5f), "data/TEXTURE/WORD/Start.jpg", "start");
+	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f),&D3DXCOLOR(1.0f,1.0f,1.0f,1.0f), "data/TEXTURE/TITLE/Title_00.png", "Title01");
+	SetPolygon(&D3DXVECTOR3(-15.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title02");
+	SetPolygon(&D3DXVECTOR3(15.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_00.png", "Title03");
+	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title04");
+	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, &D3DXVECTOR3(25.0f, 0.0f, 9.0f), &D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), "data/TEXTURE/WORD/Exit.png", "exit");
+	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, &D3DXVECTOR3(25.0f, 0.0f, 9.0f), &D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), "data/TEXTURE/WORD/Start.png", "start");
 
 	// プレイヤーの設定処理
 	Player* player = GetPlayer();
@@ -151,29 +153,46 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
+
 	// プレイヤーが指定されたポリゴンに乗っていたらカウントを進める
-	if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < 50)
+	if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < TIMEUP_FADE)
 	{
-		//GetPolygon("start")->pos.y += 1.0f;
 		s_Select = SELECT_GAMESTART;
 		s_nCnt++;
+		GetPolygon("start")->col = D3DXCOLOR((float)s_nCnt / (float)TIMEUP_FADE, 0.0f, 0.0f, 1.0f);
+		s_bSelectSE = true;
 	}
-	else if (CollisionPolygon(&GetPlayer()->pos, "exit") && s_nCnt < 50)
+	else if (CollisionPolygon(&GetPlayer()->pos, "exit") && s_nCnt < TIMEUP_FADE)
 	{
-		//GetPolygon("exit")->pos.y += 1.0f;
 		s_Select = SELECT_EXIT;
 		s_nCnt++;
+		GetPolygon("exit")->col = D3DXCOLOR((float)s_nCnt / (float)TIMEUP_FADE, 0.0f, 0.0f, 1.0f);
+		s_bSelectSE = true;
 	}
-	else if(s_nCnt < 50)
+	else if(s_nCnt < TIMEUP_FADE)
 	{
-		//GetPolygon("start")->pos.y = 1.0f;
-		//GetPolygon("exit")->pos.y = 1.0f;
 		s_nCnt = 0;
+		GetPolygon("start")->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+		GetPolygon("exit")->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+		StopSound(SOUND_LABEL_SE_CHARGE);
+		s_bSelectSE = false;
+	}
+
+	if (s_bSelectSE && s_nCnt == 1)
+	{
+		PlaySound(SOUND_LABEL_SE_CHARGE);
 	}
 
 	// 一定以上の値になったら乗っていた項目に以降する
-	if (s_nCnt >= 50)
+	if (s_nCnt >= TIMEUP_FADE)
 	{
+		s_nCnt++;
+
+		StopSound(SOUND_LABEL_SE_CHARGE);
+
+		// 何故か鳴らない。
+		PlaySound(SOUND_LABEL_SE_SERECT);
+
 		switch (s_Select)
 		{
 		case SELECT_GAMESTART:

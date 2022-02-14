@@ -192,7 +192,7 @@ void SetCamera(int nData)
 	D3DXMatrixPerspectiveFovLH(&camara->mtxProjection,
 		D3DXToRadian(60.0f),						// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
-		10.0f,1800.0f);	// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
+		10.0f,6200.0f);	// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
 
 	//D3DXMatrixOrthoLH(&camara->mtxProjection, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 10.0f, 400.0f * camara->fDistance / 60.0f);
 	

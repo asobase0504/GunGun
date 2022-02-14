@@ -83,9 +83,11 @@ bool GetKeyboardTrigger(int nKey);		// キーボードトリガー処理
 // ジョイパッド
 bool GetJoypadPress(void);										// ジョイパッドプレス処理(キー指定なし)
 bool GetJoypadPress(JOYKEY Key);								// ジョイパッドプレス処理(プレイヤー指定なし)
+bool GetJoypadPress(int nPlayer);								// ジョイパッドプレス処理(プレイヤー指定のみ)
 bool GetJoypadPress(JOYKEY Key, int nPlayer);					// ジョイパッドプレス処理(プレイヤー指定あり)
 bool GetJoypadTrigger(void);									// ジョイパッドトリガー処理(キー指定なし)
 bool GetJoypadTrigger(JOYKEY Key);								// ジョイパッドトリガー処理(プレイヤー指定なし)
+bool GetJoypadTrigger(int nPlayer);								// ジョイパッドプレス処理(プレイヤー指定のみ)
 bool GetJoypadTrigger(JOYKEY Key, int nPlayer);					// ジョイパッドトリガー処理(プレイヤー指定あり)
 D3DXVECTOR3 GetJoypadStick(JOYKEY Key, int nPlayer);			// ジョイパッドスティック処理
 int GetJoypadTriggerPedal(JOYKEY Key, int nPlayer);				// ジョイパッドトリガーペダル処理

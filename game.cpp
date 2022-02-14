@@ -38,12 +38,15 @@
 //------------------------------------
 // スタティック変数
 //------------------------------------
-static bool s_bPause;			// ポーズ中かどうか
-static int s_nSizeCnt;			// 大きさの区切り回数
-static bool s_bDebug;			// デバッグモードかどうか
-static bool s_bCountDownTime;	// カウントダウン中か否か 
-static int nDelayCnt;			// 遅延時のカウント
-static float fCameraDistance;	// カメラが遠のく倍率
+static bool s_bPause;				// ポーズ中かどうか
+static int s_nSizeCnt;				// 大きさの区切り回数
+static bool s_bDebug;				// デバッグモードかどうか
+static bool s_bCountDownTime;		// カウントダウン中か否か 
+static int nDelayCnt;				// 遅延時のカウント
+static float fCameraDistance;		// カメラが遠のく倍率
+static float fDistCameraDistance;	// ゆっくりと遠のく
+static float fDistPosV;				// ゆっくりと遠のく
+static bool s_bGame;					// ゲーム中かゲームが始まる前か
 
 //=========================================
 // 初期化
@@ -53,6 +56,7 @@ void InitGame(void)
 	s_bPause = false;
 	s_bDebug = false;
 	s_bCountDownTime = false;
+	s_bGame = false;
 	fCameraDistance = 1.5f;
 
 	s_nSizeCnt = 1;
@@ -73,6 +77,9 @@ void InitGame(void)
 	InitMeshField();	// メッシュ
 	InitWall();			// 壁
 	InitGameUI();		// UI
+	InitMeshSky();		// メッシュスカイ
+
+	SetMeshSky();
 
 	// タイムの設定処理
 	StartTimer(3, 0, 40.0f, 80.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), 0);
@@ -80,7 +87,7 @@ void InitGame(void)
 	CountRestartStop(true, 1);
 
 	// ポリゴンの設定処理
-	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), NULL, "floar");
+	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), &D3DXVECTOR3(100.0f, 0.0f, 100.0f),&D3DXCOLOR(1.0f,1.0f,1.0f,1.0f), NULL, "floar");
 	SetPolygonUI(&D3DXVECTOR3(-25.5f, -10.5f, 30.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(5.0f, 0.0f, 5.0f), "data/TEXTURE/Circle.png");
 
 	// メッシュフィールドの設定処理
@@ -95,6 +102,9 @@ void InitGame(void)
 	SetMeshField(&setMesh);
 
 	PlaySound(SOUND_LABEL_BGM_GAME);
+
+	fDistCameraDistance = GetCamera(0)->fDistance;
+	fDistPosV = GetCamera(0)->posV.y;
 }
 
 //=========================================
@@ -111,6 +121,7 @@ void UninitGame(void)
 	UninitLight();			// ライト
 	UninitShadow();			// 影
 	UninitMeshField();		// メッシュ
+	UninitMeshSky();		// メッシュ
 	UninitWall();			// 壁
 	UninitGameUI();			// UI
 
@@ -151,12 +162,13 @@ void UpdateGame(void)
 		return;
 	}
 
-	if (!s_bCountDownTime)
+	if (!s_bGame)
 	{
 		StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f + 550.0f, 60.0f, 0.0f), 0);
 		// タイマーの破棄
 		BreakTimer(0);
 		s_bCountDownTime = true;
+		s_bGame = true;
 	}
 
 	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardTrigger(DIK_P))
@@ -172,6 +184,7 @@ void UpdateGame(void)
 	UpdatePolygon();		// ポリゴン
 	UpdateShadow();			// 影
 	UpdateMeshField();		// メッシュ
+	UpdateMeshSky();		// メッシュスカイ
 	UpdateWall();			// 壁
 
 	UpdateGameUI();			// UI
@@ -180,10 +193,20 @@ void UpdateGame(void)
 	// プレイヤーが画面一杯になったら画面の拡大
 	if ((int)player->fLength / 28 == s_nSizeCnt)
 	{
-		GetCamera(0)->fDistance *= fCameraDistance;
-		GetCamera(0)->posV.y += player->fLength / s_nSizeCnt;
+		fDistCameraDistance = GetCamera(0)->fDistance * fCameraDistance;
+		fDistPosV = GetCamera(0)->posV.y + player->fLength * 2.0f / s_nSizeCnt;
+
 		s_nSizeCnt++;
 		fCameraDistance -= 0.05f;
+	}
+
+	if (fDistCameraDistance >= GetCamera(0)->fDistance)
+	{
+		GetCamera(0)->fDistance *= 1.01f;
+	}
+	if (fDistPosV >= GetCamera(0)->posV.y)
+	{
+		GetCamera(0)->posV.y += 5.0f / (player->fLength / s_nSizeCnt);
 	}
 
 	// 時間が切れたらリザルトに以降
@@ -232,10 +255,15 @@ void DrawGame(int cameraData)
 		DrawModel();		// モデル
 		DrawPlayer();		// プレイヤー
 		DrawMeshField();	// メッシュ
+		DrawMeshSky();		// メッシュスカイ
 		DrawShadow();		// 影
-		DrawModelUI();		// モデルUI
-		DrawGameUI();		// UI
-		DrawPolygonUI();	// ポリゴンUI
+
+		if (s_bGame)
+		{
+			DrawModelUI();		// モデルUI
+			DrawGameUI();		// UI
+			DrawPolygonUI();	// ポリゴンUI
+		}
 
 		if (s_bPause)
 		{

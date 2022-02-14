@@ -310,12 +310,16 @@ void ColisionPartsModel(void)
 			else
 			{	// 取り込めないサイズの場合
 				D3DXVECTOR3 vec = (model->pos_world - s_player.pos);	// 方向ベクトル
+
+				float Dist = D3DXVec3Length(&vec);					// 距離
 				D3DXVec3Normalize(&vec, &vec);						// 当たった方向を取得
+
+				Dist = model->fLength + s_player.fLength - Dist;
 
 				// 速度を0にする
 				s_player.movevec = ZERO_VECTOR;
 
-				s_player.pos -= vec;
+				s_player.pos -= vec * Dist;
 
 				// 上る処理
 				s_player.pos.y += 1.0f;

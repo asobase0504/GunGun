@@ -120,7 +120,7 @@ void UpdatePlayer(void)
 	pPlayer->pos_old = pPlayer->pos;	// プレイヤー位置の保存
 
 	// モデル位置の保存
-	for (int i = 0; i < PARTS_NUM; i++)
+	for (int i = 0; i < MODEL_MAX; i++)
 	{
 		Model* model = pPlayer->aModel[i];
 
@@ -165,8 +165,6 @@ void MovePlayer()
 {
 	D3DXVECTOR3 move = ZERO_VECTOR;			// 移動量の初期化
 	float moveLength = 0.0f;
-
-
 	D3DXVECTOR2 moveInput;
 
 	if (IsJoyPadUse(0))
@@ -190,22 +188,22 @@ void MovePlayer()
 		moveInput.y = 0.0f;
 
 		// モデルの移動
-		if (GetKeyboardPress(DIK_UP))
+		if (GetKeyboardPress(DIK_W))
 		{
 			moveInput.y += 1.0f;
 			moveLength = 1.0f;
 		}
-		if (GetKeyboardPress(DIK_LEFT))
+		if (GetKeyboardPress(DIK_A))
 		{
 			moveInput.x -= 1.0f;
 			moveLength = 1.0f;
 		}
-		if (GetKeyboardPress(DIK_DOWN))
+		if (GetKeyboardPress(DIK_S))
 		{
 			moveInput.y -= 1.0f;
 			moveLength = 1.0f;
 		}
-		if (GetKeyboardPress(DIK_RIGHT))
+		if (GetKeyboardPress(DIK_D))
 		{
 			moveInput.x += 1.0f;
 			moveLength = 1.0f;
@@ -253,7 +251,7 @@ void MovePlayer()
 //=========================================
 void DeleteModel(void)
 {
-	for (int j = 0; j < PARTS_NUM; j++)
+	for (int j = 0; j < MODEL_MAX; j++)
 	{
 		Model* model = s_player.aModel[j];
 
@@ -274,9 +272,7 @@ void DeleteModel(void)
 //=========================================
 void ColisionPartsModel(void)
 {
-//	Model* model = &(s_player.aModel[0]);
-
-	for (int j = 0; j < PARTS_NUM; j++)
+	for (int j = 0; j < MODEL_MAX; j++)
 	{
 		Model* model = s_player.aModel[j];
 
@@ -286,8 +282,7 @@ void ColisionPartsModel(void)
 		}
 
 		// 当たった場合
-		if ((SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, model->fLength) && model->typeCollision == COLLISION_SPHERE) ||
-			(SphereCuboidColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, model->size) && model->typeCollision == COLLISION_CUBOID))
+		if ((SphereColision(s_player.aModel[0]->pos_world, s_player.fLength, model->pos_world, model->fLength) && model->typeCollision == COLLISION_SPHERE))
 		{
 			if (s_player.fLength >= model->sizeCriter)
 			{	// 取り込めるサイズの場合

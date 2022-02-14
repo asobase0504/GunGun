@@ -9,7 +9,7 @@
 
 #include "main.h"
 
-#define MODEL_MAX				(512)
+#define MODEL_MAX				(1024)
 
 typedef enum
 {

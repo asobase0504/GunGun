@@ -10,7 +10,7 @@
 //マクロ定義
 #define MAX_TIMER_DITIT		(256)		// タイマー(1桁)の最大数
 #define MAX_TIMER			(64)		// タイマー(全体)の最大数
-#define TIME_TEX			"data/TEXTURE/数字.png"	// タイマーのテクスチャ
+#define TIME_TEX			"data/TEXTURE/number003.png"	// タイマーのテクスチャ
 
 //グローバル変数
 static LPDIRECT3DTEXTURE9 g_pTextureTimer = { NULL };					//テクスチャへのポインタ

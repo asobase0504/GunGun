@@ -39,10 +39,11 @@
 // スタティック変数
 //------------------------------------
 static bool s_bPause;			// ポーズ中かどうか
-static int	s_nSizeCnt;			// 大きさの区切り回数
+static int s_nSizeCnt;			// 大きさの区切り回数
 static bool s_bDebug;			// デバッグモードかどうか
 static bool s_bCountDownTime;	// カウントダウン中か否か 
-static int	nDelayCnt;			// 遅延時のカウント
+static int nDelayCnt;			// 遅延時のカウント
+static float fCameraDistance;	// カメラが遠のく倍率
 
 //=========================================
 // 初期化
@@ -52,6 +53,7 @@ void InitGame(void)
 	s_bPause = false;
 	s_bDebug = false;
 	s_bCountDownTime = false;
+	fCameraDistance = 1.5f;
 
 	s_nSizeCnt = 1;
 #ifdef _DEBUG
@@ -86,8 +88,8 @@ void InitGame(void)
 	setMesh.file = MESH_FIELD;
 	setMesh.fLineHeight = 50.0f;
 	setMesh.fLineWidth = 50.0f;
-	setMesh.nSurfaceHeight = 30;
-	setMesh.nSurfaceWidth = 30;
+	setMesh.nSurfaceHeight = 50;
+	setMesh.nSurfaceWidth = 50;
 	setMesh.pos = ZERO_VECTOR;
 	setMesh.rot = ZERO_VECTOR;
 	SetMeshField(&setMesh);
@@ -151,7 +153,7 @@ void UpdateGame(void)
 
 	if (!s_bCountDownTime)
 	{
-		StartTimer(60, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, 60.0f, 0.0f), 0);
+		StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f + 550.0f, 60.0f, 0.0f), 0);
 		// タイマーの破棄
 		BreakTimer(0);
 		s_bCountDownTime = true;
@@ -176,11 +178,12 @@ void UpdateGame(void)
 
 	Player* player = GetPlayer();
 	// プレイヤーが画面一杯になったら画面の拡大
-	if ((int)player->fLength / 32 == s_nSizeCnt)
+	if ((int)player->fLength / 28 == s_nSizeCnt)
 	{
-		GetCamera(0)->fDistance *= 1.5f;
+		GetCamera(0)->fDistance *= fCameraDistance;
 		GetCamera(0)->posV.y += player->fLength / s_nSizeCnt;
 		s_nSizeCnt++;
+		fCameraDistance -= 0.05f;
 	}
 
 	// 時間が切れたらリザルトに以降

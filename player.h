@@ -16,7 +16,6 @@
 //------------------------------------
 // モデルパーツの構造体定義
 //------------------------------------
-#define PARTS_NUM	(512)		// パーツの数
 
 //------------------------------------
 // モデルの構造体定義
@@ -31,7 +30,7 @@ typedef struct
 	D3DXVECTOR3	movevec;			// ベクトル
 	D3DXVECTOR3	MinVtx;				// 頂点の最小値
 	D3DXVECTOR3	MaxVtx;				// 頂点の最大値
-	Model*		aModel[PARTS_NUM];	// モデル
+	Model*		aModel[MODEL_MAX];	// モデル
 	float		moverot;			// 移動時の回転量
 	float		fLength;			// 大きさ
 	float		fLengthLand;		// 目標の大地までの距離

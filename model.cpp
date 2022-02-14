@@ -723,7 +723,7 @@ void OutputMap(char *Filename)
 	fprintf(pFile, "#------------------------------------------------------------------------------\n");
 	fprintf(pFile, "# ÉÇÉfÉãÇÃê›íu\n");
 	fprintf(pFile, "#------------------------------------------------------------------------------\n");
-	for (int nCnt = 0; nCnt < PARTS_NUM; nCnt++)
+	for (int nCnt = 0; nCnt < MODEL_MAX; nCnt++)
 	{
 		Model* model = &s_Model[nCnt];
 

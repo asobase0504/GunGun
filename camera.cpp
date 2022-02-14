@@ -123,6 +123,8 @@ void UpdateGameCamera(void)
 	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 
+#ifdef _DEBUG
+
 	if (GetKeyboardPress(DIK_9))
 	{
 		pCamera->fDistance++;
@@ -131,6 +133,8 @@ void UpdateGameCamera(void)
 	{
 		pCamera->fDistance--;
 	}
+
+#endif // !_DEBUG
 }
 
 //=========================================
@@ -150,6 +154,8 @@ void UpdateResultCamera(void)
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
 
 	pCamera->posR.y = player->pos.y;
+
+	pCamera->fDistance = 80.0f + 1.5f * player->fLength;
 
 	// Šp“x‚Ì³‹K‰»
 	if (pCamera->rot.y > D3DX_PI)
@@ -186,7 +192,7 @@ void SetCamera(int nData)
 	D3DXMatrixPerspectiveFovLH(&camara->mtxProjection,
 		D3DXToRadian(60.0f),						// Ž‹–ìŠp
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// ƒAƒXƒyƒNƒg”ä
-		10.0f,800.0f * camara->fDistance / 60.0f);	// ‚Ç‚±‚©‚ç(ƒjƒA)(‘æ‚Tˆø”)‚Ç‚±‚Ü‚Å(ƒtƒ@[)(‘æ‚Uˆø”)‚ðƒJƒƒ‰‚Å•\Ž¦‚·‚é‚©Ý’è 
+		10.0f,1800.0f);	// ‚Ç‚±‚©‚ç(ƒjƒA)(‘æ‚Tˆø”)‚Ç‚±‚Ü‚Å(ƒtƒ@[)(‘æ‚Uˆø”)‚ðƒJƒƒ‰‚Å•\Ž¦‚·‚é‚©Ý’è 
 
 	//D3DXMatrixOrthoLH(&camara->mtxProjection, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 10.0f, 400.0f * camara->fDistance / 60.0f);
 	
@@ -220,42 +226,6 @@ void InputCamera(void)
 	}
 	else
 	{
-		// ƒJƒƒ‰‚ÌˆÚ“®
-		if (GetKeyboardPress(DIK_W))
-		{
-			pCamera->vec.x += sinf(pCamera->rot.y);
-			pCamera->vec.z += cosf(pCamera->rot.y);
-		}
-		if (GetKeyboardPress(DIK_A))
-		{
-			pCamera->vec.x += sinf(D3DX_PI * -0.5f + pCamera->rot.y);
-			pCamera->vec.z += cosf(D3DX_PI * -0.5f + pCamera->rot.y);
-		}
-		if (GetKeyboardPress(DIK_S))
-		{
-			pCamera->vec.x += sinf(D3DX_PI + pCamera->rot.y);
-			pCamera->vec.z += cosf(D3DX_PI + pCamera->rot.y);
-		}
-		if (GetKeyboardPress(DIK_D))
-		{
-			pCamera->vec.x += sinf(D3DX_PI * 0.5f + pCamera->rot.y);
-			pCamera->vec.z += cosf(D3DX_PI * 0.5f + pCamera->rot.y);
-		}
-
-		// ’Ž‹“_Šp“x‚Ì‰ñ“]
-		if (GetKeyboardPress(DIK_Z))
-		{
-			pCamera->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
-			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
-			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
-		}
-		if (GetKeyboardPress(DIK_C))
-		{
-			pCamera->rot.y += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
-			pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
-			pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
-		}
-
 		// Ž‹“_Šp“x‚Ì‰ñ“]
 		if (GetKeyboardPress(DIK_Q))
 		{
@@ -264,14 +234,6 @@ void InputCamera(void)
 		if (GetKeyboardPress(DIK_E))
 		{
 			pCamera->rot.y += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
-		}
-		if (GetKeyboardPress(DIK_R))
-		{
-			pCamera->rot.x += -(CAMERA_ROT_VOLUME);	// ‰ñ“]—Ê
-		}
-		if (GetKeyboardPress(DIK_V))
-		{
-			pCamera->rot.x += CAMERA_ROT_VOLUME;	// ‰ñ“]—Ê
 		}
 	}
 

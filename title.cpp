@@ -109,16 +109,16 @@ void InitTitle(void)
 	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title4");
 	if (IsJoyPadUse(0))
 	{
-		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 15.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/RightStick.png", "operation1");
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 10.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/RightStick.png", "operation1");
 		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/LeftStick.png", "operation2");
 	}
 	else
 	{
-		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 15.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/QE.png", "operation1");
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 10.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/QE.png", "operation1");
 		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/WASD.png", "operation2");
 
 	}
-	SetPolygon(&D3DXVECTOR3(90.0f, 1.0f, 15.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/move.png", "operation3");
+	SetPolygon(&D3DXVECTOR3(90.0f, 1.0f, 10.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/move.png", "operation3");
 	SetPolygon(&D3DXVECTOR3(95.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/CameraMove.png", "operation4");
 	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, &D3DXVECTOR3(25.0f, 0.0f, 9.0f), &D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), "data/TEXTURE/WORD/Exit.png", "exit");
 	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, &D3DXVECTOR3(25.0f, 0.0f, 9.0f), &D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), "data/TEXTURE/WORD/Start.png", "start");

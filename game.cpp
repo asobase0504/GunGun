@@ -39,13 +39,9 @@
 // スタティック変数
 //------------------------------------
 static bool s_bPause;				// ポーズ中かどうか
-static int s_nSizeCnt;				// 大きさの区切り回数
 static bool s_bDebug;				// デバッグモードかどうか
 static bool s_bCountDownTime;		// カウントダウン中か否か 
 static int nDelayCnt;				// 遅延時のカウント
-static float fCameraDistance;		// カメラが遠のく倍率
-static float fDistCameraDistance;	// ゆっくりと遠のく
-static float fDistPosV;				// ゆっくりと遠のく
 static bool s_bGame;					// ゲーム中かゲームが始まる前か
 
 //=========================================
@@ -57,9 +53,6 @@ void InitGame(void)
 	s_bDebug = false;
 	s_bCountDownTime = false;
 	s_bGame = false;
-	fCameraDistance = 1.5f;
-
-	s_nSizeCnt = 1;
 #ifdef _DEBUG
 	// ラインの初期化処理
 	InitLine();
@@ -75,16 +68,15 @@ void InitGame(void)
 	InitPlayer();		// プレイヤー
 	InitShadow();		// 影
 	InitMeshField();	// メッシュ
-	InitWall();			// 壁
 	InitGameUI();		// UI
 	InitMeshSky();		// メッシュスカイ
 
+	// メッシュスカイの設定処理
 	SetMeshSky();
 
 	// タイムの設定処理
 	StartTimer(3, 0, 40.0f, 80.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), 0);
 	CountRestartStop(true, 0);
-	CountRestartStop(true, 1);
 
 	// ポリゴンの設定処理
 	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), &D3DXVECTOR3(100.0f, 0.0f, 100.0f),&D3DXCOLOR(1.0f,1.0f,1.0f,1.0f), NULL, "floar");
@@ -95,16 +87,13 @@ void InitGame(void)
 	setMesh.file = MESH_FIELD;
 	setMesh.fLineHeight = 50.0f;
 	setMesh.fLineWidth = 50.0f;
-	setMesh.nSurfaceHeight = 50;
-	setMesh.nSurfaceWidth = 50;
+	setMesh.nSurfaceHeight = 75;
+	setMesh.nSurfaceWidth = 75;
 	setMesh.pos = ZERO_VECTOR;
 	setMesh.rot = ZERO_VECTOR;
 	SetMeshField(&setMesh);
 
 	PlaySound(SOUND_LABEL_BGM_GAME);
-
-	fDistCameraDistance = GetCamera(0)->fDistance;
-	fDistPosV = GetCamera(0)->posV.y;
 }
 
 //=========================================
@@ -122,7 +111,6 @@ void UninitGame(void)
 	UninitShadow();			// 影
 	UninitMeshField();		// メッシュ
 	UninitMeshSky();		// メッシュ
-	UninitWall();			// 壁
 	UninitGameUI();			// UI
 
 #ifdef _DEBUG
@@ -140,6 +128,12 @@ void UninitGame(void)
 //=========================================
 void UpdateGame(void)
 {
+	// ポーズの機能
+	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardTrigger(DIK_P))
+	{
+		s_bPause = !s_bPause;
+	}
+
 	// ポーズ中ならポーズ以外を更新しない
 	if (s_bPause)
 	{
@@ -148,6 +142,8 @@ void UpdateGame(void)
 	}
 
 	UpdateTimer();			// タイム
+
+	UpdateGameCamera();		// カメラ
 
 	// カウントダウン判定
 	if (!TimerUp(0) && GetTimer(0)->bUse)
@@ -164,50 +160,22 @@ void UpdateGame(void)
 
 	if (!s_bGame)
 	{
-		StartTimer(90, 1, 20.0f, 40.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f + 550.0f, 60.0f, 0.0f), 0);
+		StartTimer(90, 1, 25.0f, 50.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f+25.0f, 40.0f, 0.0f), 0);
 		// タイマーの破棄
 		BreakTimer(0);
 		s_bCountDownTime = true;
 		s_bGame = true;
 	}
 
-	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardTrigger(DIK_P))
-	{
-		s_bPause = !s_bPause;
-	}
-
 	// 更新
 	UpdateModel();			// モデル
 	UpdatePlayer();			// プレイヤー
-	UpdateGameCamera();		// カメラ
 	UpdateLight();			// ライト
 	UpdatePolygon();		// ポリゴン
 	UpdateShadow();			// 影
 	UpdateMeshField();		// メッシュ
 	UpdateMeshSky();		// メッシュスカイ
-	UpdateWall();			// 壁
-
 	UpdateGameUI();			// UI
-
-	Player* player = GetPlayer();
-	// プレイヤーが画面一杯になったら画面の拡大
-	if ((int)player->fLength / 28 == s_nSizeCnt)
-	{
-		fDistCameraDistance = GetCamera(0)->fDistance * fCameraDistance;
-		fDistPosV = GetCamera(0)->posV.y + player->fLength * 2.0f / s_nSizeCnt;
-
-		s_nSizeCnt++;
-		fCameraDistance -= 0.05f;
-	}
-
-	if (fDistCameraDistance >= GetCamera(0)->fDistance)
-	{
-		GetCamera(0)->fDistance *= 1.01f;
-	}
-	if (fDistPosV >= GetCamera(0)->posV.y)
-	{
-		GetCamera(0)->posV.y += 5.0f / (player->fLength / s_nSizeCnt);
-	}
 
 	// 時間が切れたらリザルトに以降
 	if (TimerUp(1))
@@ -222,11 +190,6 @@ void UpdateGame(void)
 	if (GetJoypadTrigger(JOYKEY_X))
 	{
 		SetFade(MODE_RESULT);
-	}
-	// マップの更新
-	if (GetJoypadTrigger(JOYKEY_Y))
-	{
-		OutputMap("data/map02.txt");
 	}
 #endif // !_DEBUG
 }
@@ -251,7 +214,6 @@ void DrawGame(int cameraData)
 
 		SetCamera(cameraData);			// カメラ
 
-		DrawWall();			// 壁
 		DrawModel();		// モデル
 		DrawPlayer();		// プレイヤー
 		DrawMeshField();	// メッシュ
@@ -265,6 +227,8 @@ void DrawGame(int cameraData)
 			DrawPolygonUI();	// ポリゴンUI
 		}
 
+		DrawTimer();		// タイム
+
 		if (s_bPause)
 		{
 			DrawPause();
@@ -274,8 +238,6 @@ void DrawGame(int cameraData)
 		DrawLine();		// ライン
 		DrawFPS();		// FPSの表示
 #endif // !_DEBUG
-
-		DrawTimer();		// タイム
 		break;
 	//case 1:
 	//	DrawPolygon();

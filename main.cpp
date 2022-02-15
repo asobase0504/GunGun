@@ -315,19 +315,6 @@ void Uninit(void)
 	UninitFPS();
 	UninitSound();
 
-	//// デバッグ表示用フォントの破棄
-	//if (g_pFont != NULL)
-	//{
-	//	g_pFont->Release();
-	//	g_pFont = NULL;
-	//}
-	//// Direct3Dデバイスの破棄
-	//if (g_pD3DDevice != NULL)
-	//{
-	//	g_pD3DDevice->Release();
-	//	g_pD3DDevice = NULL;
-	//}
-
 	// Direct3Dオブジェクトの破棄
 	if (g_pD3D != NULL)
 	{
@@ -340,6 +327,9 @@ void Uninit(void)
 
 	// ゲームの終了処理
 	UninitGame();
+
+	// リザルトの終了処理
+	UninitResult();
 
 	// タイトル画面の終了処理
 	UninitTitle();

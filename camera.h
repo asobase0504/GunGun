@@ -24,6 +24,7 @@ typedef struct
 	D3DXMATRIX mtxView;			// ビューマトリックス
 	D3DVIEWPORT9 viewport;		// ビューポート
 	float fDistance;			// 視点から注視点の距離
+	float fHeight;
 }Camera;
 
 //------------------------------------

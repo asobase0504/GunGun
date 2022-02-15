@@ -7,6 +7,22 @@
 #include "common.h"
 
 //=========================================
+// 頂点バッファの生成
+//=========================================
+void SetVtxBuff2D(LPDIRECT3DVERTEXBUFFER9 *vtxBuff, int nData)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
+	
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * nData,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_2D,
+		D3DPOOL_MANAGED,
+		vtxBuff,
+		NULL);
+}
+
+//=========================================
 // 長方形の初期化
 //=========================================
 void InitRect(VERTEX_2D * vtx)

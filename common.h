@@ -9,6 +9,12 @@
 
 #include "main.h"
 
+
+//------------------------------------
+// マクロ定義
+//------------------------------------
+#define RAD(deg)			(deg * D3DX_PI / 180.0f)
+
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
@@ -16,6 +22,7 @@
 // 初期化系統
 
 // 長方形処理(2D)
+void SetVtxBuff2D(LPDIRECT3DVERTEXBUFFER9 *vtxBuff,int nData);
 void InitRect(VERTEX_2D *vtx);	// 長方形の初期化
 void InitRectPos(VERTEX_2D *vtx);	// 頂点座標初期化
 void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);						// 中心座標が中心にあった場合の頂点バッファの座標設定

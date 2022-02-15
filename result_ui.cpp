@@ -136,20 +136,21 @@ void InitResultUI(void)
 
 	// ƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ð•\Ž¦
 	s_fLength = player->fLength;
-	if (s_fLength < 1.0f)
+
+	if (s_fLength < 0.001f)
+	{
+		s_fLength *= 10000.0f;
+	}
+	else if (s_fLength > 0.001f && s_fLength < 1.0f)
 	{
 		s_fLength *= 100.0f;
 	}
-	else if (s_fLength > 1.0f && s_fLength < 100.0f)
+	else if (s_fLength > 1.0f && s_fLength < 1000.0f)
 	{
 	}
-	else if (s_fLength > 100.0f && s_fLength < (100.0f * 1000.0f))
+	else if (s_fLength >= 1000.0f)
 	{
-		s_fLength /= 100.0f;
-	}
-	else if (s_fLength >= (100.0f * 1000.0f))
-	{
-		s_fLength /= 100000.0f;
+		s_fLength /= 1000.0f;
 	}
 
 	if (player->fLength < 1.0f)
@@ -162,7 +163,14 @@ void InitResultUI(void)
 	}
 	if (player->fLength > 100.0f && player->fLength < (100.0f * 1000.0f))
 	{
-		sprintf(s_aLength, "%.1fm", s_fLength);
+		if (s_fLength >= 100.0f)
+		{
+			sprintf(s_aLength, "%.0fm", s_fLength);
+		}
+		else
+		{
+			sprintf(s_aLength, "%.1mf", s_fLength);
+		}
 	}
 	if (player->fLength >= (100.0f * 1000.0f))
 	{

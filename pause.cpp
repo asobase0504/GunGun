@@ -34,7 +34,8 @@ static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffPauseMenu	  = NULL;							//’¸“_ƒoƒbƒtƒ
 static PAUSE_MENU			   s_pauseMenu;												//ƒ|[ƒYƒƒjƒ…[
 static PauseMenu			   s_aPauseMenu[PAUSE_MENU_MAX];							//ƒ|[ƒYƒƒjƒ…[‚Ìî•ñ
 static D3DXVECTOR3			   s_posPause;												//ƒ|[ƒY‚ÌˆÊ’u
-static D3DXVECTOR3			   s_posPauseCusol;												//ƒ|[ƒY‚ÌˆÊ’u
+static D3DXVECTOR3			   s_posPauseCusol;											//ƒ|[ƒY‚ÌˆÊ’u
+static D3DXVECTOR3			   s_rotPauseCusol;											//ƒ|[ƒY‚ÌˆÊ’u
 
 //============================================================================================================
 //ƒ|[ƒY‚Ì‰Šú‰»ˆ—
@@ -48,15 +49,15 @@ void InitPause(void)
 
 	//ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/Back_to_game.png",
+		"data/TEXTURE/WORD/back.png",
 		&s_apTexture[0]);
 
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/Retry.png",
+		"data/TEXTURE/WORD/Restart.png",
 		&s_apTexture[1]);
 
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/Back_to_title.png",
+		"data/TEXTURE/WORD/back_Title.png",
 		&s_apTexture[2]);
 
 	D3DXCreateTextureFromFile(pDevice,
@@ -68,11 +69,12 @@ void InitPause(void)
 		&s_apTexture[4]);
 
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/Arrow.png",
+		"data/TEXTURE/cursor.png",
 		&s_apTexture[5]);
 
 
 	s_posPause = D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);	//ƒ|[ƒY‚ÌˆÊ’u‚ğ‰Šú‰»
+	s_rotPauseCusol = ZERO_VECTOR;
 
 	//î•ñ‚Ì‰Šú‰»
 	for (nCntPause = 0; nCntPause < PAUSE_MENU_MAX; nCntPause++)
@@ -165,10 +167,10 @@ void InitPause(void)
 		else if (nCntPause == 1)
 		{//ƒ|[ƒY
 			//’¸“_ƒJƒ‰[‚Ìİ’è
-			pVtx[0].col = D3DXCOLOR(0.3f, 0.5f, 0.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(0.3f, 0.5f, 0.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(0.3f, 0.5f, 0.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(0.3f, 0.5f, 0.0f, 1.0f);
+			pVtx[0].col = D3DXCOLOR(0.3f, 0.5f, 0.2f, 1.0f);
+			pVtx[1].col = D3DXCOLOR(0.3f, 0.5f, 0.2f, 1.0f);
+			pVtx[2].col = D3DXCOLOR(0.3f, 0.5f, 0.2f, 1.0f);
+			pVtx[3].col = D3DXCOLOR(0.3f, 0.5f, 0.2f, 1.0f);
 		}
 
 		//ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
@@ -265,8 +267,8 @@ void InitPause(void)
 	//’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
 	s_pVtxBuffPauseCursol->Lock(0, 0, (void**)&pVtx, 0);
 
-	s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 300.0f;
-	s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y - 45.0f;
+	s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 250.0f;
+	s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y;
 	s_posPauseCusol.z = s_aPauseMenu[s_pauseMenu].pos.z;
 
 	// ’¸“_À•W‚Ìİ’è
@@ -345,19 +347,9 @@ void UpdatePause(void)
 			//1‚Âã‚ğ‘I‚Ô
 			s_pauseMenu = (PAUSE_MENU)(((s_pauseMenu - 1) + 3) % 3);
 			//”’‚É‚·‚é
-			s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 300.0f;
-			s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y - 45.0f;
+			s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 250.0f;
+			s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y;
 			s_posPauseCusol.z = s_aPauseMenu[s_pauseMenu].pos.z;
-
-			 //’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
-			s_pVtxBuffPauseCursol->Lock(0, 0, (void**)&pVtx, 0);
-
-			// ’¸“_À•W‚Ìİ’è
-			SetRectUpLeftPos(pVtx, s_posPauseCusol, 90.0f, 90.0f);
-			
-			//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN‚·‚é
-			s_pVtxBuffPauseCursol->Unlock();
-
 		}
 
 		if (GetJoypadTrigger(JOYKEY_DOWN) || GetKeyboardTrigger(DIK_S))
@@ -366,20 +358,23 @@ void UpdatePause(void)
 			s_pauseMenu = (PAUSE_MENU)(((s_pauseMenu + 1) + 3) % 3);
 
 			//”’‚É‚·‚é
-			s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 300.0f;
-			s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y - 45.0f;
+			s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 250.0f;
+			s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y;
 			s_posPauseCusol.z = s_aPauseMenu[s_pauseMenu].pos.z;
-
-			//’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
-			s_pVtxBuffPauseCursol->Lock(0, 0, (void**)&pVtx, 0);
-
-			// ’¸“_À•W‚Ìİ’è
-			SetRectUpLeftPos(pVtx, s_posPauseCusol, 90.0f, 90.0f);
-
-			//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN‚·‚é
-			s_pVtxBuffPauseCursol->Unlock();
-
 		}
+		s_rotPauseCusol.z += 0.01f;
+
+		//’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+		s_pVtxBuffPauseCursol->Lock(0, 0, (void**)&pVtx, 0);
+
+		float fLength = sqrtf(90.0f  * 90.0f + 90.0f * 90.0f) / 2.0f;	// ’†SÀ•W‚©‚çã‚Ì’·‚³‚ğZo‚·‚éB
+		float fAngle = atan2f(90.0f, 90.0f);							// ’†SÀ•W‚©‚çã‚Ì’¸“_‚ÌŠp“x‚ğZo‚·‚é
+
+		// ’¸“_À•W‚Ìİ’è
+		SetRectCenterRotPos(pVtx, s_posPauseCusol, s_rotPauseCusol, fAngle, fLength);
+
+		//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN‚·‚é
+		s_pVtxBuffPauseCursol->Unlock();
 
 		if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetKeyboardTrigger(DIK_RETURN))
 		{//EnterƒL[‚ª‰Ÿ‚³‚ê‚½

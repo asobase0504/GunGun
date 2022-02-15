@@ -186,20 +186,19 @@ void UpdateTitle(void)
 	// 一定以上の値になったら乗っていた項目に以降する
 	if (s_nCnt >= TIMEUP_FADE)
 	{
-		s_nCnt++;
-
 		StopSound(SOUND_LABEL_SE_CHARGE);
 
-		// 何故か鳴らない。
-		PlaySound(SOUND_LABEL_SE_SERECT);
-
+		if (s_nCnt == TIMEUP_FADE)
+		{
+			// 何故か鳴らない。
+			PlaySound(SOUND_LABEL_SE_SERECT);
+			s_nCnt++;
+		}
+		
 		switch (s_Select)
 		{
 		case SELECT_GAMESTART:
 			SetFade(MODE_GAME);	// ゲームモードに移行
-			break;
-		case SELECT_TUTORIAL:
-			SetFade(MODE_TUTORIAL);	// チュートリアル画面に移行
 			break;
 		case SELECT_EXIT:
 			s_bExit = true;

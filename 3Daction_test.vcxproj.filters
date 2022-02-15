@@ -129,6 +129,9 @@
     <ClCompile Include="sound.cpp">
       <Filter>01_Setem</Filter>
     </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>03_2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shadow.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>01_Setem</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
+      <Filter>03_2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

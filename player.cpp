@@ -17,6 +17,7 @@
 #include "model.h"
 #include "shadow.h"
 #include "mesh_field.h"
+#include "particle.h"
 #include "sound.h"
 #include <stdio.h>
 #include <math.h>
@@ -303,12 +304,19 @@ void ColisionPartsModel(void)
 
 				// プレイヤーの長さを規定値加算
 				s_player.fLength += model->sizeAdd;
-
+				
 				s_player.nModelCnt++;
 				s_getModel = *model;
+
+				// バッファの先頭ポインタをD3DXMATERIALにキャストして取得
+				D3DXMATERIAL *pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
+
+				D3DXCOLOR col = pMat->MatD3D.Diffuse;
+
+				SetParticle(D3DXVECTOR3(SCREEN_WIDTH - 50.0f, SCREEN_HEIGHT + 25.0f, 0.0f), col, PARTICLE_PLAYER_GETMODEL);
 			}
 			else
-			{	// 取り込めないサイズの場合
+			{	// 取り込めないサイズの場合a
 				D3DXVECTOR3 vec = (model->pos_world - s_player.pos);	// 方向ベクトル
 
 				float Dist = D3DXVec3Length(&vec);					// 距離

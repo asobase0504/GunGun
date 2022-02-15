@@ -28,6 +28,7 @@
 #include "fade.h"
 #include "debug.h"
 #include "game_ui.h"
+#include "particle.h"
 #include "sound.h"
 
 //------------------------------------
@@ -70,6 +71,7 @@ void InitGame(void)
 	InitMeshField();	// メッシュ
 	InitGameUI();		// UI
 	InitMeshSky();		// メッシュスカイ
+	InitParticle();		// パーティクル
 
 	// メッシュスカイの設定処理
 	SetMeshSky();
@@ -112,6 +114,7 @@ void UninitGame(void)
 	UninitMeshField();		// メッシュ
 	UninitMeshSky();		// メッシュ
 	UninitGameUI();			// UI
+	UninitParticle();		// パーティクル
 
 #ifdef _DEBUG
 	// ライン
@@ -176,6 +179,7 @@ void UpdateGame(void)
 	UpdateMeshField();		// メッシュ
 	UpdateMeshSky();		// メッシュスカイ
 	UpdateGameUI();			// UI
+	UpdateParticle();		// パーティクル
 
 	// 時間が切れたらリザルトに以降
 	if (TimerUp(1))
@@ -223,6 +227,7 @@ void DrawGame(int cameraData)
 		if (s_bGame)
 		{
 			DrawModelUI();		// モデルUI
+			DrawParticle();		// パーティクル
 			DrawGameUI();		// UI
 			DrawPolygonUI();	// ポリゴンUI
 		}

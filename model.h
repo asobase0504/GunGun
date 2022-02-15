@@ -75,6 +75,5 @@ Model* SetModel(Model* model);		// モデルの設定(読み込みされたモデル参照)
 Model* SetModel(int nType);			// モデルの設定(読み込みされたモデル参照)
 void DrawModelUI(void);				// モデルUIの描画
 void SetModelUI(Model* model);		// モデルUIの設定
-void OutputMap(char *Filename);		// アイテムの設置
 
 #endif // !_MODEL_H_

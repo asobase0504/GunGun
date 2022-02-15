@@ -21,7 +21,11 @@
 //-----------------------------------------
 // 静的変数
 //-----------------------------------------
-static Camera s_camera[2];	// カメラ情報
+static Camera s_camera[1];	// カメラ情報
+static int s_nSizeCnt;				// 大きさの区切り回数
+static float fCameraDistance;		// カメラが遠のく倍率
+static float fDistCameraDistance;	// ゆっくりと遠のく
+static float fDistPosV;				// ゆっくりと遠のく
 
 //-----------------------------------------
 // プロトタイプ宣言
@@ -36,7 +40,7 @@ void InitCamera(void)
 	ZeroMemory(&s_camera, sizeof(s_camera));
 
 	// 視点・注視点・上方向を設定する
-	s_camera[0].posV = D3DXVECTOR3(0.0f,50.0f,-60.0f);	// 視点
+	s_camera[0].posV = D3DXVECTOR3(0.0f,65.0f,-60.0f);	// 視点
 	s_camera[0].posR = D3DXVECTOR3(0.0f,0.0f,0.0f);	// 注視点
 	s_camera[0].vecU = D3DXVECTOR3(0.0f,1.0f,0.0f);	// 上方向ベクトル
 	s_camera[0].rot = ZERO_VECTOR;	// 向き
@@ -46,6 +50,7 @@ void InitCamera(void)
 
 	D3DXVECTOR3 vec = s_camera[0].posV - s_camera[0].posR;
 	s_camera[0].fDistance = D3DXVec3Length(&vec);
+	s_camera[0].fHeight = GetPlayer()->fLength;
 
 	s_camera[0].viewport.X = (DWORD)0.0f;
 	s_camera[0].viewport.Y = (DWORD)0.0f;
@@ -54,24 +59,12 @@ void InitCamera(void)
 	s_camera[0].viewport.MinZ = 0.0f;
 	s_camera[0].viewport.MaxZ = 1.0f;
 
-	s_camera[1].posV = D3DXVECTOR3(0.0f, -200.0f, -60.0f);	// 視点
-	s_camera[1].posR = D3DXVECTOR3(0.0f, -200.0f, 0.0f);	// 注視点
-	s_camera[1].vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向ベクトル
-	s_camera[1].rot = ZERO_VECTOR;	// 向き
-			 
-	s_camera[1].rot.y = atan2f((s_camera[1].posR.x - s_camera[1].posV.x), (s_camera[1].posR.z - s_camera[1].posV.z));
-	s_camera[1].rot.x = atan2f((s_camera[1].posR.z - s_camera[1].posV.z), (s_camera[1].posR.y - s_camera[1].posV.y));
+	fCameraDistance = 1.5f;
 
-	vec = s_camera[1].posV - s_camera[1].posR;
-	s_camera[1].fDistance = D3DXVec3Length(&vec);
+	s_nSizeCnt = 1;
 
-	s_camera[1].viewport.X = (DWORD)0.0f;
-	s_camera[1].viewport.Y = (DWORD)(SCREEN_HEIGHT - (80.0f * 4.0f));
-	s_camera[1].viewport.Width = (DWORD)(80.0f * 4.0f);
-	s_camera[1].viewport.Height = (DWORD)(80.0f * 2.25f);
-	s_camera[1].viewport.MinZ = 0.0f;
-	s_camera[1].viewport.MaxZ = 1.0f;
-
+	fDistCameraDistance = s_camera[0].fDistance;
+	fDistPosV = 65.0f;
 }
 
 //=========================================
@@ -119,9 +112,29 @@ void UpdateGameCamera(void)
 
 	// カメラの追従処理
 	pCamera->posR = player->pos;
+	pCamera->posR.y += pCamera->fHeight;
 
 	pCamera->posV.x = pCamera->posR.x - sinf(pCamera->rot.y) * pCamera->fDistance;
 	pCamera->posV.z = pCamera->posR.z - cosf(pCamera->rot.y) * pCamera->fDistance;
+
+	// プレイヤーが画面一杯になったら画面の拡大
+	if ((int)player->fLength / 28 == s_nSizeCnt)
+	{
+		fDistCameraDistance = pCamera->fDistance * fCameraDistance;
+		fDistPosV = pCamera->posV.y + player->fLength * 2.0f / s_nSizeCnt;
+
+		s_nSizeCnt++;
+		fCameraDistance -= 0.05f;
+	}
+
+	if (fDistCameraDistance >= pCamera->fDistance)
+	{
+		pCamera->fDistance *= 1.01f;
+	}
+	if (fDistPosV >= pCamera->posV.y)
+	{
+		pCamera->posV.y += 5.0f / ((player->fLength / s_nSizeCnt) + pCamera->fHeight);
+	}
 
 #ifdef _DEBUG
 

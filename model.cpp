@@ -36,11 +36,14 @@ static Model s_ModelUI;					// モデルUIの構造体
 static int s_nShadowCnt;				// 影の割り当て
 static LPD3DXFONT s_pFont = NULL;		// フォントへのポインタ
 
+static bool bFlag;
+
 //=========================================
 // 初期化
 //=========================================
 void InitModel(void)
 {
+	bFlag = false;
 	ZeroMemory(s_ModelType, sizeof(s_ModelType));
 	ZeroMemory(&s_ModelUI, sizeof(s_ModelUI));
 	ZeroMemory(s_Model, sizeof(s_Model));
@@ -100,6 +103,12 @@ void UninitModel(void)
 //=========================================
 void UpdateModel(void)
 {
+	// モデルの移動
+	if (GetKeyboardTrigger(DIK_B))
+	{
+		bFlag = !bFlag;
+	}
+
 }
 
 //=========================================
@@ -149,7 +158,7 @@ void DrawModel(void)
 		if (model->nIdxModelParent != -2)
 		{
 			D3DXMATRIX mtxParent;
-		
+
 			if (model->nIdxModelParent == -1)
 			{
 				mtxParent = GetPlayer()->mtxWorld;
@@ -173,6 +182,9 @@ void DrawModel(void)
 
 		for (int j = 0; j < (int)model->nNumMat; j++)
 		{
+			// アンビエントライトの反映
+			pMat[j].MatD3D.Ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
+
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[j].MatD3D);
 
@@ -697,51 +709,4 @@ void SetModelUI(Model * model)
 	s_ModelUI.pos.y = -9.0f;
 	s_ModelUI.pos.x = -17.0f;
 	s_ModelUI.pos.z = 20.0f;
-}
-
-//==================
-// マップの出力処理
-// Author hamada ryuuga
-// Author YudaKaito
-//==================
-void OutputMap(char *Filename)
-{
-	Player* player = GetPlayer();
-	//ファイル開け
-	FILE *pFile = fopen(Filename, "w");
-
-	fprintf(pFile, "SCRIPT\n\n");
-	fprintf(pFile, "#------------------------------------------------------------------------------\n");
-	fprintf(pFile, "# プレイヤーの設置\n");
-	fprintf(pFile, "#------------------------------------------------------------------------------\n");
-
-	fprintf(pFile, "PLAYERSET\n");
-	fprintf(pFile, "TYPE = %d\n", player->aModel[0]->nType);
-	fprintf(pFile, "ROT = %.4f %.4f %.4f\n", player->aModel[0]->pos.x, player->aModel[0]->pos.y, player->aModel[0]->pos.z);
-	fprintf(pFile, "END_PLAYERSET\n");
-
-	fprintf(pFile, "#------------------------------------------------------------------------------\n");
-	fprintf(pFile, "# モデルの設置\n");
-	fprintf(pFile, "#------------------------------------------------------------------------------\n");
-	for (int nCnt = 0; nCnt < MODEL_MAX; nCnt++)
-	{
-		Model* model = &s_Model[nCnt];
-
-		if (model == NULL || !model->bUse)
-		{
-			continue;
-		}
-
-		fprintf(pFile, "# %s\n", model->name);
-		fprintf(pFile, "MODELSET\n");
-		fprintf(pFile, "TYPE = %d\n", model->nType);
-		fprintf(pFile, "POS = %.4f %.4f %.4f\n", model->pos.x, model->pos.y, model->pos.z);
-		fprintf(pFile, "ROT = %.4f %.4f %.4f\n", model->rot.x, model->rot.y, model->rot.z);
-
-		fprintf(pFile, "END_MODELSET\n");
-		fprintf(pFile, "\n");
-	}
-	fprintf(pFile, "END_SCRIPT\n\n");
-
-	fclose(pFile);
 }

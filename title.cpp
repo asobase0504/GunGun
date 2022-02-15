@@ -71,7 +71,7 @@ typedef struct
 	D3DXVECTOR3 pos;							// 位置
 	D3DXVECTOR3 rot;							// 角度
 	D3DXCOLOR col;								// 色
-	bool bUse;									// 使用してるかどうか
+	bool bUse;									// 使用してるかどうか5
 	float Height;								// 高さ
 	float Width;								// 幅
 }OBJECT;

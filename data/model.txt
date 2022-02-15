@@ -227,7 +227,7 @@ NAME = カラーコーン
 FILENAME = data/MODEL/colorcone.x		# [21]カラーコーン
 SIZE_CRITERIA = 11.0					# モデルがくっつき始める値
 SIZE_ADD = 0.1							# モデルがくっついた時プレイヤーをどれくらい大きくするか
-COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
+COLLISION_SPHERE = 8.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
 
@@ -281,7 +281,7 @@ NAME = イエ
 FILENAME = data/MODEL/house00.x			# [27]家
 SIZE_CRITERIA = 230.0					# モデルがくっつき始める値
 SIZE_ADD = 0.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
-COLLISION_SPHERE = 25.0					# 当たり判定の大きさ
+COLLISION_SPHERE = 110.0				# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
 
@@ -290,7 +290,7 @@ NAME = イエ
 FILENAME = data/MODEL/house01.x			# [27]家2
 SIZE_CRITERIA = 170.0					# モデルがくっつき始める値
 SIZE_ADD = 0.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
-COLLISION_SPHERE = 25.0					# 当たり判定の大きさ
+COLLISION_SPHERE = 40.5					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
 
@@ -299,7 +299,7 @@ NAME = ビル
 FILENAME = data/MODEL/building.x		# [28]ビル
 SIZE_CRITERIA = 400.0					# モデルがくっつき始める値
 SIZE_ADD = 0.0							# モデルがくっついた時プレイヤーをどれくらい大きくするか
-COLLISION_SPHERE = 10.0					# 当たり判定の大きさ
+COLLISION_SPHERE = 145.0					# 当たり判定の大きさ
 SCALE = 1.0								# モデルの大きさ
 END_TYPESET
 
@@ -452,7 +452,7 @@ NAME = ヤシロ
 FILENAME = data/MODEL/shrine.x				# [45]社
 SIZE_CRITERIA = 95.0						# モデルがくっつき始める値
 SIZE_ADD = 3.0								# モデルがくっついた時プレイヤーをどれくらい大きくするか
-COLLISION_SPHERE = 60.0						# 当たり判定の大きさ
+COLLISION_SPHERE = 30.0						# 当たり判定の大きさ
 SCALE = 1.0									# モデルの大きさ
 END_TYPESET
 

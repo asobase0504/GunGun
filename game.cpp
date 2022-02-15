@@ -195,6 +195,26 @@ void UpdateGame(void)
 	{
 		SetFade(MODE_RESULT);
 	}
+
+	Player* player = GetPlayer();
+
+	if (player->pos.x + player->fLength >= 1300.0f)
+	{
+		player->pos.x = 1300.0f - player->fLength;
+	}
+	if (player->pos.x - player->fLength <= -1300.0f)
+	{
+		player->pos.x = -1300.0f + player->fLength;
+	}
+	if (player->pos.z + player->fLength >= 1300.0f)
+	{
+		player->pos.z = 1300.0f - player->fLength;
+	}
+	if (player->pos.z - player->fLength <= -1300.0f)
+	{
+		player->pos.z = -1300.0f + player->fLength;
+	}
+
 #endif // !_DEBUG
 }
 

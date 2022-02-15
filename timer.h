@@ -18,6 +18,8 @@
 //------------------------------------
 typedef struct
 {
+	LPD3DXFONT font;
+	D3DXVECTOR3 pos;
 	int nSecond;
 	int nFps;
 	int nDigit;

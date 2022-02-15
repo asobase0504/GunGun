@@ -6,6 +6,7 @@
 // 
 //=========================================
 #include "timer.h"
+#include <stdio.h>
 
 //マクロ定義
 #define MAX_TIMER_DITIT		(256)		// タイマー(1桁)の最大数
@@ -105,6 +106,18 @@ void UninitTimer(void)
 		g_pVtxBuffTimer->Release();
 		g_pVtxBuffTimer = NULL;
 	}
+
+	for (int i = 0; i < MAX_TIMER; i++)
+	{
+		Timer* timer = &(g_Timer[i]);
+
+		// デバッグ表示用フォントの破棄
+		if (g_Timer[i].font != NULL)
+		{
+			g_Timer[i].font->Release();
+			g_Timer[i].font = NULL;
+		}
+	}
 }
 
 //=========================================
@@ -177,18 +190,35 @@ void DrawTimer(void)
 	//テクスチャの設定
 	pDevice->SetTexture(0, g_pTextureTimer);
 
-	for (int nCnt = 0; nCnt < MAX_TIMER_DITIT; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
-		if (!g_TimerDigit[nCnt].bUse)
+		if (!g_Timer[nCnt].bUse)
 		{
 			continue;
 		}
 
-		//ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,		//プリミティブの種類
-			4 * nCnt,						//描画する最初の頂点インデックス
-			2);		//プリミティブ（ポリゴン）数
+		// 表示領域の作成
+		RECT rect = { (LONG)g_Timer[nCnt].pos.x,g_Timer[nCnt].pos.y,(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
+
+		char aLength[5];
+
+		sprintf(aLength, "%d", g_Timer[nCnt].nSecond);
+
+		g_Timer[nCnt].font->DrawText(NULL, aLength, -1, &rect, DT_CENTER, D3DCOLOR_RGBA(255, 255, 255, 255));
 	}
+	//for (int nCnt = 0; nCnt < MAX_TIMER_DITIT; nCnt++)
+	//{
+	//	if (!g_TimerDigit[nCnt].bUse)
+	//	{
+	//		continue;
+	//	}
+
+	//	s_pFont->DrawText(NULL, s_aLength, -1, &rect, DT_CENTER, D3DCOLOR_RGBA(255, 255, 255, 255));
+	//	//ポリゴンの描画
+	//	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,		//プリミティブの種類
+	//		4 * nCnt,						//描画する最初の頂点インデックス
+	//		2);		//プリミティブ（ポリゴン）数
+	//}
 }
 
 //=========================================
@@ -227,6 +257,8 @@ void StartTimer(int nSecond, int nDigit, float fWidth, float fHeight, D3DXVECTOR
 		g_Timer[nCntTimer].bUse = true;//使用してるかどうか
 		g_Timer[nCntTimer].bCount = false;//カウントが止まっている状態
 
+		g_Timer[nCntTimer].pos = pos;//位置
+		D3DXCreateFont(GetDevice(), fHeight, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "07あかずきんポップ Heavy", &g_Timer[nCntTimer].font);
 		break;
 	}
 

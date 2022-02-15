@@ -77,7 +77,7 @@ void InitGame(void)
 	SetMeshSky();
 
 	// タイムの設定処理
-	StartTimer(3, 0, 40.0f, 80.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), 0);
+	StartTimer(3, 0, 40.0f, 180.0f, D3DXVECTOR3(0.0f, SCREEN_HEIGHT / 2.0f - 90.0f, 0.0f), 0);
 	CountRestartStop(true, 0);
 
 	// ポリゴンの設定処理
@@ -163,7 +163,7 @@ void UpdateGame(void)
 
 	if (!s_bGame)
 	{
-		StartTimer(90, 1, 25.0f, 50.0f, D3DXVECTOR3(SCREEN_WIDTH / 2.0f+25.0f, 40.0f, 0.0f), 0);
+		StartTimer(90, 1, 25.0f, 100.0f, D3DXVECTOR3(0.0f, 00.0f, 0.0f), 0);
 		// タイマーの破棄
 		BreakTimer(0);
 		s_bCountDownTime = true;

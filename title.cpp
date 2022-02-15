@@ -103,10 +103,23 @@ void InitTitle(void)
 	DeleteModel();		// プレイヤー以外のモデルの消失
 
 	// ポリゴンの設定処理
-	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f),&D3DXCOLOR(1.0f,1.0f,1.0f,1.0f), "data/TEXTURE/TITLE/Title_00.png", "Title01");
-	SetPolygon(&D3DXVECTOR3(-15.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title02");
-	SetPolygon(&D3DXVECTOR3(15.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_00.png", "Title03");
-	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title04");
+	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f),&D3DXCOLOR(1.0f,1.0f,1.0f,1.0f), "data/TEXTURE/TITLE/Title_00.png", "Title1");
+	SetPolygon(&D3DXVECTOR3(-15.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title2");
+	SetPolygon(&D3DXVECTOR3(15.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_00.png", "Title3");
+	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title4");
+	if (IsJoyPadUse(0))
+	{
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 15.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/RightStick.png", "operation1");
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/LeftStick.png", "operation2");
+	}
+	else
+	{
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 15.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/QE.png", "operation1");
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/WASD.png", "operation2");
+
+	}
+	SetPolygon(&D3DXVECTOR3(90.0f, 1.0f, 15.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/move.png", "operation3");
+	SetPolygon(&D3DXVECTOR3(95.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/CameraMove.png", "operation4");
 	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, -25.0f), &ZERO_VECTOR, &D3DXVECTOR3(25.0f, 0.0f, 9.0f), &D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), "data/TEXTURE/WORD/Exit.png", "exit");
 	SetPolygon(&D3DXVECTOR3(-40.0f, 1.0f, -25.0f), &ZERO_VECTOR, &D3DXVECTOR3(25.0f, 0.0f, 9.0f), &D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), "data/TEXTURE/WORD/Start.png", "start");
 
@@ -154,9 +167,146 @@ void UninitTitle(void)
 void UpdateTitle(void)
 {
 
-	// プレイヤーが指定されたポリゴンに乗っていたらカウントを進める
-	if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < TIMEUP_FADE)
+	if (CollisionPolygon(&GetPlayer()->pos, "Title1") && !GetPolygon("Title1")->HitPlayer)
 	{
+		ObjectPolygon* polygon = GetPolygon("Title1");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "Title2") && !GetPolygon("Title2")->HitPlayer)
+	{
+		ObjectPolygon* polygon = GetPolygon("Title2");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "Title3") && !GetPolygon("Title3")->HitPlayer)
+	{
+		ObjectPolygon* polygon = GetPolygon("Title3");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "Title4") && !GetPolygon("Title4")->HitPlayer)
+	{
+		ObjectPolygon* polygon = GetPolygon("Title4");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "operation1") && !GetPolygon("operation1")->HitPlayer)
+	{
+		ObjectPolygon* polygon = GetPolygon("operation1");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "operation2") && !GetPolygon("operation2")->HitPlayer)
+	{
+		ObjectPolygon* polygon = GetPolygon("operation2");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "operation3") && !GetPolygon("operation3")->HitPlayer)
+	{
+		ObjectPolygon* polygon = GetPolygon("operation3");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+	else if (CollisionPolygon(&GetPlayer()->pos, "operation4") && !GetPolygon("operation4")->HitPlayer)
+	{
+		ObjectPolygon* polygon = GetPolygon("operation4");
+		D3DXMATRIX mtxRot;
+		D3DXVECTOR3 pos_local = polygon->pos - GetPlayer()->pos_old;
+		D3DXVECTOR3 v = ZERO_VECTOR;
+
+		D3DXQUATERNION quaternionHit = GetPlayer()->aModel[0]->quaternion;
+		quaternionHit.w *= -1;
+
+		// クォータニオンの使用した姿勢の設定
+		D3DXMatrixRotationQuaternion(&mtxRot, &quaternionHit);			// クオータニオンによる行列回転
+		D3DXVec3TransformCoord(&polygon->pos, &pos_local, &mtxRot);
+
+		polygon->quaternion *= quaternionHit;
+		polygon->HitPlayer = true;
+	}
+
+	else if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < TIMEUP_FADE)
+	{	// プレイヤーが指定されたポリゴンに乗っていたらカウントを進める
+
 		s_Select = SELECT_GAMESTART;
 		s_nCnt++;
 		GetPolygon("start")->col = D3DXCOLOR((float)s_nCnt / (float)TIMEUP_FADE, 0.0f, 0.0f, 1.0f);

@@ -26,6 +26,9 @@ typedef struct
 	D3DXCOLOR				col;		// 色
 	D3DXMATRIX				mtxWorld;	// ワールドマトリックス
 	bool					bUse;		// 使用しているか
+
+	bool					HitPlayer;	// プレイヤーにくっつくか否か
+	D3DXQUATERNION			quaternion;	// クオータニオン
 } ObjectPolygon;
 
 //------------------------------------

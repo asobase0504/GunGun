@@ -11,6 +11,7 @@
 #include "polygon.h"
 #include "common.h"
 #include "camera.h"
+#include "player.h"
 
 //------------------------------------
 // マクロ定義
@@ -126,18 +127,31 @@ void DrawPolygon(void)
 		D3DXMatrixIdentity(&polygon->mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
 
 		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, polygon->rot.y, polygon->rot.x, polygon->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-		D3DXMatrixMultiply(&polygon->mtxWorld, &polygon->mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		D3DXMatrixRotationQuaternion(&mtxRot, &polygon->quaternion);			// クオータニオンによる行列回転
+		D3DXMatrixMultiply(&polygon->mtxWorld, &polygon->mtxWorld, &mtxRot);	// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, polygon->pos.x, polygon->pos.y, polygon->pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
 		D3DXMatrixMultiply(&polygon->mtxWorld, &polygon->mtxWorld, &mtxTrans);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+
+		if (polygon->HitPlayer)
+		{
+			D3DXMATRIX mtxParent;
+
+			mtxParent = GetPlayer()->aModel[0]->mtxWorld;
+
+			D3DXMatrixMultiply(&polygon->mtxWorld, &polygon->mtxWorld, &mtxParent);
+
+		}
 
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &polygon->mtxWorld);	// ワールド座標行列の設定
 
 		// 頂点バッファをデバイスのデータストリームに設定
 		pDevice->SetStreamSource(0, polygon->VtxBuff, 0, sizeof(VERTEX_3D));
+
+		pDevice->SetRenderState(D3DRS_CULLMODE, 1);
+		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_NOTEQUAL);
 
 		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D);
@@ -146,6 +160,9 @@ void DrawPolygon(void)
 
 		// ポリゴンの描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
+		pDevice->SetRenderState(D3DRS_CULLMODE, 3);
+		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
 		// テクスチャの解除
 		pDevice->SetTexture(0, NULL);
@@ -171,7 +188,8 @@ void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3* size, D3DXCOLOR
 		polygon->pos = *pos;
 		polygon->size = *size;
 		polygon->col = *col;
-		polygon->rot = *rot;
+		D3DXQuaternionRotationYawPitchRoll(&polygon->quaternion, rot->y, rot->x, rot->z);
+
 		polygon->bUse = true;
 
 		LPDIRECT3DDEVICE9 pDevice = GetDevice();

@@ -54,6 +54,7 @@ void InitGame(void)
 	s_bDebug = false;
 	s_bCountDownTime = false;
 	s_bGame = false;
+	nDelayCnt = 0;
 #ifdef _DEBUG
 	// ラインの初期化処理
 	InitLine();
@@ -123,6 +124,7 @@ void UninitGame(void)
 #endif // !_DEBUG
 
 	// タイマーの破棄
+	BreakTimer(0);
 	BreakTimer(1);
 }
 

@@ -37,11 +37,11 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	{ "data/BGM/Mature_Girl.wav", -1 },		// BGM1
 	{ "data/BGM/Tin_Waltz.wav", -1 },		// BGM2
 	{ "data/SE/GetItem01.wav", 0 },			// くっついた音
-	{ "data/SE/energycharge1.wav", 0 },	// タイトルでモード選択時の音
-	{ "data/SE/select_10.wav", 0 },		// 選択音
-	{ "data/BGM/Game.wav", 0 },				// 死亡音
-	{ "data/BGM/Game.wav", 0 },				// 死亡音
-	{ "data/BGM/Game.wav", 0 },				// 死亡音
+	{ "data/SE/energycharge1.wav", 0 },		// タイトルでモード選択時の音
+	{ "data/SE/select_10.wav", 0 },			// 選択音
+	{ "data/SE/TimeDist.wav", 0 },			// 時間が近い
+	{ "data/SE/EndGame.wav", 0 },			// ゲーム終了時
+	{ "data/SE/Select.wav", 0 },			// ポーズの選択処理
 	{ "data/BGM/Game.wav", 0 },				// 決定音
 };
 

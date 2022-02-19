@@ -20,9 +20,9 @@ typedef enum
 	SOUND_LABEL_SE_GETITEM,			// くっついた音
 	SOUND_LABEL_SE_CHARGE,			// タイトルでモード選択時の音
 	SOUND_LABEL_SE_SERECT,			// 選択音
-	SOUND_LABEL_SE_DIEPLAYER,		// 死亡音
-	SOUND_LABEL_SE_DIE000,			// 死亡音
-	SOUND_LABEL_SE_DIE001,			// 死亡音
+	SOUND_LABEL_SE_TIME,			// 時間制限が近いとき
+	SOUND_LABEL_SE_ENDGAME,			// ゲーム終了時
+	SOUND_LABEL_SE_SERECT_POUSE,	// 選択音
 	SOUND_LABEL_SE_ENTER,			// 決定音
 	SOUND_LABEL_MAX,
 } SOUND_LABEL;

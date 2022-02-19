@@ -10,6 +10,7 @@
 #include "game.h"
 #include "common.h"
 #include "fade.h"
+#include "sound.h"
 
 //============================================================================================================
 //マクロ定義
@@ -350,6 +351,7 @@ void UpdatePause(void)
 			s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 250.0f;
 			s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y;
 			s_posPauseCusol.z = s_aPauseMenu[s_pauseMenu].pos.z;
+			PlaySound(SOUND_LABEL_SE_SERECT_POUSE);
 		}
 
 		if (GetJoypadTrigger(JOYKEY_DOWN) || GetKeyboardTrigger(DIK_S))
@@ -361,6 +363,7 @@ void UpdatePause(void)
 			s_posPauseCusol.x = s_aPauseMenu[s_pauseMenu].pos.x - 250.0f;
 			s_posPauseCusol.y = s_aPauseMenu[s_pauseMenu].pos.y;
 			s_posPauseCusol.z = s_aPauseMenu[s_pauseMenu].pos.z;
+			PlaySound(SOUND_LABEL_SE_SERECT_POUSE);
 		}
 		s_rotPauseCusol.z += 0.01f;
 
@@ -378,6 +381,7 @@ void UpdatePause(void)
 
 		if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetKeyboardTrigger(DIK_RETURN))
 		{//Enterキーが押された
+			PlaySound(SOUND_LABEL_SE_SERECT);
 			switch (s_pauseMenu)
 			{
 			case PAUSE_MENU_CONTINUE:	//ゲームに戻る

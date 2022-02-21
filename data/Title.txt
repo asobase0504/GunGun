@@ -1,0 +1,13 @@
+SCRIPT
+
+FILENAME = data/MODEL/purin.x			# [6]プリン
+
+# タイトル
+TEXTURESET
+TYPE = 0
+POS = 50 50 50
+HEIGHT = 25
+WIDTH = 25
+END_TEXTURESET
+
+END_SCRIPT

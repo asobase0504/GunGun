@@ -2,7 +2,7 @@
 // 
 // タイム処理
 // Author KOZUNA HIROHITO
-// Author YudaKaito
+// Author Yuda Kaito
 // 
 //=========================================
 #ifndef _TIMER_H_			//このマクロ定義がされなかったら

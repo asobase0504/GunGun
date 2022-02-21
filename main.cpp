@@ -94,7 +94,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		hInstance,					// インスタンスハンドル
 		NULL);						// ウィンドウ作成データ
 
-	if (FAILED(Init(hInstance, hWnd, false)))	// true = window,false = fullscreen
+	if (FAILED(Init(hInstance, hWnd, true)))	// true = window,false = fullscreen
 	{// 初期化処理が失敗した場合
 		return -1;
 	}
@@ -213,7 +213,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	D3DDISPLAYMODE d3ddm;			// ディスプレイモード
 	D3DPRESENT_PARAMETERS d3dpp;	// プレゼンテーションパラメータ
-									// Direct3Dオブジェクトの生成
+
+	// Direct3Dオブジェクトの生成
 	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
 	if (g_pD3D == NULL)
@@ -290,9 +291,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	InitFPS();
 
-	//// デバッグ表示用フォントの生成
-	//D3DXCreateFont(g_pD3DDevice, 32, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &g_pFont);
-
 	// 入力処理の初期化
 	if (FAILED(InitInput(hInstance, hWnd)))
 	{
@@ -312,9 +310,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=========================================
 void Uninit(void)
 {
-	UninitFPS();
-	UninitSound();
-
 	// Direct3Dオブジェクトの破棄
 	if (g_pD3D != NULL)
 	{
@@ -322,17 +317,12 @@ void Uninit(void)
 		g_pD3D = NULL;
 	}
 
-	// 入力処理の終了
-	UninitInput();
-
-	// ゲームの終了処理
-	UninitGame();
-
-	// リザルトの終了処理
-	UninitResult();
-
-	// タイトル画面の終了処理
-	UninitTitle();
+	UninitFPS();	// デバッグモード
+	UninitSound();	// 音楽
+	UninitInput();	// 入力処理
+	UninitTitle();	// タイトル
+	UninitGame();	// ゲーム
+	UninitResult();	// リザルト
 }
 
 //=========================================

@@ -30,16 +30,6 @@
 #define TIMEUP_FADE				(90)	// フェードまでの時間
 
 //------------------------------------
-// プレスエンターの状態の種類
-//------------------------------------
-typedef enum
-{
-	TYPE_NOME,	// 変化なし
-	TYPE_BLINK,	// 点滅状態
-	TYPE_MAX
-}PRESS_TYPE;
-
-//------------------------------------
 // 配置するオブジェクトの種類
 //------------------------------------
 typedef enum
@@ -64,23 +54,10 @@ typedef enum
 	SELECT_EXIT,
 }SELECT_MODE;
 
-typedef struct
-{
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = NULL;	// 頂点バッファへのポインタ
-	LPDIRECT3DTEXTURE9 Tex = NULL;				// テクスチャへのポインタ
-	D3DXVECTOR3 pos;							// 位置
-	D3DXVECTOR3 rot;							// 角度
-	D3DXCOLOR col;								// 色
-	bool bUse;									// 使用してるかどうか5
-	float Height;								// 高さ
-	float Width;								// 幅
-}OBJECT;
-
 //------------------------------------
 // 静的変数変数
 //------------------------------------
 static SELECT_MODE s_Select;
-static OBJECT s_Object[OBJ_MAX] = {};
 static int	s_nCnt;
 static bool	s_bFadeCheek;	// フェード処置に移行するかの処理
 static int	s_nFadeCnt;		// フェード処理に行くまでの間隔
@@ -109,8 +86,8 @@ void InitTitle(void)
 	SetPolygon(&D3DXVECTOR3(40.0f, 1.0f, 25.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), "data/TEXTURE/TITLE/Title_01.png", "Title4");
 	if (IsJoyPadUse(0))
 	{
-		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 10.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/RightStick.png", "operation1");
-		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/LeftStick.png", "operation2");
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 10.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/LeftStick.png", "operation1");
+		SetPolygon(&D3DXVECTOR3(70.0f, 1.0f, 30.0f), &ZERO_VECTOR, &D3DXVECTOR3(12.5f, 0.0f, 12.5f), &D3DXCOLOR(0.75f, 0.3f, 0.4f, 1.0f), "data/TEXTURE/WORD/RightStick.png", "operation2");
 	}
 	else
 	{
@@ -303,7 +280,6 @@ void UpdateTitle(void)
 		polygon->quaternion *= quaternionHit;
 		polygon->HitPlayer = true;
 	}
-
 	else if (CollisionPolygon(&GetPlayer()->pos, "start") && s_nCnt < TIMEUP_FADE)
 	{	// プレイヤーが指定されたポリゴンに乗っていたらカウントを進める
 

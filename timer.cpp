@@ -2,7 +2,7 @@
 // 
 // ƒ^ƒCƒ€ˆ—
 // Author KOZUNA HIROHITO
-// Author YudaKaito
+// Author Yuda Kaito
 // 
 //=========================================
 #include "timer.h"

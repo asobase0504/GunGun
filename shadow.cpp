@@ -21,7 +21,7 @@
 //------------------------------------
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};	// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture = {};		// テクスチャへのポインタ
-static Shadow s_aShadow[SHADOW_MAX];				// ポリゴンの構造体
+static Shadow s_aShadow[SHADOW_MAX];			// ポリゴンの構造体
 
 //=========================================
 // 初期化
@@ -40,7 +40,7 @@ void InitShadow(void)
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/shadow000.jpg",
+		"data/TEXTURE/effect000.jpg",
 		&s_pTexture);
 
 	// 頂点バッファの生成
@@ -116,6 +116,24 @@ void UninitShadow(void)
 //=========================================
 void UpdateShadow(void)
 {
+	for (int i = 0; i < SHADOW_MAX; i++)
+	{
+		VERTEX_3D* pVtx;
+
+		// 頂点座標をロック
+		s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		pVtx += 4 * i;
+
+		// 頂点座標の設定
+		pVtx[0].pos = D3DXVECTOR3(- s_aShadow[i].size, 0.0f, + s_aShadow[i].size);
+		pVtx[1].pos = D3DXVECTOR3(+ s_aShadow[i].size, 0.0f, + s_aShadow[i].size);
+		pVtx[2].pos = D3DXVECTOR3(- s_aShadow[i].size, 0.0f, - s_aShadow[i].size);
+		pVtx[3].pos = D3DXVECTOR3(+ s_aShadow[i].size, 0.0f, - s_aShadow[i].size);
+
+		// 頂点座標をアンロック
+		s_pVtxBuff->Unlock();
+	}
 }
 
 //=========================================
@@ -132,23 +150,26 @@ void DrawShadow(void)
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 	for (int i = 0; i < SHADOW_MAX; i++)
 	{
-		if (!(s_aShadow[i].bUse))
+		Shadow* pShadow = &s_aShadow[i];
+
+		if (!(pShadow->bUse))
 		{
 			continue;
 		}
+
 		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&s_aShadow[i].mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
+		D3DXMatrixIdentity(&pShadow->mtxWorld);	// 行列初期化関数(第1引数の行列を単位行列に初期化)
 
 		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, s_aShadow[i].rot.y, s_aShadow[i].rot.x, s_aShadow[i].rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
-		D3DXMatrixMultiply(&s_aShadow[i].mtxWorld, &s_aShadow[i].mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, pShadow->rot.y, pShadow->rot.x, pShadow->rot.z);	// 行列回転関数(第1引数にヨー(y)ピッチ(x)ロール(z)方向の回転行列を作成)
+		D3DXMatrixMultiply(&pShadow->mtxWorld, &pShadow->mtxWorld, &mtxRot);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, s_aShadow[i].pos.x, s_aShadow[i].pos.y, s_aShadow[i].pos.z);		// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
-		D3DXMatrixMultiply(&s_aShadow[i].mtxWorld, &s_aShadow[i].mtxWorld, &mtxTrans);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
+		D3DXMatrixTranslation(&mtxTrans, pShadow->pos.x, pShadow->pos.y, pShadow->pos.z);			// 行列移動関数(第１引数にX,Y,Z方向の移動行列を作成)
+		D3DXMatrixMultiply(&pShadow->mtxWorld, &pShadow->mtxWorld, &mtxTrans);						// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
 
 		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &s_aShadow[i].mtxWorld);	// ワールド座標行列の設定
+		pDevice->SetTransform(D3DTS_WORLD, &pShadow->mtxWorld);	// ワールド座標行列の設定
 
 		// 頂点バッファをデバイスのデータストリームに設定
 		pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -183,6 +204,7 @@ int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		}
 
 		s_aShadow[i].pos = pos;
+		s_aShadow[i].pos.y = 0.1f;
 		s_aShadow[i].rot = rot;
 		s_aShadow[i].bUse = true;
 
@@ -196,17 +218,17 @@ int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=========================================
 void SetPositionShadow(int nIdxShadow, D3DXVECTOR3 pos)
 {
-
 	if (s_aShadow[nIdxShadow].bUse)
 	{	// 既に使用している場合
 		s_aShadow[nIdxShadow].pos = pos;
+		s_aShadow[nIdxShadow].pos.y = 0.1f;
 	}
 }
 
 //=========================================
 // 影位置の設定
 //=========================================
-Shadow* GetShadow(void)
+Shadow* GetShadow(int nIdxShadow)
 {
-	return &(s_aShadow[0]);
+	return &(s_aShadow[nIdxShadow]);
 }

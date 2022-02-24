@@ -90,6 +90,31 @@ void UninitModel(void)
 		}
 	}
 
+	Model* model = &(s_ModelUI);
+
+	if (model->pTexture != NULL)
+	{
+		for (int j = 0; j < (int)model->nNumMat; j++)
+		{
+			if (model->pTexture[j] != NULL)
+			{// テクスチャの解放
+				model->pTexture[j] = NULL;
+			}
+		}
+		model->pTexture = NULL;
+	}
+
+	// メッシュの解放
+	if (model->pMesh != NULL)
+	{
+		model->pMesh = NULL;
+	}
+	// マテリアルの解放
+	if (model->pBuffMat != NULL)
+	{
+		model->pBuffMat = NULL;
+	}
+
 	// 取得したモデル表示用フォントの破棄
 	if (s_pFont != NULL)
 	{
@@ -182,6 +207,8 @@ void DrawModel(void)
 
 		for (int j = 0; j < (int)model->nNumMat; j++)
 		{
+			D3DMATERIAL9 matBak = pMat[j].MatD3D;
+			
 			// アンビエントライトの反映
 			pMat[j].MatD3D.Ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -193,6 +220,8 @@ void DrawModel(void)
 
 			// モデルパーツの描写
 			model->pMesh->DrawSubset(j);
+
+			pMat[j].MatD3D = matBak;
 		}
 		// 保持していたマテリアルを戻す
 		pDevice->SetMaterial(&matDef);
@@ -621,8 +650,8 @@ void DrawModelUI(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScale, mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
-	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
+	D3DMATERIAL9 matDef;					// 現在のマテリアル保存用
+	D3DXMATERIAL *pMat;						// マテリアルデータへのポインタ
 
 	Model* model = &(s_ModelUI);
 	Camera* camera = GetCamera(0);
@@ -631,6 +660,7 @@ void DrawModelUI(void)
 
 	D3DXVECTOR3 size = model->MaxVtx - model->MinVtx;
 	float scale = model->scale;
+
 	while (size.x >= 3.0f || size.y >= 3.0f || size.z >= 3.0f)
 	{
 		size = model->MaxVtx - model->MinVtx;
@@ -664,14 +694,20 @@ void DrawModelUI(void)
 		// 現在のマテリアルを保持
 		pDevice->GetMaterial(&matDef);
 
+		pDevice->SetRenderState(D3DRS_AMBIENT, 0xff050303);
+
 		// マテリアルデータへのポインタを取得
 		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
 
-		// ライトを無効にする
-		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-
 		for (int j = 0; j < (int)model->nNumMat; j++)
 		{
+			D3DMATERIAL9 matBak = pMat[j].MatD3D;
+
+			// アンビエントライトの反映
+			pMat[j].MatD3D.Ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
+			pMat[j].MatD3D.Specular = { 1.0f, 1.0f, 1.0f, 1.0f };
+			//pMat[j].MatD3D.Diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
+
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[j].MatD3D);
 
@@ -680,17 +716,18 @@ void DrawModelUI(void)
 
 			// モデルパーツの描写
 			model->pMesh->DrawSubset(j);
+
+			pMat[j].MatD3D = matBak;
 		}
 
 		// 保持していたマテリアルを戻す
 		pDevice->SetMaterial(&matDef);
 	}
 
-	// ライトを有効にする
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-
 	// 表示領域の作成
 	RECT rect = { -1050,670,SCREEN_WIDTH,SCREEN_HEIGHT };
+
+	pDevice->SetRenderState(D3DRS_AMBIENT, 0xff363333);
 
 	// テキストの描画
 	s_pFont->DrawText(NULL, &model->name[0], -1, &rect, DT_CENTER, D3DCOLOR_RGBA(0, 255, 255, 255));
@@ -701,7 +738,7 @@ void DrawModelUI(void)
 // モデルUIの設定
 // ローカル座標のみで描画位置を決定する
 //=========================================
-void SetModelUI(Model * model)
+void SetModelUI(Model* model)
 {
 	D3DXVECTOR3 rot_old = s_ModelUI.rot;
 	s_ModelUI = *model;
@@ -709,4 +746,33 @@ void SetModelUI(Model * model)
 	s_ModelUI.pos.y = -9.0f;
 	s_ModelUI.pos.x = -17.0f;
 	s_ModelUI.pos.z = 20.0f;
+}
+
+//=========================================
+// 取れるモデルの中で最大のモデル
+// 
+//=========================================
+Model* SetJustModel(void)
+{
+	float fPlayerLength = GetPlayer()->fLength;
+	float fModelLength = 0;
+	int idx = 0;
+
+	for (int i = 0; i < MODEL_MAX; i++)
+	{
+		Model* pModel = &(s_Model[i]);
+
+		if (!pModel->bUse)
+		{
+			continue;
+		}
+
+		if (fPlayerLength > pModel->sizeCriter && fModelLength < pModel->sizeCriter)
+		{
+			fModelLength = pModel->sizeCriter;
+			idx = i;
+		}
+	}
+
+	return &s_Model[idx];
 }

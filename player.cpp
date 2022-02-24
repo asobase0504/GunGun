@@ -18,6 +18,7 @@
 #include "shadow.h"
 #include "mesh_field.h"
 #include "particle.h"
+#include "shadow.h"
 #include "sound.h"
 #include <stdio.h>
 #include <math.h>
@@ -50,8 +51,8 @@ void LookUpSizePlayer(void);	// プレイヤーのサイズを調べる
 //------------------------------------
 static Player s_player;			// モデルの構造体
 static MODEL_STATE s_state;		// モデルのステータス
-static int s_nShadowCnt;		// 影の割り当て
 static Model s_getModel;		// くっついたモデル
+static int s_nShadowIdx;		// 影の割り当て
 
 //=========================================
 // 初期化
@@ -102,6 +103,8 @@ void InitPlayer(void)
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &s_player.mtxWorld);
+
+	s_nShadowIdx = SetShadow(s_player.pos, s_player.rot);
 }
 
 //=========================================
@@ -129,6 +132,7 @@ void UpdatePlayer(void)
 		{
 			continue;
 		}
+
 		model->pos_old = model->pos;
 
 		model->pos_world = D3DXVECTOR3(model->mtxWorld._41, model->mtxWorld._42, model->mtxWorld._43);
@@ -156,7 +160,12 @@ void UpdatePlayer(void)
 	// 角度の正規化
 	NormalizeRot(&pPlayer->rot.y);
 
+#ifdef _GETMODEL_POP
 	SetModelUI(&s_getModel);
+#endif // !_GETMODEL_POP
+
+	GetShadow(s_nShadowIdx)->size = pPlayer->fLength;
+	SetPositionShadow(s_nShadowIdx, pPlayer->pos);
 }
 
 //=========================================

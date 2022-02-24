@@ -30,6 +30,7 @@
 #include "game_ui.h"
 #include "particle.h"
 #include "sound.h"
+#include "shadow.h"
 #include <stdio.h>
 
 //------------------------------------
@@ -77,8 +78,8 @@ void InitGame(void)
 	InitCamera();		// カメラ
 	InitLight();		// ライト
 	InitModel();		// モデル
-	InitPlayer();		// プレイヤー
 	InitShadow();		// 影
+	InitPlayer();		// プレイヤー
 	InitMeshField();	// メッシュ
 	InitGameUI();		// UI
 	InitMeshSky();		// メッシュスカイ
@@ -168,7 +169,6 @@ void UpdateGame(void)
 	}
 
 	UpdateTimer();			// タイム
-
 	UpdateGameCamera();		// カメラ
 
 	// カウントダウン判定
@@ -238,6 +238,11 @@ void UpdateGame(void)
 		UpdateMeshSky();		// メッシュスカイ
 		UpdateGameUI();			// UI
 		UpdateParticle();		// パーティクル
+
+#ifndef _GETMODEL_POP
+		SetModelUI(SetJustModel());
+#endif // !_GETMODEL_POP
+
 	}
 
 #ifdef _DEBUG

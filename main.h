@@ -38,6 +38,9 @@
 #define ZERO_VECTOR		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// ゼロベクトル
 #define ZERO_QUATERNION	(D3DXQUATERNION(0.0f,0.0f,0.0f,1.0f))
 
+// デバッグ用
+//#define _GETMODEL_POP
+
 //------------------------------------
 // 頂点情報[2D]の構造体を定義
 //------------------------------------

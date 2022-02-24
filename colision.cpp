@@ -122,10 +122,10 @@ bool SphereCuboidColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, D3
 // ˆø”3 pos2		‘ÎÛ2‚ÌˆÊ’u
 // ˆø”4 fLength1	‘ÎÛ2‚Ì’·‚³
 //=========================================
-bool SphereCapsuleColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, float fLength2)
-{
-	return false;
-}
+//bool SphereCapsuleColision(D3DXVECTOR3 pos1, float fLength1, D3DXVECTOR3 pos2, float fLength2)
+//{
+//	return false;
+//}
 
 //=========================================
 //

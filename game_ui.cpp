@@ -14,6 +14,7 @@
 #include "player.h"
 #include "input.h"
 #include "timer.h"
+#include "camera.h"
 #include <stdio.h>
 
 //------------------------------------
@@ -43,9 +44,11 @@ static Object uiLengthScoreBg;
 static Object uiTimeBg;
 static Object uiTimeGauge;
 static Object uiLengthUnitBg;
+static Object uiLv;
 static Object uiGetModelUnitBg[2] = {};
 static LPD3DXFONT s_pFont = NULL;		// フォントへのポインタ
 static char s_aLength[5];
+static char s_aLv[5];
 static float s_fLength;
 
 //------------------------------------
@@ -253,6 +256,8 @@ void UpdateGameUI(void)
 		sprintf(s_aLength, "%.1f", s_fLength);
 	}
 
+	sprintf(s_aLv, "Lv.%d", (int)((GetPlayer()->fLength / 14.0f) + 1));
+
 	Object* object;
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 	int nSecond = GetTimer(1)->nSecond;
@@ -354,9 +359,14 @@ void DrawGameUI(void)
 
 	// 表示領域の作成
 	RECT rect = { (LONG)950.0f,(LONG)(SCREEN_HEIGHT - 185.0f),(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
-
 	// テキストの描画
 	s_pFont->DrawText(NULL, s_aLength, -1, &rect, DT_CENTER, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	// LV表示
+	// 表示領域の作成
+	rect = { (LONG)150.0f,(LONG)(SCREEN_HEIGHT - 185.0f),(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
+	// テキストの描画
+	s_pFont->DrawText(NULL, s_aLv, -1, &rect, DT_CENTER, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 //=========================================

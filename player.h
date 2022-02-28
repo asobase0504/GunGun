@@ -35,6 +35,7 @@ typedef struct
 	float		fLength;			// 大きさ
 	float		fLengthLand;		// 目標の大地までの距離
 	int			nModelCnt;			// くっついているモデル数
+	int			nLv;				// レベル
 }Player;
 
 //------------------------------------

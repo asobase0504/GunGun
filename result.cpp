@@ -60,8 +60,6 @@ void InitResult(void)
 		{
 			s_player->aModel[i]->bUse = false;
 		}
-
-		SetModel(s_player->aModel[i]);	// Ý’è
 	}
 
 	// ƒ|ƒŠƒSƒ“‚ÌÝ’è

@@ -85,7 +85,6 @@ void UpdateCamera(void)
 	s_camera[0].vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 上方向ベクトル
 
 	D3DXVECTOR3 vec = s_camera[0].posV - s_camera[0].posR;
-	s_camera[1].fDistance = D3DXVec3Length(&vec);
 }
 
 //=========================================
@@ -206,7 +205,6 @@ void SetCamera(int nData)
 		D3DXToRadian(60.0f),						// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
 		10.0f,6200.0f);	// どこから(ニア)(第５引数)どこまで(ファー)(第６引数)をカメラで表示するか設定 
-
 	//D3DXMatrixOrthoLH(&camara->mtxProjection, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 10.0f, 400.0f * camara->fDistance / 60.0f);
 	
 	// プロジェクションマトリックスの設定

@@ -169,7 +169,7 @@ void InitResultUI(void)
 		}
 		else
 		{
-			sprintf(s_aLength, "%.1mf", s_fLength);
+			sprintf(s_aLength, "%.1fm", s_fLength);
 		}
 	}
 	if (player->fLength >= (100.0f * 1000.0f))

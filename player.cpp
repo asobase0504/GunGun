@@ -75,9 +75,9 @@ void InitPlayer(void)
 		s_player.pos.y = s_player.fLength;
 	}
 
-	for (int i = 0; i < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); i++)
+	for (int nModelCnt = 0; nModelCnt < sizeof(s_player.aModel) / sizeof(s_player.aModel[0]); nModelCnt++)
 	{
-		Model* model = s_player.aModel[i];
+		Model* model = s_player.aModel[nModelCnt];
 
 		if (model == NULL || !(model->bUse))
 		{

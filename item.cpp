@@ -259,7 +259,6 @@ static void MoveItem(void)
 //=========================================
 static void SelectItem(void)
 {
-	Model* model = &s_Model;
 
 	if (GetJoypadTrigger(JOYKEY_A))
 	{

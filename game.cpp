@@ -111,7 +111,7 @@ void InitGame(void)
 	PlaySound(SOUND_LABEL_BGM_GAME);
 
 	// フォントの初期化
-	D3DXCreateFont(GetDevice(), 140.0f, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "07あかずきんポップ Heavy", &pFont);
+	D3DXCreateFont(GetDevice(), 140, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "07あかずきんポップ Heavy", &pFont);
 }
 
 //=========================================
@@ -165,114 +165,114 @@ void UpdateGame(void)
 	if (s_bPause)
 	{
 		UpdatePause();		// ポーズ
-		return;
-	}
-
-	UpdateTimer();			// タイム
-	UpdateGameCamera();		// カメラ
-
-	// カウントダウン判定
-	if (!TimerUp(0) && GetTimer(0)->bUse && !GetTimer(1)->bUse)
-	{
-		return;
-	}
-
-	// ゲームスタート時の遅延
-	if (nDelayCnt < 30)
-	{
-		nDelayCnt++;
-		return;
-	}
-
-	if (!s_bGame)
-	{
-		StartTimer(90, 1, 25.0f, 100.0f, D3DXVECTOR3(0.0f, 00.0f, 0.0f), 0);
-		// タイマーの破棄
-		BreakTimer(0);
-		s_bCountDownTime = true;
-		s_bGame = true;
-	}
-
-	if (GetTimer(1)->nSecond == 25 && !s_bAssat)
-	{
-		PlaySound(SOUND_LABEL_SE_TIME);
-		s_bAssat = true;
-	}
-
-	if (GetTimer(1)->nSecond == 5 && !GetTimer(0)->bUse)
-	{
-		StartTimer(5, 0, 40.0f, 180.0f, D3DXVECTOR3(0.0f, SCREEN_HEIGHT / 2.0f - 90.0f, 0.0f), 0);
-	}
-
-	// 時間が切れたらリザルトに以降
-	if (TimerUp(1))
-	{
-		BreakTimer(1);
-		BreakTimer(0);
-		PlaySound(SOUND_LABEL_SE_ENDGAME);
-		s_bEndGame = true;
-	}
-
-	if (s_bEndGame)
-	{
-		s_nEndCnt++;
-
-		if (s_nEndCnt >= 40)
-		{
-			GetPlayer()->pos.y += 1.0f;
-		}
-		if (s_nEndCnt >= 120)
-		{
-			SetFade(MODE_RESULT);
-		}
 	}
 	else
 	{
-		// 更新
-		UpdateModel();			// モデル
-		UpdatePlayer();			// プレイヤー
-		UpdateLight();			// ライト
-		UpdatePolygon();		// ポリゴン
-		UpdateShadow();			// 影
-		UpdateMeshField();		// メッシュ
-		UpdateMeshSky();		// メッシュスカイ
-		UpdateGameUI();			// UI
-		UpdateParticle();		// パーティクル
+		UpdateTimer();			// タイム
+		UpdateGameCamera();		// カメラ
+
+		// カウントダウン判定
+		if (!TimerUp(0) && GetTimer(0)->bUse && !GetTimer(1)->bUse)
+		{
+			return;
+		}
+
+		// ゲームスタート時の遅延
+		if (nDelayCnt < 30)
+		{
+			nDelayCnt++;
+			return;
+		}
+
+		if (!s_bGame)
+		{
+			StartTimer(90, 1, 25.0f, 100.0f, D3DXVECTOR3(0.0f, 00.0f, 0.0f), 0);
+			// タイマーの破棄
+			BreakTimer(0);
+			s_bCountDownTime = true;
+			s_bGame = true;
+		}
+
+		if (GetTimer(1)->nSecond == 25 && !s_bAssat)
+		{
+			PlaySound(SOUND_LABEL_SE_TIME);
+			s_bAssat = true;
+		}
+
+		if (GetTimer(1)->nSecond == 5 && !GetTimer(0)->bUse)
+		{
+			StartTimer(5, 0, 40.0f, 180.0f, D3DXVECTOR3(0.0f, SCREEN_HEIGHT / 2.0f - 90.0f, 0.0f), 0);
+		}
+
+		// 時間が切れたらリザルトに以降
+		if (TimerUp(1))
+		{
+			BreakTimer(1);
+			BreakTimer(0);
+			PlaySound(SOUND_LABEL_SE_ENDGAME);
+			s_bEndGame = true;
+		}
+
+		if (s_bEndGame)
+		{
+			s_nEndCnt++;
+
+			if (s_nEndCnt >= 40)
+			{
+				GetPlayer()->pos.y += 1.0f;
+			}
+			if (s_nEndCnt >= 120)
+			{
+				SetFade(MODE_RESULT);
+			}
+		}
+		else
+		{
+			// 更新
+			UpdateModel();			// モデル
+			UpdatePlayer();			// プレイヤー
+			UpdateLight();			// ライト
+			UpdatePolygon();		// ポリゴン
+			UpdateShadow();			// 影
+			UpdateMeshField();		// メッシュ
+			UpdateMeshSky();		// メッシュスカイ
+			UpdateGameUI();			// UI
+			UpdateParticle();		// パーティクル
 
 #ifndef _GETMODEL_POP
-		SetModelUI(SetJustModel());
+			SetModelUI(SetJustModel());
 #endif // !_GETMODEL_POP
 
-	}
+		}
 
 #ifdef _DEBUG
-	UpdateLine();	// ライン
+		UpdateLine();	// ライン
 
-	// リザルト画面に移動
-	if (GetJoypadTrigger(JOYKEY_X))
-	{
-		SetFade(MODE_RESULT);
-	}
+						// リザルト画面に移動
+		if (GetJoypadTrigger(JOYKEY_X))
+		{
+			SetFade(MODE_RESULT);
+		}
 #endif // !_DEBUG
 
-	// 世界の端
-	Player* player = GetPlayer();
-
-	if (player->pos.x + player->fLength >= WORLD_EDGE)
-	{
-		player->pos.x = WORLD_EDGE - player->fLength;
-	}
-	if (player->pos.x - player->fLength <= -WORLD_EDGE)
-	{
-		player->pos.x = -WORLD_EDGE + player->fLength;
-	}
-	if (player->pos.z + player->fLength >= WORLD_EDGE)
-	{
-		player->pos.z = WORLD_EDGE - player->fLength;
-	}
-	if (player->pos.z - player->fLength <= -WORLD_EDGE)
-	{
-		player->pos.z = -WORLD_EDGE + player->fLength;
+		// 世界の端
+		Player* player = GetPlayer();
+		if (player->pos.x + player->fLength >= WORLD_EDGE)
+		{
+			player->pos.x = WORLD_EDGE - player->fLength;
+		}
+		if (player->pos.x - player->fLength <= -WORLD_EDGE)
+		{
+			player->pos.x = -WORLD_EDGE + player->fLength;
+		}
+		if (player->pos.z + player->fLength >= WORLD_EDGE)
+		{
+			player->pos.z = WORLD_EDGE - player->fLength;
+		}
+		if (player->pos.z - player->fLength <= -WORLD_EDGE)
+		{
+			player->pos.z = -WORLD_EDGE + player->fLength;
+		}
 	}
 }
 
@@ -326,7 +326,7 @@ void DrawGame(int cameraData)
 
 #ifdef _DEBUG
 		DrawLine();		// ライン
-		DrawFPS();		// FPSの表示
+		//DrawFPS();	// FPSの表示
 #endif // !_DEBUG
 		break;
 	//case 1:

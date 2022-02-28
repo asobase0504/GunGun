@@ -202,6 +202,8 @@ void DrawModel(void)
 		// 現在のマテリアルを保持
 		pDevice->GetMaterial(&matDef);
 
+		pDevice->SetRenderState(D3DRS_AMBIENT, 0xff808080);
+
 		// マテリアルデータへのポインタを取得
 		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
 
@@ -210,7 +212,7 @@ void DrawModel(void)
 			D3DMATERIAL9 matBak = pMat[j].MatD3D;
 			
 			// アンビエントライトの反映
-			pMat[j].MatD3D.Ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
+			pMat[j].MatD3D.Ambient = pMat[j].MatD3D.Diffuse;
 
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[j].MatD3D);
@@ -549,26 +551,6 @@ void LoadMap(void)
 //=========================================
 // 設定
 //=========================================
-Model* SetModel(Model* model)
-{
-	for (int i = 0; i < MODEL_MAX; i++)
-	{
-		Model* pModel = &(s_Model[i]);
-
-		if (pModel->bUse)
-		{
-			continue;
-		}
-
-		pModel = model;
-
-		return pModel;
-	}
-}
-
-//=========================================
-// 設定
-//=========================================
 Model* SetModel(int nType)
 {
 	for (int i = 0; i < MODEL_MAX; i++)
@@ -668,6 +650,10 @@ void DrawModelUI(void)
 		size *= scale;
 	}
 
+	pDevice->LightEnable(0, false);
+	pDevice->LightEnable(1, false);
+	pDevice->LightEnable(2, false);
+
 	if (model != NULL && model->bUse)
 	{
 		// ワールドマトリックスの初期化
@@ -694,7 +680,7 @@ void DrawModelUI(void)
 		// 現在のマテリアルを保持
 		pDevice->GetMaterial(&matDef);
 
-		pDevice->SetRenderState(D3DRS_AMBIENT, 0xff050303);
+		pDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
 
 		// マテリアルデータへのポインタを取得
 		pMat = (D3DXMATERIAL*)model->pBuffMat->GetBufferPointer();
@@ -704,9 +690,7 @@ void DrawModelUI(void)
 			D3DMATERIAL9 matBak = pMat[j].MatD3D;
 
 			// アンビエントライトの反映
-			pMat[j].MatD3D.Ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
-			pMat[j].MatD3D.Specular = { 1.0f, 1.0f, 1.0f, 1.0f };
-			//pMat[j].MatD3D.Diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
+			pMat[j].MatD3D.Ambient = pMat[j].MatD3D.Diffuse;
 
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[j].MatD3D);
@@ -724,10 +708,12 @@ void DrawModelUI(void)
 		pDevice->SetMaterial(&matDef);
 	}
 
+	pDevice->LightEnable(0, true);
+	pDevice->LightEnable(1, true);
+	pDevice->LightEnable(2, true);
+
 	// 表示領域の作成
 	RECT rect = { -1050,670,SCREEN_WIDTH,SCREEN_HEIGHT };
-
-	pDevice->SetRenderState(D3DRS_AMBIENT, 0xff363333);
 
 	// テキストの描画
 	s_pFont->DrawText(NULL, &model->name[0], -1, &rect, DT_CENTER, D3DCOLOR_RGBA(0, 255, 255, 255));

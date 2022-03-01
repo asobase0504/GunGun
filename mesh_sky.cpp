@@ -47,7 +47,7 @@ void InitMeshSky(void)
 	// テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
-		"data\\TEXTURE\\sky.png",
+		"data\\TEXTURE\\sky.jpg",
 		&s_pTexture);
 
 	// メモリのクリア
@@ -228,13 +228,13 @@ void SetMeshSky(void)
 			pVtx[x + (y * nXLine)].nor = vec;
 
 			// 頂点カラーの設定
-			pVtx[x + (y * nXLine)].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[x + (y * nXLine)].col = D3DXCOLOR(0.85f, 0.85f, 1.0f, 1.0f);
 
-			float fUTex = (float)((x + (y * nXLine)) % nXLine);
+			float fUTex = (float)x / (float)(nXLine - 1);
 			float fVTex = (1.0f / s_Number.nVertical) * y;
 
 			// テクスチャ座標の設定
-			pVtx[x + (y * nXLine)].tex = D3DXVECTOR2((float)x, fVTex);
+			pVtx[x + (y * nXLine)].tex = D3DXVECTOR2((float)fUTex, fVTex);
 		}
 	}
 
@@ -313,7 +313,7 @@ void SetMeshSky(void)
 		pVtx[i + 1].nor = vec;
 
 		// 頂点カラーの設定
-		pVtx[i + 1].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+		pVtx[i + 1].col = D3DXCOLOR(0.0f, 0.55f, 1.0f, 1.0f);
 
 		// テクスチャ座標の設定
 		pVtx[i + 1].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -337,7 +337,7 @@ void SetMeshSky(void)
 	pVtx[0].nor = vec;
 
 	// 頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+	pVtx[0].col = D3DXCOLOR(0.0f, 0.55f, 1.0f, 1.0f);
 
 	// テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);

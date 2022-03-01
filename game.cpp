@@ -186,7 +186,7 @@ void UpdateGame(void)
 
 		if (!s_bGame)
 		{
-			StartTimer(90, 1, 25.0f, 100.0f, D3DXVECTOR3(0.0f, 00.0f, 0.0f), 0);
+			StartTimer(10, 1, 25.0f, 100.0f, D3DXVECTOR3(0.0f, 00.0f, 0.0f), 0);
 			// タイマーの破棄
 			BreakTimer(0);
 			s_bCountDownTime = true;
@@ -310,7 +310,7 @@ void DrawGame(int cameraData)
 			DrawPolygonUI();	// ポリゴンUI
 		}
 
-		DrawTimer();		// タイム
+		//DrawTimer();		// タイム
 
 		if (s_bPause)
 		{

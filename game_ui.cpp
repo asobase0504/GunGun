@@ -161,12 +161,12 @@ void InitGameUI(void)
 		object->pos = D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 0.0f, 0.0f);	// 位置
 		object->rot = ZERO_VECTOR;	// 位置
 		object->rot.z = D3DX_PI * 0.5f;	// 位置
-		object->col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);	// 色
+		object->col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);	// 色
 		object->Height = 200.0f;							// 高さ
 		object->Width = 200.0f;								// 幅
 		object->bUse = true;								// 使用に切り替え
 
-		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/cursor_02.png", &object->tex);	// テクスチャの読込
+		D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/cursor_03.png", &object->tex);	// テクスチャの読込
 
 		SetVtxBuff2D(&object->vtxBuff, 4);	// 頂点バッファの生成
 
@@ -274,7 +274,7 @@ void UpdateGameUI(void)
 		}
 		else
 		{
-			object->col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);	// 色
+			object->col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);	// 色
 		}
 	}
 
@@ -364,9 +364,9 @@ void DrawGameUI(void)
 
 	// LV表示
 	// 表示領域の作成
-	rect = { (LONG)150.0f,(LONG)(SCREEN_HEIGHT - 185.0f),(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
+	rect = { (LONG)0.0f,(LONG)(SCREEN_HEIGHT - 185.0f),(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
 	// テキストの描画
-	s_pFont->DrawText(NULL, s_aLv, -1, &rect, DT_CENTER, D3DCOLOR_RGBA(255, 255, 255, 255));
+	s_pFont->DrawText(NULL, s_aLv, -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 //=========================================

@@ -273,7 +273,7 @@ void InitPause(void)
 	s_posPauseCusol.z = s_aPauseMenu[s_pauseMenu].pos.z;
 
 	// 頂点座標の設定
-	SetRectUpLeftPos(pVtx, s_posPauseCusol, 90.0f, 90.0f);
+	SetPosRectUpLeft(pVtx, s_posPauseCusol, 90.0f, 90.0f);
 
 	//rhwの設定
 	pVtx[0].rhw = 1.0f;
@@ -374,7 +374,7 @@ void UpdatePause(void)
 		float fAngle = atan2f(90.0f, 90.0f);							// 中心座標から上の頂点の角度を算出する
 
 		// 頂点座標の設定
-		SetRectCenterRotPos(pVtx, s_posPauseCusol, s_rotPauseCusol, fAngle, fLength);
+		SetPosRectCenterRot(pVtx, s_posPauseCusol, s_rotPauseCusol, fAngle, fLength);
 
 		//頂点バッファをアンロックする
 		s_pVtxBuffPauseCursol->Unlock();

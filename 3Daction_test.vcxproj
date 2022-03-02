@@ -158,6 +158,7 @@
     <ClCompile Include="countdown.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="fan.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="game_ui.cpp" />
     <ClCompile Include="input.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="countdown.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="fan.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="game_ui.h" />
     <ClInclude Include="input.h" />

@@ -11,10 +11,8 @@
 //=========================================
 void SetVtxBuff2D(LPDIRECT3DVERTEXBUFFER9 *vtxBuff, int nData)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
-	
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * nData,
+	GetDevice()->CreateVertexBuffer(sizeof(VERTEX_2D) * nData,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
@@ -54,7 +52,7 @@ void InitRectPos(VERTEX_2D * vtx)
 //=========================================
 // 頂点座標のPOSを設定(中心から)
 //=========================================
-void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
+void SetPosRectCenter(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
 {
 	vtx[0].pos.x = pos.x - fWidth;
 	vtx[0].pos.y = pos.y - fHeigth;
@@ -76,7 +74,7 @@ void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeig
 //=========================================
 // 頂点座標を設定(中心)(角度対応)
 //=========================================
-void SetRectCenterRotPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fAngle, float fLength)
+void SetPosRectCenterRot(VERTEX_2D * vtx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fAngle, float fLength)
 {
 	//頂点座標の設定
 	vtx[0].pos.x = pos.x + sinf(rot.z + (-D3DX_PI + fAngle)) * fLength;
@@ -100,7 +98,7 @@ void SetRectCenterRotPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, floa
 //=========================================
 // 頂点座標を設定(左上から)
 //=========================================
-void SetRectUpLeftPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
+void SetPosRectUpLeft(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
 {
 	vtx[0].pos.x = pos.x;
 	vtx[0].pos.y = pos.y;
@@ -122,7 +120,7 @@ void SetRectUpLeftPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHei
 //=========================================
 // 頂点座標を設定(右上から)
 //=========================================
-void SetRectUpRightPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
+void SetPosRectUpRight(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
 {
 	vtx[0].pos.x = pos.x - fWidth;
 	vtx[0].pos.y = pos.y;
@@ -199,7 +197,6 @@ void InitRectRhw(VERTEX_2D * vtx)
 	vtx[2].rhw = 1.0f;
 	vtx[3].rhw = 1.0f;
 }
-
 
 //=========================================
 // 角度の正規化

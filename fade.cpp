@@ -46,7 +46,7 @@ void InitFade(MODE modeNext)
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// í∏ì_ç¿ïWÇÃê›íË
-	SetRectUpLeftPos(pVtx, D3DXVECTOR3(0.0f, 0.0f, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT);
+	SetPosRectUpLeft(pVtx, D3DXVECTOR3(0.0f, 0.0f, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	// rhwÇÃê›íË
 	InitRectRhw(pVtx);

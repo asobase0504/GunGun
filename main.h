@@ -41,6 +41,13 @@
 // デバッグ用
 //#define _GETMODEL_POP
 
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define DEBUG_PRINT(...) _RPT_BASE(_CRT_WARN, __FILE__, __LINE__, NULL, __VA_ARGS__)
+#else
+#define DEBUG_PRINT(...) ((void)0)
+#endif
+
 //------------------------------------
 // 頂点情報[2D]の構造体を定義
 //------------------------------------

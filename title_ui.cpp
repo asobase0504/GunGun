@@ -83,7 +83,7 @@ void InitTitleUI(void)
 		float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
 		float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
 
-		SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+		SetPosRectCenterRot(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
 		SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
 		InitRectRhw(pVtx);														// rhwの設定
 		InitRectTex(pVtx);														// テクスチャ座標の設定
@@ -128,7 +128,7 @@ void InitTitleUI(void)
 
 		for (int i = 0; i < SCORELENGTH_MAX; i++)
 		{
-			SetRectUpRightPos(pVtx, D3DXVECTOR3(object->pos.x - 25.0f * i, object->pos.y, object->pos.z), object->Width, object->Height);
+			SetPosRectUpRight(pVtx, D3DXVECTOR3(object->pos.x - 25.0f * i, object->pos.y, object->pos.z), object->Width, object->Height);
 			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
 			InitRectRhw(pVtx);														// rhwの設定
 	
@@ -180,7 +180,7 @@ void InitTitleUI(void)
 
 		for (int i = 0; i < SCORELENGTH_MAX; i++)
 		{
-			SetRectUpRightPos(pVtx, D3DXVECTOR3(object->pos.x - 25.0f * i, object->pos.y, object->pos.z), object->Width, object->Height);
+			SetPosRectUpRight(pVtx, D3DXVECTOR3(object->pos.x - 25.0f * i, object->pos.y, object->pos.z), object->Width, object->Height);
 			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
 			InitRectRhw(pVtx);														// rhwの設定
 
@@ -300,7 +300,7 @@ void DrawTitleUI(void)
 //		float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
 //		float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
 //
-//		SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+//		SetPosRectCenterRot(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
 //		SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
 //		InitRectRhw(pVtx);														// rhwの設定
 //		InitRectTex(pVtx);														// テクスチャ座標の設定

@@ -108,7 +108,7 @@ void InitParticle(void)
 		pParticle = &(s_aParticle[nCntParticle]);
 
 		// 頂点座標の設定
-		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
+		SetPosRectCenter(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pParticle->col));
@@ -199,7 +199,7 @@ void UpdateParticle(void)
 		pVtx += i * 4;
 
 		// 頂点座標の設定
-		SetRectCenterRotPos(pVtx, pParticle->pos, pParticle->rot, pParticle->fAngle, pParticle->fLength);
+		SetPosRectCenterRot(pVtx, pParticle->pos, pParticle->rot, pParticle->fAngle, pParticle->fLength);
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pParticle->col));
 
@@ -297,7 +297,7 @@ void SetParticle(D3DXVECTOR3 pos, D3DXCOLOR col, PARTICLE_TYPE type)
 
 		pParticle->bUse = true;
 
-		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
+		SetPosRectCenter(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
 		SetRectColor(pVtx, &(pParticle->col));
 

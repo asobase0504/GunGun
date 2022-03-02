@@ -63,7 +63,7 @@ void InitCountdown(void)
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//SetRectCenterPos(pVtx, object->pos, START_WIDTH * 0.5f, START_HEIGHT * 0.5f);	// 頂点座標の設定
+	//SetPosRectCenter(pVtx, object->pos, START_WIDTH * 0.5f, START_HEIGHT * 0.5f);	// 頂点座標の設定
 	//SetRectColor(pVtx, &(object->col));												// 頂点カラーの設定
 	//InitRectRhw(pVtx);																// rhwの設定
 	//InitRectTex(pVtx);																// テクスチャ座標の設定

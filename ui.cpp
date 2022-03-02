@@ -154,7 +154,7 @@ void SetUI(char * pFile, D3DXVECTOR3 * pos, D3DXCOLOR * col, D3DXVECTOR3 * size)
 		float fLength = sqrtf(pObject->Width  * pObject->Width + pObject->Height * pObject->Height) / 2.0f;	// 中心座標から上の長さを算出する。
 		float fAngle = atan2f(pObject->Width, pObject->Height);	// 中心座標から上の頂点の角度を算出する
 
-		SetRectCenterRotPos(pVtx, pObject->pos, pObject->rot, fAngle, fLength);		// 頂点座標の設定
+		SetPosRectCenterRot(pVtx, pObject->pos, pObject->rot, fAngle, fLength);		// 頂点座標の設定
 		SetRectColor(pVtx, &(pObject->col));										// 頂点カラーの設定
 		InitRectRhw(pVtx);															// rhwの設定
 		InitRectTex(pVtx);															// テクスチャ座標の設定

@@ -143,8 +143,8 @@ void DrawModel(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScale, mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
-	D3DXMATERIAL *pMat;				// マテリアルデータへのポインタ
+	D3DMATERIAL9 matDef;					// 現在のマテリアル保存用
+	D3DXMATERIAL *pMat;						// マテリアルデータへのポインタ
 
 	for (int i = 0; i < MODEL_MAX; i++)
 	{
@@ -161,7 +161,8 @@ void DrawModel(void)
 		// スケールの反映
 		D3DXMatrixScaling(&mtxScale, model->scale, model->scale, model->scale);
 		D3DXMatrixMultiply(&model->mtxWorld, &model->mtxWorld, &mtxScale);					// 行列掛け算関数(第2引数×第3引数第を１引数に格納)
-																							// 角度の反映
+		
+		// 角度の反映
 		if (model->isQuaternion)
 		{
 			// クォータニオンの使用した姿勢の設定

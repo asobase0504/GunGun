@@ -132,6 +132,9 @@
     <ClCompile Include="particle.cpp">
       <Filter>03_2D</Filter>
     </ClCompile>
+    <ClCompile Include="fan.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shadow.h">
@@ -235,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="particle.h">
       <Filter>03_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="fan.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,6 @@
 #include "light.h"
 #include "model.h"
 #include "shadow.h"
-#include "wall.h"
 #include "billboard.h"
 #include "mesh_field.h"
 #include "mesh_cylinder.h"
@@ -24,6 +23,7 @@
 #include "mesh_sky.h"
 #include "line.h"
 #include "pause.h"
+#include "fan.h"
 #include "timer.h"
 #include "fade.h"
 #include "debug.h"
@@ -37,19 +37,20 @@
 // マクロ定義
 //------------------------------------
 #define MESH_FIELD	"data/TEXTURE/kusa.jpg"
-#define WORLD_EDGE	(1300.0f)
+#define WORLD_EDGE	(1300.0f)						// 世界の端
+#define GAME_TIME	(90)
 
 //------------------------------------
 // スタティック変数
 //------------------------------------
 static bool s_bPause;				// ポーズ中かどうか
 static bool s_bDebug;				// デバッグモードかどうか
-static bool s_bCountDownTime;		// カウントダウン中か否か 
+static bool s_bCountDownTime;		// カウントダウン中かどうか 
 static int nDelayCnt;				// 遅延時のカウント
 static bool s_bGame;				// ゲーム中かゲームが始まる前か
 static bool s_bEndGame;				// ゲームが終了
 static int s_nEndCnt;				// ゲームが終了するまでの時間
-static bool s_bAssat;
+static bool s_bAssat;				// ゲーム終了間際かどうか
 static LPD3DXFONT pFont;
 
 //=========================================
@@ -84,6 +85,7 @@ void InitGame(void)
 	InitGameUI();		// UI
 	InitMeshSky();		// メッシュスカイ
 	InitParticle();		// パーティクル
+	InitFan();
 
 	// メッシュスカイの設定処理
 	SetMeshSky();
@@ -94,7 +96,6 @@ void InitGame(void)
 
 	// ポリゴンの設定処理
 	SetPolygon(&D3DXVECTOR3(0.0f, -200.0f, 0.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), &D3DXVECTOR3(100.0f, 0.0f, 100.0f),&D3DXCOLOR(1.0f,1.0f,1.0f,1.0f), NULL, "floar");
-	SetPolygonUI(&D3DXVECTOR3(-25.5f, -10.5f, 30.0f), &D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), D3DXVECTOR3(5.0f, 0.0f, 5.0f), "data/TEXTURE/Circle.png");
 
 	// メッシュフィールドの設定処理
 	SetMesh setMesh;
@@ -106,6 +107,9 @@ void InitGame(void)
 	setMesh.pos = ZERO_VECTOR;
 	setMesh.rot = ZERO_VECTOR;
 	SetMeshField(&setMesh);
+
+	// 扇の設定処理
+	SetFan(D3DXVECTOR3(10.0f, 30.0f, 10.0f), D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), 30.0f);
 
 	// BGMの再生
 	PlaySound(SOUND_LABEL_BGM_GAME);
@@ -132,6 +136,7 @@ void UninitGame(void)
 	UninitMeshSky();		// メッシュ
 	UninitGameUI();			// UI
 	UninitParticle();		// パーティクル
+	UninitFan();
 
 #ifdef _DEBUG
 	// ライン
@@ -150,6 +155,8 @@ void UninitGame(void)
 	}
 }
 
+static int nCnt = 1;
+
 //=========================================
 // 更新
 //=========================================
@@ -159,6 +166,13 @@ void UpdateGame(void)
 	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardTrigger(DIK_P))
 	{
 		s_bPause = !s_bPause;
+	}
+
+	// ポーズの機能
+	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardPress(DIK_O))
+	{
+		OpenFan(nCnt);
+		nCnt++;
 	}
 
 	// ポーズ中ならポーズ以外を更新しない
@@ -186,7 +200,7 @@ void UpdateGame(void)
 
 		if (!s_bGame)
 		{
-			StartTimer(10, 1, 25.0f, 100.0f, D3DXVECTOR3(0.0f, 00.0f, 0.0f), 0);
+			StartTimer(GAME_TIME, 1, 25.0f, 100.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f), 0);
 			// タイマーの破棄
 			BreakTimer(0);
 			s_bCountDownTime = true;
@@ -238,6 +252,7 @@ void UpdateGame(void)
 			UpdateMeshSky();		// メッシュスカイ
 			UpdateGameUI();			// UI
 			UpdateParticle();		// パーティクル
+			UpdateFan();
 
 #ifndef _GETMODEL_POP
 			SetModelUI(SetJustModel());
@@ -301,15 +316,21 @@ void DrawGame(int cameraData)
 		DrawMeshField();	// メッシュ
 		DrawMeshSky();		// メッシュスカイ
 		DrawShadow();		// 影
+		DrawFan();
 
 		if (s_bGame)
 		{
-			DrawModelUI();		// モデルUI
 			DrawParticle();		// パーティクル
 			DrawGameUI();		// UI
 			DrawPolygonUI();	// ポリゴンUI
 		}
 
+		//2Dの前に3Dを置ける可能性
+		pDevice->Clear(0, NULL,
+			(D3DCLEAR_ZBUFFER),
+			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
+			DrawModelUI();		// モデルUI
 		//DrawTimer();		// タイム
 
 		if (s_bPause)

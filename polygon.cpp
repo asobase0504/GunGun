@@ -304,7 +304,7 @@ void DrawPolygonUI(void)
 //=========================================
 // ポリゴンUIの設定
 //=========================================
-void SetPolygonUI(D3DXVECTOR3 * pos, D3DXVECTOR3 * rot, D3DXVECTOR3 size, char * texFile)
+void SetPolygonUI(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3* size, D3DXCOLOR* col, char * texFile)
 {
 	for (int i = 0; i <= MAX_POLYGON; i++)
 	{
@@ -316,8 +316,9 @@ void SetPolygonUI(D3DXVECTOR3 * pos, D3DXVECTOR3 * rot, D3DXVECTOR3 size, char *
 		}
 
 		polygon->pos = *pos;
-		polygon->size = size;
+		polygon->size = *size;
 		polygon->rot = *rot;
+		polygon->col = *col;
 		polygon->bUse = true;
 
 		LPDIRECT3DDEVICE9 pDevice = GetDevice();
@@ -339,10 +340,10 @@ void SetPolygonUI(D3DXVECTOR3 * pos, D3DXVECTOR3 * rot, D3DXVECTOR3 size, char *
 		polygon->VtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, size.z);
-		pVtx[1].pos = D3DXVECTOR3(size.x, size.y, size.z);
-		pVtx[2].pos = D3DXVECTOR3(-size.x, size.y, -size.z);
-		pVtx[3].pos = D3DXVECTOR3(size.x, size.y, -size.z);
+		pVtx[0].pos = D3DXVECTOR3(-polygon->size.x, polygon->size.y, polygon->size.z);
+		pVtx[1].pos = D3DXVECTOR3(polygon->size.x, polygon->size.y, polygon->size.z);
+		pVtx[2].pos = D3DXVECTOR3(-polygon->size.x, polygon->size.y, -polygon->size.z);
+		pVtx[3].pos = D3DXVECTOR3(polygon->size.x, polygon->size.y, -polygon->size.z);
 
 		// 各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -351,10 +352,10 @@ void SetPolygonUI(D3DXVECTOR3 * pos, D3DXVECTOR3 * rot, D3DXVECTOR3 size, char *
 		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 		// 頂点カラーの設定
-		pVtx[0].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.8f);
-		pVtx[1].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.8f);
-		pVtx[2].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.8f);
-		pVtx[3].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.8f);
+		pVtx[0].col = polygon->col;
+		pVtx[1].col = polygon->col;
+		pVtx[2].col = polygon->col;
+		pVtx[3].col = polygon->col;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);

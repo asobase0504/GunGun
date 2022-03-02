@@ -40,7 +40,7 @@ void UpdatePolygon(void);	// ポリゴンの更新処理
 void DrawPolygon(void);		// ポリゴンの描画処理
 void SetPolygon(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3* size, D3DXCOLOR* col, char* texFile, char* name);		// ポリゴンの設定処理
 void DrawPolygonUI(void);	// ポリゴンのUI描画処理
-void SetPolygonUI(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3 size, char* texFile);	// ポリゴンのUI設定処理
+void SetPolygonUI(D3DXVECTOR3* pos, D3DXVECTOR3* rot, D3DXVECTOR3* size, D3DXCOLOR* col, char * texFile);	// ポリゴンのUI設定処理
 bool CollisionPolygon(D3DXVECTOR3* pos, char* name);		// ポリゴンの設定処理
 ObjectPolygon* GetPolygon(char* name);			// ポリゴンの取得処理
 D3DXVECTOR3 GetPolygonPos(void);		// ポリゴンの取得処理

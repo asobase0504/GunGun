@@ -148,7 +148,7 @@ void DrawModel(void)
 
 	for (int i = 0; i < MODEL_MAX; i++)
 	{
-		Model* model = &(s_Model[i]);
+		Model* model = s_Model + i;
 
 		if (!model->bUse)
 		{

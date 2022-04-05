@@ -12,7 +12,8 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define RADIAN(degree)			(degree * D3DX_PI / 180.0f)	// DegreeをRadianに変換
+#define ToRadian(degree)	D3DXToRadian(degree)	// DegreeをRadianに変換
+#define ToDegree(radian)	D3DXToDegree(radian)	// RadianをDegreeに変換
 
 //------------------------------------
 // プロトタイプ宣言

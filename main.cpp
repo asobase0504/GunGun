@@ -17,6 +17,8 @@
 #include "debug.h"
 #include <stdio.h>
 #include "sound.h"
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
 
 //-----------------------------------------
 // マクロ定義
@@ -48,6 +50,9 @@ int g_nCountFPS = 0;		// FPSカウンタ
 //=========================================
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine, int nCmdShow)
 {
+	// リークチェック
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	DWORD dwCurrentTime;	// 現在時刻
 	DWORD dwExecLastTime;	// 最後に処理した時刻
 	DWORD dwFrameCount;		// フレームカウント

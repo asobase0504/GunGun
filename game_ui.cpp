@@ -21,7 +21,7 @@
 // マクロ定義
 //------------------------------------
 #define SCORE_BG_TEX		"data/TEXTURE/Circle_01.png"
-#define MAX_FAN_VERTEX		(100)		// 扇の頂点数
+#define MAX_FAN_VERTEX		(360)		// 扇の頂点数
 
 //------------------------------------
 // UIの構造体
@@ -47,12 +47,12 @@ static Object uiTimeGauge;
 static Object uiLengthUnitBg;
 static Object uiGetModelBg;
 static Object uiGetModelGauge;
-static Object uiGetModelUnitBg[2] = {};
 static LPD3DXFONT s_pFont = NULL;		// フォントへのポインタ
 static char s_aLength[5];
 static char s_aLv[5];
 static float s_fLength;
 static int s_nFanCnt;					// 扇の開き具合
+static int s_nFanSwitch;
 static bool s_bFanMax;
 
 //------------------------------------
@@ -68,6 +68,7 @@ void InitGameUI(void)
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 	Object* object;
 	s_fLength = 0;
+	s_nFanSwitch = 0;
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
 
 	// 長さのスコアの長さ単位を出す。
@@ -103,12 +104,12 @@ void InitGameUI(void)
 	object = &(uiLengthScoreBg);
 	{
 		ZeroMemory(object, sizeof(object));
-		object->pos = D3DXVECTOR3(SCREEN_WIDTH - 50.0f , SCREEN_HEIGHT + 25.0f, 0.0f);	// 位置
+		object->pos = D3DXVECTOR3(SCREEN_WIDTH - 50.0f, SCREEN_HEIGHT + 25.0f, 0.0f);	// 位置
 		object->col = D3DXCOLOR(0.0f, 0.9f, 0.0f, 1.0f);	// 色
 		object->Height = 600.0f;							// 高さ
 		object->Width = 600.0f;								// 幅
 		object->bUse = true;								// 使用に切り替え
-		
+
 		D3DXCreateTextureFromFile(pDevice, SCORE_BG_TEX, &object->tex);	// テクスチャの読込
 
 		SetVtxBuff2D(&object->vtxBuff, 4);	// 頂点バッファの生成
@@ -193,9 +194,9 @@ void InitGameUI(void)
 	object = &(uiGetModelBg);
 	{
 		ZeroMemory(object, sizeof(object));
-		object->pos = D3DXVECTOR3(100.0f, SCREEN_HEIGHT - 125.0f, 0.0f);	// 位置
-		object->rot = ZERO_VECTOR;	// 位置
-		object->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.8f);	// 色
+		object->pos = D3DXVECTOR3(120.0f, SCREEN_HEIGHT - 125.0f, 0.0f);	// 位置
+		object->rot = ZERO_VECTOR;							// 位置
+		object->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);	// 色
 		object->Height = 200.0f;							// 高さ
 		object->Width = 200.0f;								// 幅
 		object->bUse = true;								// 使用に切り替え
@@ -219,14 +220,14 @@ void InitGameUI(void)
 		object->vtxBuff->Unlock();
 	}
 
-	// 取得モデルの背景
+	// 取得モデルのゲージ
 	object = &(uiGetModelGauge);
 	{
 		ZeroMemory(object, sizeof(object));
-		object->pos = D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f);	// 位置
+		object->pos = D3DXVECTOR3(120.0f, SCREEN_HEIGHT - 122.5f, 0.0f);	// 位置
 		object->rot = ZERO_VECTOR;
-		object->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);	// 色
-		object->Height = 200.0f;							// 高さ
+		object->col = D3DXCOLOR(0.7f, 1.0f, 0.0f, 1.0f);	// 色
+		object->Height = 105.0f;							// 高さ
 		object->Width = 200.0f;								// 幅
 		object->bUse = true;								// 使用に切り替え
 		s_bFanMax = false;
@@ -237,27 +238,28 @@ void InitGameUI(void)
 		SetVtxBuff2D(&object->vtxBuff, MAX_FAN_VERTEX);	// 頂点バッファの生成
 
 		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	
+
 		pVtx[0].pos = object->pos;					// 頂点座標の設定
 		pVtx[0].rhw = 1.0f;							// rhwの設定											
 		pVtx[0].col = object->col;					// 頂点カラーの設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);		// テクスチャ座標の設定
 
+		// デバック用
 		DEBUG_PRINT("%f	%f\n", pVtx[0].pos.x, pVtx[0].pos.y);
 
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
 		for (int i = 1; i < MAX_FAN_VERTEX; i++)
 		{
 			//float fRot = D3DXToRadian((360.0f / (nVtxNum - 1 - 1)) * (i -1));
-				
+
 			float fRot = (D3DX_PI * 2.0f / (MAX_FAN_VERTEX - 2)) * (i - 1);
-			
+
 			//// 角度の正規化
 			//NormalizeRot(&fRot);
 
 			// 頂点座標の設定
-			pVtx[i].pos.x = object->pos.x + cosf(fRot - D3DX_PI / 2) * object->Height;
-			pVtx[i].pos.y = object->pos.y + sinf(fRot - D3DX_PI / 2) * object->Height;
+			pVtx[i].pos.x = object->pos.x + cosf(fRot - D3DX_PI / -2) * object->Height;
+			pVtx[i].pos.y = object->pos.y + sinf(fRot - D3DX_PI / -2) * object->Height;
 			pVtx[i].pos.z = object->pos.z;
 
 			pVtx[i].rhw = 1.0f;							// rhwの設定											
@@ -350,43 +352,44 @@ void UpdateGameUI(void)
 	int nSecond = GetTimer(1)->nSecond;
 
 	object = &(uiTimeGauge);
-	object->rot.z = -RADIAN(nSecond * 2.0f);	// 位置
-
-							
-	if (nSecond <= 25)
 	{
-		if (nSecond % 2 == 0)
-		{
-			object->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);	// 色
-		}
-		else
-		{
-			object->col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);	// 色
-		}
-	}
+		object->rot.z = -ToRadian(nSecond * 2.0f);	// 
 
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	{
-		float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
-		float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+		if (nSecond <= 25)
+		{// 時間制限が迫ると色が交互に切り替わる
+			if (nSecond % 2 == 0)
+			{
+				object->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+			}
+			else
+			{
+				object->col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+			}
+		}
 
-		SetPosRectCenterRot(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
-		SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;	// 中心座標から上の長さを算出する。
+			float fAngle = atan2f(object->Width, object->Height);	// 中心座標から上の頂点の角度を算出する
+
+			SetPosRectCenterRot(pVtx, object->pos, object->rot, fAngle, fLength);	// 頂点座標の設定
+			SetRectColor(pVtx, &(object->col));										// 頂点カラーの設定
+		}
+		// 頂点バッファをアンロックする
+		object->vtxBuff->Unlock();
 	}
-	// 頂点バッファをアンロックする
-	object->vtxBuff->Unlock();
 
 	if (!s_bFanMax)
 	{
-		if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardPress(DIK_L))
-		{
-			s_nFanCnt++;
+		float fData = (float)MAX_FAN_VERTEX / 140.0f;
+		float fData2 = (int)(player->fLength * 10.0f) % 140 * fData;
+		s_nFanCnt = fData2;
 
-			if (s_nFanCnt >= MAX_FAN_VERTEX)
-			{
-				s_bFanMax = true;
-			}
+		if (s_nFanSwitch != (int)((player->fLength * 10.0f) / 140.0f))
+		{
+			s_nFanSwitch = (player->fLength * 10.0f) / 140;
+			s_bFanMax = true;
 		}
 	}
 	else
@@ -397,6 +400,16 @@ void UpdateGameUI(void)
 			s_bFanMax = false;
 		}
 	}
+
+	uiGetModelGauge.col = D3DXCOLOR(0.7f, 1.0f - (1.0f / MAX_FAN_VERTEX * s_nFanCnt), 0.0f, 1.0f);
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	uiGetModelGauge.vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	for (int i = 1; i < MAX_FAN_VERTEX; i++)
+	{
+		SetRectColor(&pVtx[i], &(uiGetModelGauge.col));										// 頂点カラーの設定
+	}
+	// 頂点バッファをアンロックする
+	uiGetModelGauge.vtxBuff->Unlock();
 }
 
 //=========================================
@@ -464,20 +477,6 @@ void DrawGameUI(void)
 		RectDraw(pDevice, object->tex, 0);
 	}
 
-	object = &(uiGetModelBg);
-	if (object->bUse)
-	{
-		// 頂点バッファをデータストリーム設定
-		pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
-
-		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_2D);
-
-		// ポリゴン描画
-		// テクスチャの設定
-		RectDraw(pDevice, object->tex, 0);
-	}
-
 	object = &(uiGetModelGauge);
 	if (object->bUse)
 	{
@@ -494,6 +493,20 @@ void DrawGameUI(void)
 		pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, s_nFanCnt);
 	}
 	
+	object = &(uiGetModelBg);
+	if (object->bUse)
+	{
+		// 頂点バッファをデータストリーム設定
+		pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
+
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
+
+		// ポリゴン描画
+		// テクスチャの設定
+		RectDraw(pDevice, object->tex, 0);
+	}
+
 	// 表示領域の作成
 	RECT rect = { (LONG)950.0f,(LONG)(SCREEN_HEIGHT - 185.0f),(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
 	// テキストの描画

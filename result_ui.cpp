@@ -108,9 +108,10 @@ void InitResultUI(void)
 	object->Width = 475.0f;								// 幅
 	object->bUse = true;								// 使用に切り替え
 
-	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/ResultLength.png", &object->tex);	// テクスチャの読込
+	// テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/WORD/ResultLength.png", &object->tex);
 
-																							// 頂点バッファの生成
+	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
@@ -153,15 +154,15 @@ void InitResultUI(void)
 		s_fLength /= 1000.0f;
 	}
 
-	if (player->fLength < 1.0f)
+	if (player->fLength < 0.001f)
 	{
 		sprintf(s_aLength, "%.1fmm", s_fLength);
 	}
-	if (player->fLength > 1.0f &&player->fLength < 100.0f)
+	if (player->fLength > 0.01f &&player->fLength < 1.0f)
 	{
 		sprintf(s_aLength, "%.1fcm", s_fLength);
 	}
-	if (player->fLength > 100.0f && player->fLength < (100.0f * 1000.0f))
+	if (player->fLength > 1.0f && player->fLength < 1000.0f)
 	{
 		if (s_fLength >= 100.0f)
 		{

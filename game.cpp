@@ -85,7 +85,7 @@ void InitGame(void)
 	InitGameUI();		// UI
 	InitMeshSky();		// メッシュスカイ
 	InitParticle();		// パーティクル
-	InitFan();
+	//InitFan();
 
 	// メッシュスカイの設定処理
 	SetMeshSky();
@@ -126,17 +126,17 @@ void UninitGame(void)
 	StopSound();	// 音の再生を全てを停止
 
 	// 終了
-	UninitTimer();			// タイム
-	UninitPause();			// ポーズ
-	UninitPolygon();		// ポリゴン
-	UninitCamera();			// カメラ
-	UninitLight();			// ライト
-	UninitShadow();			// 影
-	UninitMeshField();		// メッシュ
-	UninitMeshSky();		// メッシュ
-	UninitGameUI();			// UI
-	UninitParticle();		// パーティクル
-	UninitFan();
+	//UninitTimer();			// タイム
+	//UninitPause();			// ポーズ
+	//UninitPolygon();		// ポリゴン
+	//UninitCamera();			// カメラ
+	//UninitLight();			// ライト
+	//UninitShadow();			// 影
+	//UninitMeshField();		// メッシュ
+	//UninitMeshSky();		// メッシュ
+	//UninitGameUI();			// UI
+	//UninitParticle();		// パーティクル
+	//UninitFan();			// ファン
 
 #ifdef _DEBUG
 	// ライン
@@ -252,7 +252,7 @@ void UpdateGame(void)
 			UpdateMeshSky();		// メッシュスカイ
 			UpdateGameUI();			// UI
 			UpdateParticle();		// パーティクル
-			UpdateFan();
+		//	UpdateFan();
 
 #ifndef _GETMODEL_POP
 			SetModelUI(SetJustModel());
@@ -264,7 +264,7 @@ void UpdateGame(void)
 		UpdateLine();	// ライン
 
 						// リザルト画面に移動
-		if (GetJoypadTrigger(JOYKEY_X))
+		if (GetJoypadTrigger(JOYKEY_X) || GetKeyboardPress(DIK_J))
 		{
 			SetFade(MODE_RESULT);
 		}
@@ -316,7 +316,7 @@ void DrawGame(int cameraData)
 		DrawMeshField();	// メッシュ
 		DrawMeshSky();		// メッシュスカイ
 		DrawShadow();		// 影
-		DrawFan();
+		//DrawFan();
 
 		if (s_bGame)
 		{

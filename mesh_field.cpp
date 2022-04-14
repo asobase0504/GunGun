@@ -55,7 +55,7 @@ float Vec2Cross(D3DXVECTOR3* v1, D3DXVECTOR3* v2);
 //------------------------------------
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};		// 頂点バッファーへのポインタ
 static LPDIRECT3DTEXTURE9 s_pTexture = {};			// テクスチャへのポインタ
-static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = NULL;	// インデックスバッファへのポインタ
+static LPDIRECT3DINDEXBUFFER9 s_pIdxBuff = nullptr;	// インデックスバッファへのポインタ
 static Mesh s_aMesh = {};							// ポリゴンの構造体
 static int* s_aIdx = {};							// インデックスの配列
 

@@ -46,6 +46,7 @@
 static bool s_bPause;				// ポーズ中かどうか
 static bool s_bDebug;				// デバッグモードかどうか
 static bool s_bCountDownTime;		// カウントダウン中かどうか 
+static bool s_bCountDownTime2;		// カウントダウン中かどうか 
 static int nDelayCnt;				// 遅延時のカウント
 static bool s_bGame;				// ゲーム中かゲームが始まる前か
 static bool s_bEndGame;				// ゲームが終了
@@ -61,6 +62,7 @@ void InitGame(void)
 	s_bPause = false;
 	s_bDebug = false;
 	s_bCountDownTime = false;
+	s_bCountDownTime2 = false;
 	s_bGame = false;
 	s_bEndGame = false;
 	s_bAssat = false;
@@ -109,7 +111,7 @@ void InitGame(void)
 	SetMeshField(&setMesh);
 
 	// 扇の設定処理
-	SetFan(D3DXVECTOR3(10.0f, 30.0f, 10.0f), D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), 30.0f);
+	//SetFan(D3DXVECTOR3(10.0f, 30.0f, 10.0f), D3DXVECTOR3(D3DX_PI * -0.5f, 0.0f, 0.0f), 30.0f);
 
 	// BGMの再生
 	PlaySound(SOUND_LABEL_BGM_GAME);
@@ -126,16 +128,16 @@ void UninitGame(void)
 	StopSound();	// 音の再生を全てを停止
 
 	// 終了
-	//UninitTimer();			// タイム
-	//UninitPause();			// ポーズ
-	//UninitPolygon();		// ポリゴン
-	//UninitCamera();			// カメラ
-	//UninitLight();			// ライト
-	//UninitShadow();			// 影
-	//UninitMeshField();		// メッシュ
-	//UninitMeshSky();		// メッシュ
-	//UninitGameUI();			// UI
-	//UninitParticle();		// パーティクル
+	UninitTimer();			// タイム
+	UninitPause();			// ポーズ
+	UninitPolygon();		// ポリゴン
+	UninitCamera();			// カメラ
+	UninitGameUI();			// UI
+	UninitLight();			// ライト
+	UninitShadow();			// 影
+	UninitMeshField();		// メッシュ
+	UninitMeshSky();		// メッシュ
+	UninitParticle();		// パーティクル
 	//UninitFan();			// ファン
 
 #ifdef _DEBUG
@@ -168,13 +170,6 @@ void UpdateGame(void)
 		s_bPause = !s_bPause;
 	}
 
-	// ポーズの機能
-	if (GetJoypadTrigger(JOYKEY_START) || GetKeyboardPress(DIK_O))
-	{
-		OpenFan(nCnt);
-		nCnt++;
-	}
-
 	// ポーズ中ならポーズ以外を更新しない
 	if (s_bPause)
 	{
@@ -192,11 +187,11 @@ void UpdateGame(void)
 		}
 
 		// ゲームスタート時の遅延
-		if (nDelayCnt < 30)
-		{
-			nDelayCnt++;
-			return;
-		}
+		//if (nDelayCnt < 10)
+		//{
+		//	nDelayCnt++;
+		//	return;
+		//}
 
 		if (!s_bGame)
 		{
@@ -305,9 +300,7 @@ void DrawGame(int cameraData)
 		pDevice->SetViewport(&GetCamera(cameraData)->viewport);
 
 		// 画面クリア(バックバッファ＆Zバッファのクリア)
-		pDevice->Clear(0, NULL,
-			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+		pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
 		SetCamera(cameraData);			// カメラ
 
@@ -325,13 +318,11 @@ void DrawGame(int cameraData)
 			DrawPolygonUI();	// ポリゴンUI
 		}
 
-		//2Dの前に3Dを置ける可能性
-		pDevice->Clear(0, NULL,
-			(D3DCLEAR_ZBUFFER),
-			D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+		// 2Dの前に3Dを置く
+		pDevice->Clear(0, NULL, (D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
-			DrawModelUI();		// モデルUI
-		//DrawTimer();		// タイム
+		DrawModelUI();		// モデルUI
+		DrawTimer();		// タイム
 
 		if (s_bPause)
 		{

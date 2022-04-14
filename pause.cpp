@@ -319,6 +319,12 @@ void UninitPause(void)
 		s_pVtxBuffPause = NULL;
 	}
 
+	if (s_pVtxBuffPauseCursol != NULL)
+	{
+		s_pVtxBuffPauseCursol->Release();
+		s_pVtxBuffPauseCursol = NULL;
+	}
+
 	if (s_pVtxBuffPauseMenu != NULL)
 	{
 		s_pVtxBuffPauseMenu->Release();

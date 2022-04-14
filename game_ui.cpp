@@ -220,56 +220,56 @@ void InitGameUI(void)
 		object->vtxBuff->Unlock();
 	}
 
-	// 取得モデルのゲージ
-	object = &(uiGetModelGauge);
-	{
-		ZeroMemory(object, sizeof(object));
-		object->pos = D3DXVECTOR3(120.0f, SCREEN_HEIGHT - 122.5f, 0.0f);	// 位置
-		object->rot = ZERO_VECTOR;
-		object->col = D3DXCOLOR(0.7f, 1.0f, 0.0f, 1.0f);	// 色
-		object->Height = 105.0f;							// 高さ
-		object->Width = 200.0f;								// 幅
-		object->bUse = true;								// 使用に切り替え
-		s_bFanMax = false;
-		s_nFanCnt = 0;
+	//// 取得モデルのゲージ
+	//object = &(uiGetModelGauge);
+	//{
+	//	ZeroMemory(object, sizeof(object));
+	//	object->pos = D3DXVECTOR3(120.0f, SCREEN_HEIGHT - 122.5f, 0.0f);	// 位置
+	//	object->rot = ZERO_VECTOR;
+	//	object->col = D3DXCOLOR(0.7f, 1.0f, 0.0f, 1.0f);	// 色
+	//	object->Height = 105.0f;							// 高さ
+	//	object->Width = 200.0f;								// 幅
+	//	object->bUse = true;								// 使用に切り替え
+	//	s_bFanMax = false;
+	//	s_nFanCnt = 0;
 
-		object->tex = NULL;
+	//	object->tex = NULL;
 
-		SetVtxBuff2D(&object->vtxBuff, MAX_FAN_VERTEX);	// 頂点バッファの生成
+	//	SetVtxBuff2D(&object->vtxBuff, MAX_FAN_VERTEX);	// 頂点バッファの生成
 
-		object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	//	object->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-		pVtx[0].pos = object->pos;					// 頂点座標の設定
-		pVtx[0].rhw = 1.0f;							// rhwの設定											
-		pVtx[0].col = object->col;					// 頂点カラーの設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);		// テクスチャ座標の設定
+	//	pVtx[0].pos = object->pos;					// 頂点座標の設定
+	//	pVtx[0].rhw = 1.0f;							// rhwの設定											
+	//	pVtx[0].col = object->col;					// 頂点カラーの設定
+	//	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);		// テクスチャ座標の設定
 
-		// デバック用
-		DEBUG_PRINT("%f	%f\n", pVtx[0].pos.x, pVtx[0].pos.y);
+	//	// デバック用
+	//	DEBUG_PRINT("%f	%f\n", pVtx[0].pos.x, pVtx[0].pos.y);
 
-		// 頂点バッファをロックし、頂点情報へのポインタを取得
-		for (int i = 1; i < MAX_FAN_VERTEX; i++)
-		{
-			//float fRot = D3DXToRadian((360.0f / (nVtxNum - 1 - 1)) * (i -1));
+	//	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	//	for (int i = 1; i < MAX_FAN_VERTEX; i++)
+	//	{
+	//		//float fRot = D3DXToRadian((360.0f / (nVtxNum - 1 - 1)) * (i -1));
 
-			float fRot = (D3DX_PI * 2.0f / (MAX_FAN_VERTEX - 2)) * (i - 1);
+	//		float fRot = (D3DX_PI * 2.0f / (MAX_FAN_VERTEX - 2)) * (i - 1);
 
-			//// 角度の正規化
-			//NormalizeRot(&fRot);
+	//		//// 角度の正規化
+	//		//NormalizeRot(&fRot);
 
-			// 頂点座標の設定
-			pVtx[i].pos.x = object->pos.x + cosf(fRot - D3DX_PI / -2) * object->Height;
-			pVtx[i].pos.y = object->pos.y + sinf(fRot - D3DX_PI / -2) * object->Height;
-			pVtx[i].pos.z = object->pos.z;
+	//		// 頂点座標の設定
+	//		pVtx[i].pos.x = object->pos.x + cosf(fRot - D3DX_PI / -2) * object->Height;
+	//		pVtx[i].pos.y = object->pos.y + sinf(fRot - D3DX_PI / -2) * object->Height;
+	//		pVtx[i].pos.z = object->pos.z;
 
-			pVtx[i].rhw = 1.0f;							// rhwの設定											
-			pVtx[i].col = object->col;
-			pVtx[i].tex = D3DXVECTOR2(0.0f, 0.0f);		// テクスチャ座標の設定
-			DEBUG_PRINT("%f	%f\n", pVtx[i].pos.x, pVtx[i].pos.y);
-		}
-		// 頂点バッファをアンロックする
-		object->vtxBuff->Unlock();
-	}
+	//		pVtx[i].rhw = 1.0f;							// rhwの設定											
+	//		pVtx[i].col = object->col;
+	//		pVtx[i].tex = D3DXVECTOR2(0.0f, 0.0f);		// テクスチャ座標の設定
+	//		DEBUG_PRINT("%f	%f\n", pVtx[i].pos.x, pVtx[i].pos.y);
+	//	}
+	//	// 頂点バッファをアンロックする
+	//	object->vtxBuff->Unlock();
+	//}
 
 	// プレイヤーの大きさ用フォントの生成
 	D3DXCreateFont(GetDevice(), 130, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "07あかずきんポップ Heavy", &s_pFont);
@@ -285,7 +285,7 @@ void UninitGameUI(void)
 	UninitObject(&uiTimeBg);
 	UninitObject(&uiTimeGauge);
 	UninitObject(&uiGetModelBg);
-	UninitObject(&uiGetModelGauge);
+	//UninitObject(&uiGetModelGauge);
 	
 	// デバッグ表示用フォントの破棄
 	if (s_pFont != NULL)
@@ -401,15 +401,15 @@ void UpdateGameUI(void)
 		}
 	}
 
-	uiGetModelGauge.col = D3DXCOLOR(0.7f, 1.0f - (1.0f / MAX_FAN_VERTEX * s_nFanCnt), 0.0f, 1.0f);
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	uiGetModelGauge.vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	for (int i = 1; i < MAX_FAN_VERTEX; i++)
-	{
-		SetRectColor(&pVtx[i], &(uiGetModelGauge.col));										// 頂点カラーの設定
-	}
-	// 頂点バッファをアンロックする
-	uiGetModelGauge.vtxBuff->Unlock();
+	//uiGetModelGauge.col = D3DXCOLOR(0.7f, 1.0f - (1.0f / MAX_FAN_VERTEX * s_nFanCnt), 0.0f, 1.0f);
+	//// 頂点バッファをロックし、頂点情報へのポインタを取得
+	//uiGetModelGauge.vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	//for (int i = 1; i < MAX_FAN_VERTEX; i++)
+	//{
+	//	SetRectColor(&pVtx[i], &(uiGetModelGauge.col));										// 頂点カラーの設定
+	//}
+	//// 頂点バッファをアンロックする
+	//uiGetModelGauge.vtxBuff->Unlock();
 }
 
 //=========================================
@@ -477,21 +477,21 @@ void DrawGameUI(void)
 		RectDraw(pDevice, object->tex, 0);
 	}
 
-	object = &(uiGetModelGauge);
-	if (object->bUse)
-	{
-		// 頂点バッファをデータストリーム設定
-		pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
+	//object = &(uiGetModelGauge);
+	//if (object->bUse)
+	//{
+	//	// 頂点バッファをデータストリーム設定
+	//	pDevice->SetStreamSource(0, object->vtxBuff, 0, sizeof(VERTEX_2D));
 
-		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_2D);
+	//	// 頂点フォーマットの設定
+	//	pDevice->SetFVF(FVF_VERTEX_2D);
 
-		// テクスチャの設定
-		pDevice->SetTexture(0, object->tex);
+	//	// テクスチャの設定
+	//	pDevice->SetTexture(0, object->tex);
 
-		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, s_nFanCnt);
-	}
+	//	// ポリゴンの描画
+	//	pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, s_nFanCnt);
+	//}
 	
 	object = &(uiGetModelBg);
 	if (object->bUse)

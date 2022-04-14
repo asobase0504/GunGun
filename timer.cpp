@@ -14,8 +14,8 @@
 #define TIME_TEX			"data/TEXTURE/number003.png"	// タイマーのテクスチャ
 
 //グローバル変数
-static LPDIRECT3DTEXTURE9 g_pTextureTimer = { NULL };					//テクスチャへのポインタ
-static LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffTimer = { NULL };				//頂点バッファへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTexture = { NULL };					//テクスチャへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = { NULL };				//頂点バッファへのポインタ
 static TimerDigit g_TimerDigit[MAX_TIMER_DITIT];						//タイム構造体の変数
 static Timer g_Timer[MAX_TIMER];
 
@@ -36,14 +36,14 @@ void InitTimer(void)
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice,
 		TIME_TEX,
-		&g_pTextureTimer);
+		&s_pTexture);
 
 	//頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_TIMER_DITIT,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
-		&g_pVtxBuffTimer,
+		&s_pVtxBuff,
 		NULL);
 
 	//タイムの情報の初期化
@@ -52,7 +52,7 @@ void InitTimer(void)
 
 	VERTEX_2D *pVtx;		//頂点情報へのポインタ
 	//頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffTimer->Lock(0, 0, (void**)&pVtx, 0);
+	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCnt = 0; nCnt < MAX_TIMER_DITIT; nCnt++)
 	{
@@ -85,7 +85,7 @@ void InitTimer(void)
 		pVtx += 4; //データを４つ分進める
 	}
 	//頂点バッファをアンロック
-	g_pVtxBuffTimer->Unlock();
+	s_pVtxBuff->Unlock();
 }
 
 //=========================================
@@ -94,17 +94,17 @@ void InitTimer(void)
 void UninitTimer(void)
 {
 	//テクスチャの破棄
-	if (g_pTextureTimer != NULL)
+	if (s_pTexture != NULL)
 	{
-		g_pTextureTimer->Release();
-		g_pTextureTimer = NULL;
+		s_pTexture->Release();
+		s_pTexture = NULL;
 	}
 
 	//頂点バッファの破棄
-	if (g_pVtxBuffTimer != NULL)
+	if (s_pVtxBuff != NULL)
 	{
-		g_pVtxBuffTimer->Release();
-		g_pVtxBuffTimer = NULL;
+		s_pVtxBuff->Release();
+		s_pVtxBuff = NULL;
 	}
 
 	for (int i = 0; i < MAX_TIMER; i++)
@@ -153,7 +153,7 @@ void UpdateTimer(void)
 	VERTEX_2D *pVtx;		//頂点情報へのポインタ
 							
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffTimer->Lock(0, 0, (void**)&pVtx, 0);
+	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int i = 0; i < MAX_TIMER_DITIT; i++)
 	{
@@ -168,7 +168,7 @@ void UpdateTimer(void)
 		pVtx += 4;  //頂点データのポインタを４* nCntDigitつ分進める
 	}
 	//頂点バッファをアンロック
-	g_pVtxBuffTimer->Unlock();
+	s_pVtxBuff->Unlock();
 }
 
 //=========================================
@@ -182,13 +182,13 @@ void DrawTimer(void)
 	pDevice = GetDevice();
 
 	//頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffTimer, 0, sizeof(VERTEX_2D));
+	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_2D));
 
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
 	//テクスチャの設定
-	pDevice->SetTexture(0, g_pTextureTimer);
+	pDevice->SetTexture(0, s_pTexture);
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
@@ -375,7 +375,7 @@ static void SetTimer(int nNumber, int nSecond)
 			VERTEX_2D *pVtx;		//頂点情報へのポインタ
 			
 			// 頂点バッファをロックし、頂点情報へのポインタを取得
-			g_pVtxBuffTimer->Lock(0, 0, (void**)&pVtx, 0);
+			s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 			pVtx += 4 * nCntDigit;  //頂点データのポインタを４* nCntDigitつ分進める
 
@@ -393,7 +393,7 @@ static void SetTimer(int nNumber, int nSecond)
 
 			}
 			//頂点バッファをアンロック
-			g_pVtxBuffTimer->Unlock();
+			s_pVtxBuff->Unlock();
 
 			return;
 		}

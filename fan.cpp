@@ -41,6 +41,15 @@ void InitFan(void)
 	D3DXCreateTextureFromFile(pDevice,"data\\TEXTURE\\sky.jpg",&s_pTexture);
 
 	memset(&s_Fan, NULL, sizeof(s_Fan));	// メモリのクリア
+
+	// 円の頂点バッファの生成
+	pDevice->CreateVertexBuffer(
+		sizeof(VERTEX_3D) * MAX_VERTEX,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
+		&s_pVtxBuff,
+		NULL);
 }
 
 //--------------------------------------------------
@@ -132,15 +141,6 @@ void SetFan(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fLength)
 	s_Fan.rot = rot;
 	s_Fan.pos = pos;
 	s_Fan.fLength = fLength;
-
-	// 円の頂点バッファの生成
-	pDevice->CreateVertexBuffer(
-		sizeof(VERTEX_3D) * MAX_VERTEX,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,
-		D3DPOOL_MANAGED,
-		&s_pVtxBuff,
-		NULL);
 
 	// 頂点情報をロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);

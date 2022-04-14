@@ -31,6 +31,7 @@ static float s_nSinCnt;
 void InitPolygon(void)
 {
 	ZeroMemory(s_aPolygon, sizeof(s_aPolygon));	// 初期化
+	ZeroMemory(s_aPolygonUI, sizeof(s_aPolygonUI));	// 初期化
 }
 
 //=========================================
@@ -52,6 +53,20 @@ void UninitPolygon(void)
 		{
 			s_aPolygon[i].VtxBuff->Release();
 			s_aPolygon[i].VtxBuff = NULL;
+		}
+
+		// テクスチャの破棄
+		if (s_aPolygonUI[i].Tex != NULL)
+		{
+			s_aPolygonUI[i].Tex->Release();
+			s_aPolygonUI[i].Tex = NULL;
+		}
+
+		// 頂点バッファーの破棄
+		if (s_aPolygonUI[i].VtxBuff != NULL)
+		{
+			s_aPolygonUI[i].VtxBuff->Release();
+			s_aPolygonUI[i].VtxBuff = NULL;
 		}
 	}
 

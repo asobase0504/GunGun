@@ -512,11 +512,11 @@ void DrawGameUI(void)
 	// テキストの描画
 	s_pFont->DrawText(NULL, s_aLength, -1, &rect, DT_CENTER, D3DCOLOR_RGBA(255, 255, 255, 255));
 
-	// LV表示
-	// 表示領域の作成
-	rect = { (LONG)0.0f,(LONG)(SCREEN_HEIGHT - 185.0f),(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
-	// テキストの描画
-	s_pFont->DrawText(NULL, s_aLv, -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	//// LV表示
+	//// 表示領域の作成
+	//rect = { (LONG)0.0f,(LONG)(SCREEN_HEIGHT - 185.0f),(LONG)SCREEN_WIDTH,(LONG)SCREEN_HEIGHT };
+	//// テキストの描画
+	//s_pFont->DrawText(NULL, s_aLv, -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 //=========================================

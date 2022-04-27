@@ -39,7 +39,7 @@
 #define ZERO_QUATERNION	(D3DXQUATERNION(0.0f,0.0f,0.0f,1.0f))
 
 // デバッグ用
-//#define _GETMODEL_POP
+#define _GETMODEL_POP
 
 #include <crtdbg.h>
 #ifdef _DEBUG

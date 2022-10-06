@@ -91,7 +91,7 @@ void UninitPolygon(void)
 //=========================================
 void UpdatePolygon(void)
 {
-	for (int i = 0; i <= MAX_POLYGON; i++)
+	for (int i = 0; i < MAX_POLYGON; i++)
 	{
 		ObjectPolygon* polygon = &s_aPolygon[i];
 

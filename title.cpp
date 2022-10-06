@@ -144,7 +144,6 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
-
 	if (CollisionPolygon(&GetPlayer()->pos, "Title1") && !GetPolygon("Title1")->HitPlayer)
 	{
 		ObjectPolygon* polygon = GetPolygon("Title1");

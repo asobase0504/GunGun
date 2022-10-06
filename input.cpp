@@ -34,7 +34,6 @@ BYTE g_aKeyState[NUM_KEY_MAX];						//キーボードのプレス情報
 BYTE g_aKeyStateTrigger[NUM_KEY_MAX];				//キーボードのトリガー情報
 BYTE g_aKeyStateRelease[NUM_KEY_MAX];				//キーボードのリリース情報
 
-
 //ジョイパッド
 XINPUT_STATE g_JoyKeyState[PLAYER_MAX];				//ジョイパットのプレス情報
 XINPUT_STATE g_JoyKeyStateTrigger[PLAYER_MAX];		//ジョイパットのトリガー情報

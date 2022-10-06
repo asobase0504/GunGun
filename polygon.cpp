@@ -23,7 +23,6 @@
 //------------------------------------
 static ObjectPolygon s_aPolygon[MAX_POLYGON];		// ポリゴンの構造体
 static ObjectPolygon s_aPolygonUI[MAX_POLYGON];		// ポリゴンの構造体
-static float s_nSinCnt;
 
 //=========================================
 // 初期化
@@ -32,6 +31,15 @@ void InitPolygon(void)
 {
 	ZeroMemory(s_aPolygon, sizeof(s_aPolygon));	// 初期化
 	ZeroMemory(s_aPolygonUI, sizeof(s_aPolygonUI));	// 初期化
+	for (int i = 0; i < MAX_POLYGON; i++)
+	{
+		if (!s_aPolygon[i].bUse)
+		{
+			continue;
+		}
+
+		s_aPolygon[i].bUse = false;
+	}
 }
 
 //=========================================
@@ -41,35 +49,41 @@ void UninitPolygon(void)
 {
 	for (int i = 0; i < MAX_POLYGON; i++)
 	{
+		if (!s_aPolygon[i].bUse)
+		{
+			continue;
+		}
+
+		s_aPolygon[i].bUse = false;
+
 		// テクスチャの破棄
-		if (s_aPolygon[i].Tex != NULL)
+		if (s_aPolygon[i].Tex != nullptr)
 		{
 			s_aPolygon[i].Tex->Release();
-			s_aPolygon[i].Tex = NULL;
+			s_aPolygon[i].Tex = nullptr;
 		}
 
 		// 頂点バッファーの破棄
-		if (s_aPolygon[i].VtxBuff != NULL)
+		if (s_aPolygon[i].VtxBuff != nullptr)
 		{
 			s_aPolygon[i].VtxBuff->Release();
-			s_aPolygon[i].VtxBuff = NULL;
+			s_aPolygon[i].VtxBuff = nullptr;
 		}
 
 		// テクスチャの破棄
-		if (s_aPolygonUI[i].Tex != NULL)
+		if (s_aPolygonUI[i].Tex != nullptr)
 		{
 			s_aPolygonUI[i].Tex->Release();
-			s_aPolygonUI[i].Tex = NULL;
+			s_aPolygonUI[i].Tex = nullptr;
 		}
 
 		// 頂点バッファーの破棄
-		if (s_aPolygonUI[i].VtxBuff != NULL)
+		if (s_aPolygonUI[i].VtxBuff != nullptr)
 		{
 			s_aPolygonUI[i].VtxBuff->Release();
-			s_aPolygonUI[i].VtxBuff = NULL;
+			s_aPolygonUI[i].VtxBuff = nullptr;
 		}
 	}
-
 }
 
 //=========================================
@@ -77,7 +91,6 @@ void UninitPolygon(void)
 //=========================================
 void UpdatePolygon(void)
 {
-	s_nSinCnt++;
 	for (int i = 0; i <= MAX_POLYGON; i++)
 	{
 		ObjectPolygon* polygon = &s_aPolygon[i];

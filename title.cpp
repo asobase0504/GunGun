@@ -338,10 +338,10 @@ void UpdateTitle(void)
 	{
 		UpdateCamera();		// カメラ
 		UpdateLight();		// ライト
+		UpdatePlayer();		// プレイヤー
 		UpdatePolygon();	// ポリゴン
 		UpdateMeshField();	// メッシュフィールド
 		UpdateModel();		// モデル
-		UpdatePlayer();		// プレイヤー
 
 		// プレイヤーの移動制限
 		Player* player = GetPlayer();

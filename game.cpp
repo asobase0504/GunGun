@@ -77,7 +77,6 @@ void InitGame(void)
 	// 初期化
 	InitTimer();		// タイム
 	InitPause();		// ポーズ
-	InitPolygon();		// ポリゴン
 	InitCamera();		// カメラ
 	InitLight();		// ライト
 	InitModel();		// モデル
@@ -130,7 +129,6 @@ void UninitGame(void)
 	// 終了
 	UninitTimer();			// タイム
 	UninitPause();			// ポーズ
-	UninitPolygon();		// ポリゴン
 	UninitCamera();			// カメラ
 	UninitGameUI();			// UI
 	UninitLight();			// ライト
@@ -238,10 +236,10 @@ void UpdateGame(void)
 		else
 		{
 			// 更新
+			//UpdatePolygon();		// ポリゴン
 			UpdateModel();			// モデル
 			UpdatePlayer();			// プレイヤー
 			UpdateLight();			// ライト
-			UpdatePolygon();		// ポリゴン
 			UpdateShadow();			// 影
 			UpdateMeshField();		// メッシュ
 			UpdateMeshSky();		// メッシュスカイ

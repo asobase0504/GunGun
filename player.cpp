@@ -244,9 +244,11 @@ void MovePlayer()
 	D3DXVECTOR3 vecY = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	D3DXVec3Cross(&axis, &inverseVec, &vecY);	// 外積で回転軸を算出。
 
+	// クオータニオンの計算
 	D3DXQUATERNION quaternion;
 	D3DXQuaternionRotationAxis(&quaternion, &axis, moveLength * MODEL_ROT_ATTENUATION);	// 回転軸と回転角度を指定
 
+	// クオータニオンを適用
 	s_player.aModel[0]->quaternion *= quaternion;
 	// クオータニオンのノーマライズ
 	D3DXQuaternionNormalize(&s_player.aModel[0]->quaternion, &s_player.aModel[0]->quaternion);

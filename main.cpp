@@ -215,6 +215,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //=========================================
 HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	D3DDISPLAYMODE d3ddm;			// ディスプレイモード
 	D3DPRESENT_PARAMETERS d3dpp;	// プレゼンテーションパラメータ
 
